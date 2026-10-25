@@ -5,7 +5,7 @@ const AppError = require('../../utils/AppError');
 const BASE_URL = 'https://api.groq.com/openai/v1';
 
 /**
- * FlightWise Copilot structured output schema.
+ * Aero AI structured output schema.
  *
  * IMPORTANT:
  * Groq strict structured output is intentionally kept
@@ -121,9 +121,9 @@ const RESPONSE_SCHEMA = {
 };
 
 /**
- * System prompt for FlightWise Copilot.
+ * System prompt for Aero AI.
  */
-const SYSTEM_PROMPT = `You are FlightWise Copilot, the intelligent travel-planning and flight decision assistant inside AI FlightWise, an AI-powered flight decision platform.
+const SYSTEM_PROMPT = `You are Aero AI, the intelligent travel-planning and flight decision assistant inside AI FlightWise, an AI-powered flight decision platform.
 
 Your ONLY job each turn is to:
 1. Have a warm, brief, natural conversation about the traveler's trip.

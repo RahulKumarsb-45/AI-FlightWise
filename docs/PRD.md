@@ -24,7 +24,7 @@ Travelers, especially budget-conscious travelers, solo explorers, students, and 
 **AI FlightWise** is an AI-powered flight decision platform built to explain trade-offs rather than simply list inventory. Instead of acting as an airline booking engine, AI FlightWise provides:
 1. **Decision Intelligence Matrix:** Direct, quantified comparison across Cheapest, Fastest, and Best Balanced options.
 2. **Deterministic Explainability:** Clear, grounded explanations of *why* an option was selected, its distinct advantages, drawbacks, and the specific traveler persona it best suits.
-3. **FlightWise Copilot:** A conversational AI partner grounded in search constraints that extracts multi-city requirements and explains itinerary trade-offs without fabricating prices or availability.
+3. **Aero AI:** A conversational AI partner grounded in search constraints that extracts multi-city requirements and explains itinerary trade-offs without fabricating prices or availability.
 4. **Holistic Trip Context:** Multi-city circuit routing, nearby airport expansion, destination weather, attractions cost estimation, and living expenses.
 
 ---

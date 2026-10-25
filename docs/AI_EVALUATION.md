@@ -1,6 +1,6 @@
 # AI Evaluation Framework & Quality Benchmark
 
-**Product:** AI FlightWise (FlightWise Copilot Assistant)  
+**Product:** AI FlightWise (Aero AI Assistant)  
 **System Evaluated:** Natural Language Search Parameter Extraction & Constraint Verification  
 **Dataset Version:** `1.0.0` (`backend/src/evaluation/data/evalDataset.json`)  
 **Evaluation Engine:** `backend/src/evaluation/evalRunner.js`  

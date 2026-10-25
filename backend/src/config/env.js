@@ -165,7 +165,7 @@ module.exports = {
   },
 
   // ============================================================
-  // AI / FLIGHTWISE COPILOT
+  // AI / AERO AI ASSISTANT
   // ============================================================
   //
   // Groq is the primary AI provider.

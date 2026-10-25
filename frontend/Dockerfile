@@ -14,11 +14,9 @@ COPY . .
 # Pass them as build-args so a rebuild is required if the API URL changes —
 # this is a Next.js constraint, not something a runtime .env can work around.
 ARG NEXT_PUBLIC_API_URL=http://localhost:5000/api
-ARG NEXT_PUBLIC_MAPBOX_TOKEN=
 ARG NEXT_PUBLIC_GA_MEASUREMENT_ID=
 
 ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
-ENV NEXT_PUBLIC_MAPBOX_TOKEN=$NEXT_PUBLIC_MAPBOX_TOKEN
 ENV NEXT_PUBLIC_GA_MEASUREMENT_ID=$NEXT_PUBLIC_GA_MEASUREMENT_ID
 ENV NEXT_TELEMETRY_DISABLED=1
 

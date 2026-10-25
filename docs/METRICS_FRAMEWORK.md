@@ -73,8 +73,8 @@
 - **Unhelpful Reason Breakdown:** Tracks % distribution of negative reasons (`price_too_high`, `duration_too_long`, `layover_inconvenient`, `wrong_airport`, `mismatch_preferences`).
   - *Action Threshold:* If `layover_inconvenient` exceeds 30% of negative feedback, tighten the pruning stage duration ceiling.
 
-### 4.2 FlightWise Copilot Metrics
-- **Copilot Message Volume:** Count of `copilot_message_sent`.
+### 4.2 Aero AI Metrics
+- **Aero AI Message Volume:** Count of `copilot_message_sent` (telemetry event).
 - **Search Parameter Extraction Rate:** % of conversational messages where structured destination, date, or budget parameters are parsed into actionable searches.
 - **Conversation Completion Rate:** % of chat conversations that result in a navigation to `/results`.
 
