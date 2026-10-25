@@ -141,45 +141,6 @@ function RecommendationCard({ recommendation, rank, highlight }) {
 
       <p className="mt-4 rounded-xl bg-ink-50/80 border border-ink-100/70 px-4 py-3 text-sm leading-relaxed text-ink-700">{explanation}</p>
 
-      {/* Experiment Variant: Explicit AI Trade-off Analysis */}
-      {isVariant && (
-        <div className="mt-3.5 rounded-xl border border-electric-300 bg-gradient-to-r from-electric-50/90 to-indigo-50/70 p-4 shadow-sm" data-testid="experiment-variant-tradeoff">
-          <div className="flex items-center justify-between gap-2">
-            <span className="inline-flex items-center gap-1.5 rounded-md bg-electric-600 px-2.5 py-1 text-xs font-semibold text-white shadow-sm">
-              <Sparkles className="h-3.5 w-3.5" aria-hidden="true" />
-              AI Trade-Off Analysis (Experiment Variant)
-            </span>
-            <span className="text-xs font-mono font-medium text-electric-800">
-              {totalStops === 0 ? 'Direct Route Advantage' : `${totalStops} Stop Route Efficiency`}
-            </span>
-          </div>
-          <div className="mt-2.5 grid grid-cols-1 sm:grid-cols-3 gap-2.5 text-xs">
-            <div className="rounded-lg bg-white/80 p-2.5 border border-electric-200/60">
-              <span className="block font-medium text-ink-500 text-[11px] uppercase tracking-wider">Price Efficiency</span>
-              <span className="mt-0.5 block font-bold text-ink-950 font-mono text-sm">{formatInr(totalPriceInr)}</span>
-              <span className="text-[11px] text-ink-600">Calculated value for all travelers</span>
-            </div>
-            <div className="rounded-lg bg-white/80 p-2.5 border border-electric-200/60">
-              <span className="block font-medium text-ink-500 text-[11px] uppercase tracking-wider">Travel Time</span>
-              <span className="mt-0.5 block font-bold text-ink-950 text-sm">{formatDuration(totalDurationMinutes)}</span>
-              <span className="text-[11px] text-ink-600">Door-to-door transit time</span>
-            </div>
-            <div className="rounded-lg bg-white/80 p-2.5 border border-electric-200/60">
-              <span className="block font-medium text-ink-500 text-[11px] uppercase tracking-wider">Stop Trade-Off</span>
-              <span className="mt-0.5 block font-bold text-ink-950 text-sm">
-                {totalStops === 0 ? '0 Transfers' : `${totalStops} Layover${totalStops > 1 ? 's' : ''}`}
-              </span>
-              <span className="text-[11px] text-ink-600">
-                {totalStops === 0 ? 'Maximum comfort & speed' : 'Optimized balance of cost & rest'}
-              </span>
-            </div>
-          </div>
-          <p className="mt-2.5 text-xs text-electric-950 leading-relaxed font-medium">
-            💡 <strong>Trade-off Breakdown:</strong> Compared across all potential flight combinations, this itinerary balances total journey duration against ticket price to minimize layover penalties.
-          </p>
-        </div>
-      )}
-
       {/* Decision Intelligence Advantages & Trade-offs */}
       {(advantages.length > 0 || disadvantages.length > 0) && (
         <div className="mt-3.5 grid gap-3 sm:grid-cols-2 text-xs">

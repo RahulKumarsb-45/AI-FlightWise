@@ -151,7 +151,7 @@ function Navbar() {
                 <span className="flex h-6 w-6 items-center justify-center rounded-full bg-electric-600 text-[11px] font-semibold text-white">
                   {user?.name?.[0]?.toUpperCase() || 'U'}
                 </span>
-                <span>{user?.name?.split(' ')[0] || 'Account'}</span>
+                <span>{user?.name?.split?.(' ')?.[0] || 'Account'}</span>
                 <ChevronDown className="h-3 w-3 text-ink-400" />
               </DropdownTrigger>
               <DropdownContent align="end" className="w-52 p-1.5 bg-white border border-ink-100 shadow-premium rounded-xl">
