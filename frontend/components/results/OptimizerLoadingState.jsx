@@ -33,15 +33,15 @@ function OptimizerLoadingState() {
           <div key={stage.label} className="flex items-center gap-2.5 text-sm">
             <span
               className={cn(
-                'flex h-5 w-5 shrink-0 items-center justify-center rounded-full border text-[10px]',
+                'flex h-5 w-5 shrink-0 items-center justify-center rounded-full border text-[10px] font-semibold transition-colors',
                 idx < activeIndex && 'border-route-500 bg-route-500 text-white',
-                idx === activeIndex && 'border-horizon-600 text-horizon-600 animate-pulse',
+                idx === activeIndex && 'border-electric-600 bg-electric-50 text-electric-600 animate-pulse ring-2 ring-electric-100',
                 idx > activeIndex && 'border-ink-200 text-ink-300'
               )}
             >
               {idx < activeIndex ? <Check className="h-3 w-3" /> : idx + 1}
             </span>
-            <span className={idx <= activeIndex ? 'text-ink-700' : 'text-ink-300'}>{stage.label}...</span>
+            <span className={idx <= activeIndex ? 'text-navy-900 font-medium' : 'text-ink-300'}>{stage.label}...</span>
           </div>
         ))}
       </div>

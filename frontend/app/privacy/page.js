@@ -3,22 +3,25 @@ import { Footer } from '@/components/common/Footer';
 
 export const metadata = { title: 'Privacy Policy' };
 
+import { BackButton } from '@/components/common/BackButton';
+
 export default function PrivacyPage() {
   return (
     <>
       <Navbar />
-      <main id="main-content" className="container-page max-w-4xl py-16">
+      <BackButton />
+      <main id="main-content" className="container-page max-w-4xl py-14">
         <h1 className="font-display text-display-md text-ink-900">Privacy Policy</h1>
-        <p className="mt-2 text-sm text-ink-400">Last updated: July 2026</p>
+        <p className="mt-2 text-sm text-ink-400">Last updated: October 2026</p>
 
         <div className="mt-8 space-y-6 text-ink-600">
           <p>
-            AI FlightWise is a portfolio project. This policy describes, plainly, what data the application
+            AI FlightWise is an AI-powered flight decision platform. This policy describes, plainly, what data the application
             actually collects and how it’s used — not boilerplate copied from elsewhere.
           </p>
 
           <section>
-            <h2 className="font-display text-lg text-ink-900">What we collect</h2>
+            <h2 className="font-display text-lg font-bold text-ink-900">What we collect</h2>
             <ul className="mt-2 list-disc space-y-1.5 pl-5">
               <li>Account details you provide: name, email, and a hashed (never plaintext) password.</li>
               <li>Search inputs: origin, destinations, dates, budget, and preferences you submit.</li>
@@ -28,7 +31,7 @@ export default function PrivacyPage() {
           </section>
 
           <section>
-            <h2 className="font-display text-lg text-ink-900">How authentication works</h2>
+            <h2 className="font-display text-lg font-bold text-ink-900">How authentication works</h2>
             <p className="mt-2">
               Passwords are hashed before storage and never stored or logged in plain text. Sessions use a
               short-lived (15-minute) access token plus a longer-lived refresh token stored in an httpOnly cookie,
@@ -38,7 +41,7 @@ export default function PrivacyPage() {
           </section>
 
           <section>
-            <h2 className="font-display text-lg text-ink-900">How your search is used</h2>
+            <h2 className="font-display text-lg font-bold text-ink-900">How your search is used</h2>
             <p className="mt-2">
               When you run a search, your criteria (origin, destinations, dates, budget, preference) are sent to
               our optimizer, which expands them into route and date combinations and queries a flight data
@@ -50,21 +53,19 @@ export default function PrivacyPage() {
           </section>
 
           <section>
-            <h2 className="font-display text-lg text-ink-900">Payments</h2>
+            <h2 className="font-display text-lg font-bold text-ink-900">Payments</h2>
             <p className="mt-2">
-              Pricing tiers are defined and a Razorpay integration is configured in the codebase, but payment
-              processing is <strong>not live</strong> in the current build — no card or payment data is collected,
-              and no charges can currently be made. When billing is enabled, Razorpay would process payments
-              directly; we would not store your card details.
+              Pricing tiers are defined and a Razorpay integration is configured in the codebase. When billing is enabled,
+              Razorpay processes payments directly via secure checkout; we do not store your card details or financial credentials.
             </p>
           </section>
 
           <section>
-            <h2 className="font-display text-lg text-ink-900">AI features</h2>
+            <h2 className="font-display text-lg font-bold text-ink-900">Aero AI Assistant</h2>
             <p className="mt-2">
-              Natural-language trip planning (an AI chat assistant powered by Anthropic’s Claude API) is planned
-              but <strong>not yet built</strong> in this version of the app. If and when it ships, this section
-              will be updated to describe exactly what’s sent to Anthropic and how conversation data is handled.
+              The Aero AI assistant processes natural-language itinerary requests to extract destination preferences,
+              timing, and budget constraints for optimization. User chat messages are processed to generate conversational
+              responses and structured flight search parameters. Conversation messages are never sold or used for ad targeting.
             </p>
           </section>
 

@@ -18,14 +18,26 @@ function CategoryRow({ label, entry, isLoading }) {
       : formatRange(entry.rangeInr);
 
   return (
-    <div className="flex items-center justify-between border-b border-ink-100 py-2.5 last:border-b-0">
+    <div className="flex items-center justify-between border-b border-ink-100/80 py-3 last:border-b-0">
       <div>
-        <p className="text-sm text-ink-700">{label}</p>
-        {entry.isEstimated && entry.isAvailable && <p className="text-xs text-ink-400">Estimated</p>}
-        {entry.isEstimated && !entry.isAvailable && <p className="text-xs text-ink-400">Not enough data yet</p>}
-        {!entry.isEstimated && <p className="text-xs text-ink-400">Actual, from your selected flight</p>}
+        <p className="text-sm font-medium text-navy-950">{label}</p>
+        {entry.isEstimated && entry.isAvailable && (
+          <span className="inline-block mt-0.5 text-[11px] text-ink-500 font-mono">
+            Heuristic estimate
+          </span>
+        )}
+        {entry.isEstimated && !entry.isAvailable && (
+          <span className="inline-block mt-0.5 text-[11px] text-ink-400 font-mono">
+            Not enough data yet
+          </span>
+        )}
+        {!entry.isEstimated && (
+          <span className="inline-block mt-0.5 text-[11px] text-electric-600 font-mono font-medium">
+            Actual flight data
+          </span>
+        )}
       </div>
-      <p className="font-mono text-sm text-ink-900">{value}</p>
+      <p className="font-mono text-sm font-semibold text-navy-950">{value}</p>
     </div>
   );
 }
@@ -50,43 +62,46 @@ function ExpenseCalculatorCard({ breakdown, isLoadingAttractions }) {
         : { label: 'No budget set', variant: 'neutral' };
 
   return (
-    <div className="rounded-xl border border-ink-100 bg-white p-5">
-      <div className="flex items-center justify-between gap-2">
-        <div className="flex items-center gap-2">
-          <Calculator className="h-4 w-4 text-horizon-600" />
-          <p className="font-display text-base text-ink-900">Expense calculator</p>
+    <div className="rounded-2xl border border-ink-100/90 bg-white p-6 shadow-soft transition-all duration-200 hover:shadow-premium sm:p-7">
+      <div className="flex items-center justify-between gap-2 border-b border-ink-100 pb-4">
+        <div className="flex items-center gap-2.5">
+          <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-electric-100 text-electric-700">
+            <Calculator className="h-4 w-4" />
+          </span>
+          <div>
+            <h2 className="font-display text-lg font-bold text-navy-950">Estimated Trip Expenses</h2>
+            <p className="text-xs text-ink-400">
+              {travelers} traveler{travelers > 1 ? 's' : ''}
+              {nights != null ? ` · ${nights} night${nights > 1 ? 's' : ''}` : ''}
+            </p>
+          </div>
         </div>
         <Badge variant={statusBadge.variant}>{statusBadge.label}</Badge>
       </div>
 
-      <p className="mt-1 text-xs text-ink-400">
-        {travelers} traveler{travelers > 1 ? 's' : ''}
-        {nights != null ? ` · ${nights} night${nights > 1 ? 's' : ''}` : ''}
-      </p>
-
-      <div className="mt-3">
+      <div className="mt-4">
         <CategoryRow label="Flight" entry={categories.flight} />
         <CategoryRow label="Hotel / accommodation" entry={categories.accommodation} />
-        <CategoryRow label="Food" entry={categories.food} />
+        <CategoryRow label="Food & Dining" entry={categories.food} />
         <CategoryRow label="Local transport" entry={categories.localTransport} />
         <CategoryRow label="Tourist attractions / activities" entry={categories.attractions} isLoading={isLoadingAttractions} />
         <CategoryRow label="Miscellaneous" entry={categories.miscellaneous} />
       </div>
 
-      <div className="mt-3 grid grid-cols-2 gap-4 rounded-lg bg-ink-50 px-3.5 py-3 sm:grid-cols-3">
+      <div className="mt-5 grid grid-cols-2 gap-4 rounded-xl border border-ink-100/80 bg-ink-50/70 p-4 sm:grid-cols-3">
         <div>
-          <p className="text-xs text-ink-400">Total trip expense</p>
-          <p className="font-mono text-base text-ink-900">{formatRange(totalTripExpenseInr)}</p>
+          <p className="text-xs font-medium text-ink-500">Total estimated expense</p>
+          <p className="font-mono text-lg font-bold text-navy-950 mt-1">{formatRange(totalTripExpenseInr)}</p>
         </div>
         {budgetInr != null && (
           <div>
-            <p className="text-xs text-ink-400">Your budget</p>
-            <p className="font-mono text-base text-ink-900">{formatInr(budgetInr)}</p>
+            <p className="text-xs font-medium text-ink-500">Your planned budget</p>
+            <p className="font-mono text-lg font-bold text-navy-950 mt-1">{formatInr(budgetInr)}</p>
           </div>
         )}
         <div>
-          <p className="text-xs text-ink-400">{overBudgetInr != null ? 'Amount over budget' : 'Remaining budget'}</p>
-          <p className={`font-mono text-base ${overBudgetInr != null ? 'text-danger-600' : 'text-ink-900'}`}>
+          <p className="text-xs font-medium text-ink-500">{overBudgetInr != null ? 'Amount over budget' : 'Remaining budget'}</p>
+          <p className={`font-mono text-lg font-bold mt-1 ${overBudgetInr != null ? 'text-danger-600' : 'text-route-600'}`}>
             {overBudgetInr != null
               ? formatInr(overBudgetInr)
               : remainingBudgetInr != null
@@ -97,16 +112,16 @@ function ExpenseCalculatorCard({ breakdown, isLoadingAttractions }) {
       </div>
 
       {!breakdown.hasFullEstimate && (
-        <p className="mt-3 flex items-start gap-1.5 text-xs text-ink-400">
-          <Info className="mt-0.5 h-3 w-3 shrink-0" />
+        <p className="mt-4 flex items-start gap-1.5 text-xs text-ink-400">
+          <Info className="mt-0.5 h-3.5 w-3.5 text-ink-400 shrink-0" />
           {nights == null
-            ? 'A one-way trip has no return date, so accommodation, food, and local-transport can\u2019t be estimated for it.'
-            : 'Some categories don\u2019t have enough data yet to estimate.'}
+            ? 'A one-way trip has no return date, so accommodation, food, and local-transport can’t be estimated for it.'
+            : 'Some categories don’t have enough data yet to estimate.'}
         </p>
       )}
 
-      <p className="mt-3 flex items-start gap-1.5 text-xs text-ink-400">
-        <Info className="mt-0.5 h-3 w-3 shrink-0" />
+      <p className="mt-2.5 flex items-start gap-1.5 text-xs text-ink-400">
+        <Info className="mt-0.5 h-3.5 w-3.5 text-ink-400 shrink-0" />
         {breakdown.note}
       </p>
     </div>

@@ -69,7 +69,7 @@ function AttractionThumbnail({
 
   if (!imageSrc || failed) {
     return (
-      <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-lg bg-ink-50 text-ink-300">
+      <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-xl bg-ink-100 text-ink-400 border border-ink-200/60">
         <ImageOff
           className="h-5 w-5"
           aria-hidden="true"
@@ -85,7 +85,7 @@ function AttractionThumbnail({
       alt={name || 'Attraction'}
       loading="lazy"
       decoding="async"
-      className="h-16 w-16 shrink-0 rounded-lg object-cover"
+      className="h-16 w-16 shrink-0 rounded-xl object-cover border border-ink-100"
       onError={() => setFailed(true)}
     />
   );
@@ -108,7 +108,7 @@ function AttractionRow({
       target="_blank"
       rel="noreferrer"
       onClick={handleSelect}
-      className="flex items-start gap-3 rounded-lg border border-ink-100 px-3.5 py-3 text-sm transition-colors hover:border-horizon-200 hover:bg-horizon-50/40"
+      className="flex items-start gap-3.5 rounded-xl border border-ink-100/80 px-4 py-3.5 text-sm transition-all duration-150 hover:border-electric-200 hover:bg-electric-50/40 hover:shadow-soft"
     >
       <AttractionThumbnail
         photoName={place.photoName}
@@ -116,19 +116,21 @@ function AttractionRow({
       />
 
       <div className="min-w-0 flex-1">
-        <p className="truncate font-medium text-ink-800">
+        <p className="truncate font-semibold text-navy-950">
           {place.name}
         </p>
 
         {place.description && (
-          <p className="mt-0.5 line-clamp-2 text-xs text-ink-500">
+          <p className="mt-1 line-clamp-2 text-xs text-ink-500 leading-relaxed">
             {place.description}
           </p>
         )}
 
-        <div className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-ink-400">
+        <div className="mt-1.5 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-ink-400">
           {place.category && (
-            <span>{place.category}</span>
+            <span className="rounded bg-ink-100/80 px-1.5 py-0.5 font-medium text-ink-600">
+              {place.category}
+            </span>
           )}
 
           {place.address && (
@@ -139,11 +141,11 @@ function AttractionRow({
         </div>
       </div>
 
-      <div className="flex shrink-0 items-center gap-2 text-xs text-ink-500">
+      <div className="flex shrink-0 items-center gap-2 text-xs font-semibold text-ink-600">
         {place.rating && (
-          <span className="flex items-center gap-0.5">
+          <span className="flex items-center gap-1 rounded-md bg-amber-50 px-2 py-0.5 text-amber-800 border border-amber-200/60">
             <Star
-              className="h-3 w-3 fill-amber-400 text-amber-400"
+              className="h-3 w-3 fill-amber-500 text-amber-500"
               aria-hidden="true"
             />
 
@@ -152,7 +154,7 @@ function AttractionRow({
         )}
 
         <ExternalLink
-          className="h-3 w-3 text-ink-300"
+          className="h-3.5 w-3.5 text-ink-400"
           aria-hidden="true"
         />
       </div>
@@ -200,71 +202,54 @@ function TouristAttractionsCard({
       resultCount:
         data.attractions.length,
     });
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data, iataCode]);
 
   return (
-    <div className="rounded-xl border border-ink-100 bg-white p-5">
-      <div className="flex items-center gap-2">
-        <Landmark
-          className="h-4 w-4 text-horizon-600"
-          aria-hidden="true"
-        />
+    <div className="rounded-2xl border border-ink-100/90 bg-white p-6 shadow-soft transition-all duration-200 hover:shadow-premium">
+      <div className="flex items-center gap-2.5 border-b border-ink-100 pb-3.5">
+        <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-electric-100 text-electric-700">
+          <Landmark
+            className="h-4 w-4"
+            aria-hidden="true"
+          />
+        </span>
 
-        <p className="font-display text-base text-ink-900">
+        <h3 className="font-display text-base font-bold text-navy-950 sm:text-lg">
           Things to do in {city}
-        </p>
+        </h3>
       </div>
 
       <div className="mt-4">
-
-        {/* ==================================================
-            LOADING
-        ================================================== */}
-
         {isLoading && (
-          <div className="space-y-2">
+          <div className="space-y-2.5">
             {[1, 2, 3].map((i) => (
               <div
                 key={i}
-                className="h-16 animate-pulse rounded-lg bg-ink-50"
+                className="h-20 animate-pulse rounded-xl bg-ink-50"
               />
             ))}
           </div>
         )}
 
-        {/* ==================================================
-            ERROR
-        ================================================== */}
-
         {!isLoading && isError && (
-          <p className="py-6 text-center text-sm text-ink-400">
+          <p className="py-8 text-center text-sm text-ink-400">
             {error?.message ||
               "Couldn't load tourist attractions right now."}
           </p>
         )}
 
-        {/* ==================================================
-            EMPTY
-        ================================================== */}
-
         {!isLoading &&
           !isError &&
           !data?.attractions?.length && (
-            <p className="py-6 text-center text-sm text-ink-400">
+            <p className="py-8 text-center text-sm text-ink-400">
               No tourist attractions found for {city} yet.
             </p>
           )}
 
-        {/* ==================================================
-            RESULTS
-        ================================================== */}
-
         {!isLoading &&
           !isError &&
           data?.attractions?.length > 0 && (
-            <div className="space-y-2">
+            <div className="space-y-2.5">
               {data.attractions.map(
                 (place, index) => (
                   <AttractionRow

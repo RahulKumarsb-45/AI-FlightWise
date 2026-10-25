@@ -19,10 +19,10 @@ import { buildTripTimeline } from '@/utils/tripTimeline';
 function FlightEntry({ entry }) {
   if (entry.status === 'unavailable') {
     return (
-      <div className="flex items-start gap-3 rounded-lg border border-dashed border-ink-200 px-3.5 py-3 text-sm text-ink-400">
+      <div className="flex items-start gap-3 rounded-xl border border-dashed border-ink-200 bg-white/60 p-3 text-sm text-ink-400">
         <Plane className="mt-0.5 h-4 w-4 shrink-0" />
         <div>
-          <p className="text-ink-500">
+          <p className="font-medium text-ink-600">
             {entry.fromIata} → {entry.toIata}
           </p>
           <p className="text-xs">{entry.note}</p>
@@ -34,17 +34,17 @@ function FlightEntry({ entry }) {
   const directionLabel = entry.direction === 'return' ? 'Return flight' : entry.direction === 'connecting' ? 'Connecting flight' : 'Flight';
 
   return (
-    <div className="rounded-lg border border-ink-100 px-3.5 py-3 text-sm">
+    <div className="rounded-xl border border-ink-100/90 bg-white p-3.5 text-sm shadow-soft">
       <div className="flex items-center justify-between gap-2">
-        <span className="flex items-center gap-1.5 font-medium text-ink-800">
-          <Plane className="h-3.5 w-3.5 text-horizon-600" /> {directionLabel}
+        <span className="flex items-center gap-1.5 font-semibold text-navy-950">
+          <Plane className="h-3.5 w-3.5 text-electric-600" /> {directionLabel}
         </span>
         <span className="text-xs text-ink-400">
           {entry.stops === 0 ? 'Direct' : `${entry.stops} stop${entry.stops > 1 ? 's' : ''}`} ·{' '}
           {formatDuration(entry.totalDurationMinutes)}
         </span>
       </div>
-      <p className="mt-1.5 text-ink-700">
+      <p className="mt-1.5 font-medium text-ink-800">
         {entry.fromIata} {formatTime(entry.departureTime)} → {entry.toIata} {formatTime(entry.arrivalTime)}
       </p>
       {entry.segments?.length > 0 && (
@@ -52,37 +52,39 @@ function FlightEntry({ entry }) {
           {entry.segments.map((seg) => `${seg.airline}${seg.flightNumber?.replace(seg.airline, '')}`).join(' · ')}
         </p>
       )}
-      {entry.priceInr != null && <p className="mt-1.5 font-mono text-xs text-ink-500">{formatInr(entry.priceInr)}</p>}
+      {entry.priceInr != null && <p className="mt-1.5 font-mono text-xs font-semibold text-navy-900">{formatInr(entry.priceInr)}</p>}
     </div>
   );
 }
 
 function AccommodationEntry({ entry }) {
   return (
-    <div className="rounded-lg border border-ink-100 px-3.5 py-3 text-sm">
-      <p className="flex items-center gap-1.5 font-medium text-ink-800">
-        <Hotel className="h-3.5 w-3.5 text-horizon-600" /> Where you could stay{entry.city ? ` near ${entry.city}` : ''}
+    <div className="rounded-xl border border-ink-100/90 bg-white p-3.5 text-sm shadow-soft">
+      <p className="flex items-center gap-1.5 font-semibold text-navy-950">
+        <Hotel className="h-3.5 w-3.5 text-electric-600" /> Where you could stay{entry.city ? ` near ${entry.city}` : ''}
       </p>
-      <ul className="mt-1.5 space-y-1 text-ink-600">
+      <ul className="mt-2 space-y-1 text-ink-600 text-xs">
         {entry.options.map((hotel) => (
           <li key={hotel.id} className="truncate">
             {hotel.name}
-            {hotel.rating && <span className="text-ink-400"> · {hotel.rating}★</span>}
+            {hotel.rating && <span className="text-amber-600 font-medium"> · {hotel.rating}★</span>}
           </li>
         ))}
       </ul>
-      <p className="mt-1.5 text-xs text-ink-400">Suggestions only — this app doesn&apos;t book or confirm a stay.</p>
+      <p className="mt-2 text-[11px] text-ink-400 border-t border-ink-100 pt-1.5">
+        Suggestions only — this platform does not book or confirm stays.
+      </p>
     </div>
   );
 }
 
 function AttractionsEntry({ entry }) {
   return (
-    <div className="rounded-lg border border-ink-100 px-3.5 py-3 text-sm">
-      <p className="flex items-center gap-1.5 font-medium text-ink-800">
-        <Landmark className="h-3.5 w-3.5 text-horizon-600" /> Things to do
+    <div className="rounded-xl border border-ink-100/90 bg-white p-3.5 text-sm shadow-soft">
+      <p className="flex items-center gap-1.5 font-semibold text-navy-950">
+        <Landmark className="h-3.5 w-3.5 text-electric-600" /> Things to do
       </p>
-      <ul className="mt-1.5 space-y-1 text-ink-600">
+      <ul className="mt-2 space-y-1 text-ink-600 text-xs">
         {entry.items.map((place) => (
           <li key={place.id} className="truncate">
             {place.name}
@@ -96,11 +98,11 @@ function AttractionsEntry({ entry }) {
 
 function RestaurantsEntry({ entry }) {
   return (
-    <div className="rounded-lg border border-ink-100 px-3.5 py-3 text-sm">
-      <p className="flex items-center gap-1.5 font-medium text-ink-800">
-        <UtensilsCrossed className="h-3.5 w-3.5 text-horizon-600" /> Where to eat
+    <div className="rounded-xl border border-ink-100/90 bg-white p-3.5 text-sm shadow-soft">
+      <p className="flex items-center gap-1.5 font-semibold text-navy-950">
+        <UtensilsCrossed className="h-3.5 w-3.5 text-electric-600" /> Where to eat
       </p>
-      <ul className="mt-1.5 space-y-1 text-ink-600">
+      <ul className="mt-2 space-y-1 text-ink-600 text-xs">
         {entry.items.map((place) => (
           <li key={place.id} className="truncate">
             {place.name}
@@ -128,19 +130,19 @@ function DayEntry({ entry }) {
 
 function DayColumn({ day }) {
   return (
-    <div className="rounded-lg bg-ink-50/60 p-3.5">
-      <div className="mb-2.5 flex items-baseline justify-between">
-        <p className="font-display text-sm font-medium text-ink-900">Day {day.dayNumber}</p>
-        <p className="text-xs text-ink-400">{formatIndianDate(day.date)}</p>
+    <div className="rounded-xl border border-ink-100/80 bg-ink-50/60 p-4">
+      <div className="mb-3 flex items-baseline justify-between border-b border-ink-200/50 pb-2">
+        <p className="font-display text-sm font-bold text-navy-950">Day {day.dayNumber}</p>
+        <p className="text-xs font-mono text-ink-400">{formatIndianDate(day.date)}</p>
       </div>
       {day.entries.length > 0 ? (
-        <div className="space-y-2">
+        <div className="space-y-2.5">
           {day.entries.map((entry, idx) => (
             <DayEntry key={idx} entry={entry} />
           ))}
         </div>
       ) : (
-        <p className="py-2 text-xs text-ink-400">Nothing scheduled yet for this day.</p>
+        <p className="py-3 text-xs text-ink-400">Nothing scheduled yet for this day.</p>
       )}
     </div>
   );
@@ -150,14 +152,6 @@ function TripTimelineCard({ recommendation, hotels, attractions, restaurants, de
   if (!recommendation) return null;
 
   const { legs, legOffers, originAirport, destinationAirports } = recommendation;
-  // Multi-city circuits (more legs than destinations, e.g. origin -> A -> B ->
-  // origin) get each destination's own real hotel/attraction/restaurant data
-  // when the caller supplies `placesByDestination` (see ResultsContent.jsx).
-  // Callers that don't have that data loaded (e.g. the saved-trip detail
-  // page, which doesn't fetch places at all) fall back to the flat
-  // hotels/attractions/restaurants — buildTripTimeline reports whether it
-  // actually had per-destination data via `usedPerDestinationData`, so the
-  // caveat below only shows when data is genuinely partial/missing.
   const isMultiCityCircuit = (destinationAirports?.length || 0) > 1;
   const timeline = buildTripTimeline({
     legs,
@@ -172,39 +166,44 @@ function TripTimelineCard({ recommendation, hotels, attractions, restaurants, de
   });
 
   return (
-    <div className="rounded-xl border border-ink-100 bg-white p-5">
-      <div className="flex items-center gap-2">
-        <CalendarDays className="h-4 w-4 text-horizon-600" />
-        <p className="font-display text-base text-ink-900">Trip timeline</p>
+    <div className="rounded-2xl border border-ink-100/90 bg-white p-6 shadow-soft transition-all duration-200 hover:shadow-premium sm:p-7">
+      <div className="flex items-center gap-2.5 border-b border-ink-100 pb-4">
+        <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-electric-100 text-electric-700">
+          <CalendarDays className="h-4 w-4" />
+        </span>
+        <div>
+          <h2 className="font-display text-lg font-bold text-navy-950">Itinerary & Timeline</h2>
+          {timeline.isAvailable && (
+            <p className="text-xs text-ink-400 mt-0.5">
+              {timeline.totalDays} day{timeline.totalDays > 1 ? 's' : ''}, day by day breakdown
+            </p>
+          )}
+        </div>
       </div>
 
       {!timeline.isAvailable ? (
-        <div className="mt-4 flex items-center gap-2 rounded-lg border border-dashed border-ink-200 px-4 py-6 text-sm text-ink-400">
-          <AlertCircle className="h-4 w-4 shrink-0" /> {timeline.reason}
+        <div className="mt-4 flex items-center gap-2 rounded-xl border border-dashed border-ink-200 px-4 py-6 text-sm text-ink-400">
+          <AlertCircle className="h-4 w-4 shrink-0 text-amber-500" /> {timeline.reason}
         </div>
       ) : (
         <>
-          <p className="mt-1 text-sm text-ink-400">
-            {timeline.totalDays} day{timeline.totalDays > 1 ? 's' : ''}, day by day
-          </p>
-
           {isMultiCityCircuit &&
             !timeline.usedPerDestinationData &&
             (timeline.hotelsAvailable || timeline.attractionsAvailable || timeline.restaurantsAvailable) && (
-              <p className="mt-2 text-xs text-ink-400">
+              <p className="mt-3 text-xs text-ink-400">
                 Stay, attraction, and restaurant suggestions below are for {destinationAirports[0].city} only — this
                 multi-city trip visits other destinations too, which aren&apos;t shown here.
               </p>
             )}
 
-          <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {timeline.days.map((day) => (
               <DayColumn key={day.dayNumber} day={day} />
             ))}
           </div>
 
           {(!timeline.hotelsAvailable || !timeline.attractionsAvailable || !timeline.restaurantsAvailable) && (
-            <p className="mt-4 text-xs text-ink-400">
+            <p className="mt-4 text-xs text-ink-400 border-t border-ink-100/70 pt-3">
               {[
                 !timeline.hotelsAvailable && 'accommodation',
                 !timeline.attractionsAvailable && 'tourist attractions',

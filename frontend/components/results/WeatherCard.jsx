@@ -42,61 +42,63 @@ function WeatherCard({ iataCode, city }) {
   }
 
   return (
-    <div className="rounded-xl border border-ink-100 bg-white p-5">
+    <div className="rounded-2xl border border-ink-100/90 bg-white p-6 shadow-soft transition-all duration-200 hover:shadow-premium">
       <div className="flex items-center justify-between">
         <div>
-          <p className="text-sm text-ink-400">Weather in {city}</p>
-          <p className="mt-1 font-display text-2xl text-ink-900">{current.tempC}°C</p>
-          <p className="text-sm capitalize text-ink-500">{current.description}</p>
+          <p className="text-xs font-semibold uppercase tracking-wider text-ink-400">Weather in {city}</p>
+          <p className="mt-1 font-display text-3xl font-bold text-navy-950">{current.tempC}°C</p>
+          <p className="text-sm font-medium capitalize text-ink-600">{current.description}</p>
         </div>
         {current.icon && (
-          <Image
-            src={`https://openweathermap.org/img/wn/${current.icon}@2x.png`}
-            alt={current.description}
-            width={56}
-            height={56}
-            unoptimized
-          />
+          <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-cyan-50 to-electric-50 border border-cyan-100/80">
+            <Image
+              src={`https://openweathermap.org/img/wn/${current.icon}@2x.png`}
+              alt={current.description}
+              width={56}
+              height={56}
+              unoptimized
+            />
+          </div>
         )}
       </div>
 
-      <div className="mt-3 flex gap-4 text-xs text-ink-400">
-        <span className="flex items-center gap-1">
-          <Droplets className="h-3.5 w-3.5" aria-hidden="true" /> {current.humidity}% humidity
+      <div className="mt-4 flex gap-4 text-xs font-medium text-ink-500">
+        <span className="flex items-center gap-1.5">
+          <Droplets className="h-3.5 w-3.5 text-cyan-500" aria-hidden="true" /> {current.humidity}% humidity
         </span>
         <span>Feels like {current.feelsLikeC}°C</span>
       </div>
 
       {forecast?.days?.length > 0 && (
-        <div className="mt-4 grid grid-cols-5 gap-1.5 border-t border-ink-100 pt-3">
+        <div className="mt-5 grid grid-cols-5 gap-2 border-t border-ink-100 pt-4">
           {forecast.days.map((day) => (
-            <div key={day.date} className="text-center">
-              <p className="text-[11px] text-ink-400">{formatIndianDate(day.date).split(' ').slice(0, 2).join(' ')}</p>
+            <div key={day.date} className="rounded-xl bg-ink-50/70 border border-ink-100/60 p-2 text-center">
+              <p className="text-[11px] font-semibold text-ink-500">{formatIndianDate(day.date).split(' ').slice(0, 2).join(' ')}</p>
               {day.icon && (
                 <Image
                   src={`https://openweathermap.org/img/wn/${day.icon}.png`}
                   alt={day.description}
                   width={32}
                   height={32}
-                  className="mx-auto"
+                  className="mx-auto my-0.5"
                   unoptimized
                 />
               )}
-              <p className="text-xs font-medium text-ink-700">{day.tempC}°</p>
+              <p className="text-xs font-bold text-navy-950">{day.tempC}°</p>
             </div>
           ))}
         </div>
       )}
 
       {season && (
-        <div className="mt-4 flex gap-2 rounded-lg bg-amber-50 px-3 py-2.5 text-xs text-amber-900">
-          <Info className="h-3.5 w-3.5 shrink-0 mt-0.5" aria-hidden="true" />
-          <p>
-            {season.guidance}
+        <div className="mt-4 flex gap-2 rounded-xl bg-amber-50/80 border border-amber-200/80 p-3 text-xs text-amber-900 leading-relaxed">
+          <Info className="h-4 w-4 shrink-0 mt-0.5 text-amber-600" aria-hidden="true" />
+          <div>
+            <p className="font-medium">{season.guidance}</p>
             {season.isGeneralGuidance && (
-              <span className="mt-1 block text-amber-700/70">General seasonal guidance, not this city&apos;s exact climate data.</span>
+              <span className="mt-1 block text-[11px] text-amber-800/80">General seasonal guidance, not this city&apos;s exact climate data.</span>
             )}
-          </p>
+          </div>
         </div>
       )}
     </div>

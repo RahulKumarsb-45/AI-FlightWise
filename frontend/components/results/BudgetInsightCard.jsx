@@ -13,9 +13,9 @@ const STATUS_META = {
 
 function Stat({ label, value }) {
   return (
-    <div>
-      <p className="text-xs text-ink-400">{label}</p>
-      <p className="font-mono text-base text-ink-900">{value}</p>
+    <div className="rounded-xl bg-ink-50/60 border border-ink-100/60 p-3.5">
+      <p className="text-xs font-medium text-ink-400">{label}</p>
+      <p className="font-mono text-base font-bold text-navy-950 mt-1">{value}</p>
     </div>
   );
 }
@@ -26,20 +26,6 @@ function formatRange(range) {
   return `${formatInr(range.min)}–${formatInr(range.max)}`;
 }
 
-/**
- * Budget Optimizer summary for the top recommendation. Only rendered when the
- * user supplied a budget — see ResultsContent. Three independent things can
- * be shown:
- *  - `insight` (recommendations[0].budgetInsight): the full cost breakdown —
- *    flight, estimated accommodation, food, local travel, estimated total,
- *    and what's left of the budget.
- *  - `attractionsEstimate`: an optional tourist-attractions line, added only
- *    when reliable price-level data for the destination is already loaded
- *    elsewhere on the page (see ResultsContent) — never fetched separately.
- *  - `suggestion` (meta.budgetSuggestion): a trip-level nudge using a real
- *    observed price/date/destination from this same search, shown when the
- *    budget filtered out most/all options.
- */
 function BudgetInsightCard({ insight, suggestion, attractionsEstimate, isLoadingAttractions }) {
   if (!insight && !suggestion) return null;
 
@@ -55,18 +41,20 @@ function BudgetInsightCard({ insight, suggestion, attractionsEstimate, isLoading
       : insight?.estimatedTotalTripCostInr;
 
   return (
-    <div className="rounded-xl border border-ink-100 bg-white p-5">
-      <div className="flex items-center justify-between gap-2">
-        <div className="flex items-center gap-2">
-          <Wallet className="h-4 w-4 text-horizon-600" />
-          <p className="font-display text-base text-ink-900">Budget breakdown</p>
+    <div className="rounded-2xl border border-ink-100/90 bg-white p-6 shadow-soft transition-all duration-200 hover:shadow-premium sm:p-7">
+      <div className="flex items-center justify-between gap-2 border-b border-ink-100 pb-4">
+        <div className="flex items-center gap-2.5">
+          <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-electric-100 text-electric-700">
+            <Wallet className="h-4 w-4" />
+          </span>
+          <h2 className="font-display text-lg font-bold text-navy-950">Budget Optimization & Living Costs</h2>
         </div>
         {statusMeta && <Badge variant={statusMeta.variant}>{statusMeta.label}</Badge>}
       </div>
 
       {insight && (
         <>
-          <div className="mt-4 grid grid-cols-2 gap-4 sm:grid-cols-4">
+          <div className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-4">
             <Stat label="Total budget" value={formatInr(insight.budgetInr)} />
             <Stat label="Flight" value={formatInr(insight.flightCostInr)} />
             <Stat label="Est. accommodation" value={categories ? formatRange(categories.accommodation) : '—'} />
@@ -87,7 +75,7 @@ function BudgetInsightCard({ insight, suggestion, attractionsEstimate, isLoading
           </div>
 
           {insight.nights != null && (
-            <p className="mt-3 text-xs text-ink-400">
+            <p className="mt-3.5 text-xs text-ink-400">
               Estimates cover {insight.nights} night{insight.nights > 1 ? 's' : ''}
               {attractionsEstimate
                 ? `, including ~${attractionsEstimate.basedOnCount} nearby attraction${
@@ -99,10 +87,10 @@ function BudgetInsightCard({ insight, suggestion, attractionsEstimate, isLoading
           )}
 
           {insight.fitSummary && (
-            <div className="mt-3 flex items-start gap-2 rounded-lg bg-ink-50 px-3.5 py-2.5 text-sm text-ink-700">
-              <Sparkles className="mt-0.5 h-3.5 w-3.5 shrink-0 text-horizon-600" />
+            <div className="mt-4 flex items-start gap-2.5 rounded-xl border border-electric-100 bg-gradient-to-r from-electric-50/80 via-white to-violet-50/80 p-3.5 text-sm text-electric-950">
+              <Sparkles className="mt-0.5 h-4 w-4 shrink-0 text-electric-600" />
               <span>
-                <span className="font-medium">Smart recommendation: </span>
+                <span className="font-semibold text-electric-700">Smart recommendation: </span>
                 {insight.fitSummary}
               </span>
             </div>
@@ -111,15 +99,15 @@ function BudgetInsightCard({ insight, suggestion, attractionsEstimate, isLoading
       )}
 
       {suggestion && (
-        <div className="mt-3 flex items-start gap-2 rounded-lg bg-horizon-50/60 px-3.5 py-2.5 text-sm text-horizon-800">
-          <TrendingUp className="mt-0.5 h-3.5 w-3.5 shrink-0" />
+        <div className="mt-3.5 flex items-start gap-2 rounded-xl border border-amber-200/80 bg-amber-50/70 p-3.5 text-sm text-amber-900">
+          <TrendingUp className="mt-0.5 h-4 w-4 shrink-0 text-amber-600" />
           <span>{suggestion.message}</span>
         </div>
       )}
 
       {insight?.note && (
         <p className="mt-3 flex items-start gap-1.5 text-xs text-ink-400">
-          <Info className="mt-0.5 h-3 w-3 shrink-0" />
+          <Info className="mt-0.5 h-3.5 w-3.5 shrink-0 text-ink-400" />
           {insight.note}
         </p>
       )}

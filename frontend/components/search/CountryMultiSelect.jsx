@@ -130,9 +130,9 @@ function CountryMultiSelect({ value = [], onChange, error }) {
           }
         }}
         className={cn(
-          'flex min-h-11 w-full flex-wrap items-center gap-1.5 rounded-md border bg-white px-2.5 py-1.5 text-left',
-          'border-ink-200 focus-visible:border-horizon-500',
-          error && 'border-danger-500',
+          'flex min-h-11 w-full flex-wrap items-center gap-1.5 rounded-xl border bg-white px-3 py-2 text-left transition-all duration-150',
+          'border-ink-200 focus-visible:border-electric-500 focus-visible:ring-2 focus-visible:ring-electric-100',
+          error && 'border-danger-500 focus-visible:ring-danger-100',
           atMax && 'cursor-default'
         )}
       >
@@ -140,7 +140,7 @@ function CountryMultiSelect({ value = [], onChange, error }) {
         {selected.map((c) => (
           <span
             key={c.countryCode}
-            className="flex items-center gap-1.5 rounded-full bg-horizon-50 py-1 pl-2.5 pr-1.5 text-sm text-horizon-800"
+            className="flex items-center gap-1.5 rounded-lg border border-electric-200/80 bg-gradient-to-r from-electric-50 to-violet-50 py-1 pl-2.5 pr-1.5 text-sm font-medium text-electric-900 shadow-soft"
           >
             <span aria-hidden="true">{countryCodeToFlag(c.countryCode)}</span>
             {c.country}
@@ -150,7 +150,7 @@ function CountryMultiSelect({ value = [], onChange, error }) {
                 e.stopPropagation();
                 removeCountry(c.countryCode);
               }}
-              className="rounded-full p-0.5 hover:bg-horizon-100"
+              className="rounded-md p-0.5 text-electric-700 hover:bg-electric-200/60"
               aria-label={`Remove ${c.country}`}
             >
               <X className="h-3 w-3" aria-hidden="true" />
@@ -163,7 +163,7 @@ function CountryMultiSelect({ value = [], onChange, error }) {
       {atMax && <p className="mt-1 text-xs text-ink-400">Maximum of {MAX_COUNTRIES} countries per trip.</p>}
 
       {open && !atMax && (
-        <div className="absolute z-30 mt-1.5 w-full rounded-md border border-ink-100 bg-white shadow-card">
+        <div className="absolute z-30 mt-2 w-full rounded-xl border border-ink-100 bg-white shadow-premium overflow-hidden">
           <input
             autoFocus
             type="text"
@@ -171,7 +171,7 @@ function CountryMultiSelect({ value = [], onChange, error }) {
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Search countries..."
             aria-label="Search countries"
-            className="w-full border-b border-ink-100 px-3.5 py-2.5 text-sm outline-none"
+            className="w-full border-b border-ink-100 px-4 py-3 text-sm outline-none focus:bg-ink-50/50"
           />
           <ul role="listbox" aria-label="Countries" className="max-h-72 overflow-auto py-1">
             {isLoading && <li className="px-3.5 py-2.5 text-sm text-ink-400">Loading countries...</li>}

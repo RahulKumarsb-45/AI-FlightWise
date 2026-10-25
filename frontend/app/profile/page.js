@@ -22,13 +22,13 @@ function ProfileContent() {
     <div className="mx-auto max-w-lg space-y-6">
       <h1 className="font-display text-display-sm text-ink-900">Profile</h1>
 
-      <Card className="p-6">
+      <Card className="rounded-2xl border border-ink-100/90 p-6 shadow-soft">
         <div className="flex items-center gap-4">
-          <span className="flex h-14 w-14 items-center justify-center rounded-full bg-horizon-700 text-xl font-semibold text-white">
+          <span className="flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-tr from-electric-600 to-violet-600 text-xl font-bold text-white shadow-soft">
             {user?.name?.[0]?.toUpperCase() || 'U'}
           </span>
           <div>
-            <p className="font-display text-lg text-ink-900">{user?.name}</p>
+            <p className="font-display text-lg font-bold text-ink-900">{user?.name}</p>
             <p className="text-sm text-ink-500">{user?.email}</p>
           </div>
         </div>
@@ -39,9 +39,9 @@ function ProfileContent() {
             <dd className="capitalize text-ink-700">{user?.auth_provider || 'email'}</dd>
           </div>
           <div className="flex justify-between">
-            <dt className="text-ink-400">Email verified</dt>
+            <dt className="text-ink-400">Email status</dt>
             <dd>
-              <Badge variant={user?.email_verified ? 'route' : 'amber'}>
+              <Badge variant={user?.email_verified ? 'emerald' : 'amber'}>
                 {user?.email_verified ? 'Verified' : 'Pending'}
               </Badge>
             </dd>
@@ -55,14 +55,14 @@ function ProfileContent() {
         </dl>
       </Card>
 
-      <Card className="p-6">
+      <Card className="rounded-2xl border border-ink-100/90 p-6 shadow-soft">
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-sm text-ink-400">Current plan</p>
-            <p className="mt-0.5 font-display text-lg text-ink-900">{PLAN_LABELS[plan]}</p>
+            <p className="text-xs font-semibold uppercase tracking-wider text-ink-400">Current plan</p>
+            <p className="mt-1 font-display text-lg font-bold text-ink-900">{PLAN_LABELS[plan]}</p>
           </div>
-          <Badge variant={plan === 'free' ? 'neutral' : 'amber'}>
-            {plan === 'free' ? 'Free' : `${formatInr(PLAN_PRICES[plan])}/mo`}
+          <Badge variant={plan === 'free' ? 'neutral' : 'electric'}>
+            {plan === 'free' ? 'Free Traveler' : `${formatInr(PLAN_PRICES[plan])}/mo`}
           </Badge>
         </div>
         {subscription?.current_period_end && plan !== 'free' && (
@@ -71,9 +71,9 @@ function ProfileContent() {
           </p>
         )}
         {plan === 'free' && (
-          <Link href="/pricing">
-            <Button variant="outline" size="sm" className="mt-4 w-full">
-              <Sparkles className="h-3.5 w-3.5" /> Upgrade plan
+          <Link href="/pricing" className="block mt-4">
+            <Button variant="cyan" size="sm" className="w-full shadow-glow-cyan">
+              <Sparkles className="h-3.5 w-3.5 mr-1" /> Upgrade to Pro
             </Button>
           </Link>
         )}
@@ -84,7 +84,7 @@ function ProfileContent() {
       </p>
 
       <Button variant="outline" onClick={logout} className="w-full">
-        <LogOut className="h-4 w-4" /> Log out
+        <LogOut className="h-4 w-4 mr-1.5" /> Log out
       </Button>
     </div>
   );

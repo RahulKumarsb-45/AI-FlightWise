@@ -67,9 +67,9 @@ export default function AboutPage() {
 
         <div className="mt-16 grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:gap-8">
           {PRINCIPLES.map((principle) => (
-            <div key={principle.title} className="rounded-lg border border-ink-100 bg-white p-6 lg:p-7">
-              <h2 className="font-display text-lg text-ink-900">{principle.title}</h2>
-              <p className="mt-1.5 text-sm leading-relaxed text-ink-600">{principle.description}</p>
+            <div key={principle.title} className="rounded-2xl border border-ink-100/90 bg-white p-6 shadow-soft transition-all hover:border-electric-200 hover:shadow-premium lg:p-7">
+              <h2 className="font-display text-lg font-bold text-ink-900">{principle.title}</h2>
+              <p className="mt-2 text-sm leading-relaxed text-ink-600">{principle.description}</p>
             </div>
           ))}
         </div>

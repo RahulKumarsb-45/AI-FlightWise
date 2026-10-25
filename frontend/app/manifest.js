@@ -22,8 +22,8 @@ export default function manifest() {
     // usable in landscape, and the PWA is also a supported desktop (Chrome/Edge)
     // experience where orientation lock doesn't apply anyway. "any" is the safer choice.
     orientation: 'any',
-    background_color: '#F7F8FA',
-    theme_color: '#1F2A52',
+    background_color: '#F5F7FC',
+    theme_color: '#0B1020',
     lang: 'en-IN',
     dir: 'ltr',
     categories: ['travel', 'productivity'],
@@ -41,6 +41,12 @@ export default function manifest() {
         short_name: 'Search',
         url: '/search',
         description: 'Start a new AI-optimized flight search',
+      },
+      {
+        name: 'Aero AI Assistant',
+        short_name: 'Aero AI',
+        url: '/ai-agent',
+        description: 'Chat with Aero AI about flight trade-offs',
       },
       {
         name: 'Dashboard',

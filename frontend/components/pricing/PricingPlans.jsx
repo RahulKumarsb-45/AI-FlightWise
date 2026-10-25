@@ -90,39 +90,37 @@ function PricingPlans() {
             <div
               key={plan.key}
               className={cn(
-                'flex h-full flex-col rounded-xl border bg-white p-7',
-                plan.highlighted ? 'border-2 border-amber-400 shadow-glow-amber' : 'border-ink-100 shadow-soft',
-                // On the tablet 2-column grid the 3rd card would otherwise sit
-                // alone in a half-empty row — span it full width there, same
-                // pattern used by the homepage pricing preview. Desktop (lg+)
-                // goes back to a normal 3-up row.
+                'flex h-full flex-col rounded-2xl border bg-white p-7 transition-all',
+                plan.highlighted
+                  ? 'border-electric-500 shadow-glow-electric ring-2 ring-electric-500/20 relative'
+                  : 'border-ink-100/90 shadow-soft hover:border-electric-200 hover:shadow-premium',
                 index === PLANS.length - 1
                   ? 'sm:col-span-2 sm:mx-auto sm:w-full sm:max-w-sm lg:col-span-1 lg:mx-0 lg:max-w-none'
                   : ''
               )}
             >
               {plan.highlighted && !isCurrent && (
-                <span className="mb-3 inline-block w-fit rounded-full bg-amber-100 px-2.5 py-1 text-xs font-medium text-amber-800">
+                <span className="mb-3 inline-block w-fit rounded-full bg-gradient-to-r from-electric-600 to-cyan-500 px-3 py-1 text-xs font-semibold text-white shadow-soft">
                   Most popular
                 </span>
               )}
               {isCurrent && (
-                <span className="mb-3 inline-flex w-fit items-center gap-1 rounded-full bg-route-50 px-2.5 py-1 text-xs font-medium text-route-700">
-                  <Check className="h-3 w-3" aria-hidden="true" /> Current plan
+                <span className="mb-3 inline-flex w-fit items-center gap-1.5 rounded-full bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-700 border border-emerald-200">
+                  <Check className="h-3.5 w-3.5" aria-hidden="true" /> Current plan
                 </span>
               )}
-              <h2 className="font-display text-xl text-ink-900">{plan.name}</h2>
-              <p className="mt-1 text-sm text-ink-500">{plan.tagline}</p>
-              <p className="mt-4 font-mono text-3xl font-medium text-ink-900">
+              <h2 className="font-display text-xl font-bold text-ink-900">{plan.name}</h2>
+              <p className="mt-1 text-xs text-ink-500">{plan.tagline}</p>
+              <p className="mt-4 font-mono text-3xl font-bold text-ink-900">
                 {plan.price === 0 ? 'Free' : formatInr(plan.price)}
                 {plan.price > 0 && <span className="text-sm font-normal text-ink-400">/month</span>}
               </p>
 
               {plan.features?.length > 0 && (
-                <ul className="mt-5 space-y-2.5">
+                <ul className="mt-6 space-y-2.5">
                   {plan.features.map((feature) => (
-                    <li key={feature} className="flex items-start gap-2 text-sm text-ink-600">
-                      <Check className="mt-0.5 h-4 w-4 shrink-0 text-route-500" aria-hidden="true" />
+                    <li key={feature} className="flex items-start gap-2.5 text-xs text-ink-600">
+                      <Check className="mt-0.5 h-4 w-4 shrink-0 text-electric-600" aria-hidden="true" />
                       {feature}
                     </li>
                   ))}
@@ -133,8 +131,8 @@ function PricingPlans() {
                 onClick={() => handleChoose(plan)}
                 disabled={isCurrent}
                 loading={payingPlan === plan.key}
-                variant={plan.highlighted ? 'accent' : 'outline'}
-                className="mt-6 w-full lg:mt-auto"
+                variant={plan.highlighted ? 'cyan' : 'outline'}
+                className={cn('mt-6 w-full lg:mt-auto', plan.highlighted && 'shadow-glow-cyan')}
               >
                 {isCurrent ? 'Current plan' : isAuthenticated ? `Choose ${plan.name}` : plan.price === 0 ? 'Start free' : `Choose ${plan.name}`}
               </Button>

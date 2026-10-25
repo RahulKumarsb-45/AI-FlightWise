@@ -1,19 +1,22 @@
 import { Navbar } from '@/components/common/Navbar';
 import { Footer } from '@/components/common/Footer';
 
+import { BackButton } from '@/components/common/BackButton';
+
 export const metadata = { title: 'Terms & Conditions' };
 
 export default function TermsPage() {
   return (
     <>
       <Navbar />
-      <main id="main-content" className="container-page max-w-4xl py-16">
+      <BackButton />
+      <main id="main-content" className="container-page max-w-4xl py-14">
         <h1 className="font-display text-display-md text-ink-900">Terms &amp; Conditions</h1>
-        <p className="mt-2 text-sm text-ink-400">Last updated: July 2026</p>
+        <p className="mt-2 text-sm text-ink-400">Last updated: October 2026</p>
 
         <div className="mt-8 space-y-6 text-ink-600">
           <section>
-            <h2 className="font-display text-lg text-ink-900">What this service is</h2>
+            <h2 className="font-display text-lg font-bold text-ink-900">What this service is</h2>
             <p className="mt-2">
               AI FlightWise is a portfolio project demonstrating an AI flight decision platform — nearby
               airport expansion, flexible date search, and multi-city route scoring. It is{' '}
