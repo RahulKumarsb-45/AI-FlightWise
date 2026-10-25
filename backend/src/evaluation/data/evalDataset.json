@@ -1,0 +1,173 @@
+{
+  "version": "1.0.0",
+  "name": "AI FlightWise Copilot Evaluation Suite",
+  "description": "Standardized evaluation scenarios testing structured extraction, constraint adherence, explanation consistency, and latency.",
+  "cases": [
+    {
+      "id": "TC-01",
+      "scenario": "Direct one-way search with explicit origin and destination",
+      "userPrompt": "I want to fly from Delhi to London on 2026-11-15 for 1 traveler.",
+      "expected": {
+        "originCity": "Delhi",
+        "destinationCountries": ["United Kingdom"],
+        "departureDate": "2026-11-15",
+        "travelers": 1
+      },
+      "checks": {
+        "requireOrigin": true,
+        "requireDestination": true,
+        "requireDepartureDate": true
+      }
+    },
+    {
+      "id": "TC-02",
+      "scenario": "Round-trip with return date and budget constraint",
+      "userPrompt": "Looking for flights from Mumbai to Dubai departing 2026-12-05 and returning 2026-12-15 under 35000 INR.",
+      "expected": {
+        "originCity": "Mumbai",
+        "destinationCountries": ["United Arab Emirates"],
+        "departureDate": "2026-12-05",
+        "returnDate": "2026-12-15",
+        "budgetInr": 35000
+      },
+      "checks": {
+        "requireOrigin": true,
+        "requireBudget": true,
+        "budgetAdherence": true
+      }
+    },
+    {
+      "id": "TC-03",
+      "scenario": "Multi-country European circuit",
+      "userPrompt": "Planning a circuit to France, Italy and Germany from Bengaluru around 2026-11-20.",
+      "expected": {
+        "originCity": "Bengaluru",
+        "destinationCountries": ["France", "Italy", "Germany"],
+        "departureDate": "2026-11-20"
+      },
+      "checks": {
+        "requireMultiCountry": true,
+        "minCountries": 3
+      }
+    },
+    {
+      "id": "TC-04",
+      "scenario": "Cheapest preference specification",
+      "userPrompt": "Find me the cheapest possible flights from Chennai to Singapore next month on 2026-11-10.",
+      "expected": {
+        "originCity": "Chennai",
+        "destinationCountries": ["Singapore"],
+        "preference": "cheapest"
+      },
+      "checks": {
+        "preference": "cheapest"
+      }
+    },
+    {
+      "id": "TC-05",
+      "scenario": "Fastest non-stop preference specification",
+      "userPrompt": "I need the fastest flight with minimal stops from Hyderabad to London on 2026-11-25.",
+      "expected": {
+        "originCity": "Hyderabad",
+        "destinationCountries": ["United Kingdom"],
+        "preference": "fastest"
+      },
+      "checks": {
+        "preference": "fastest"
+      }
+    },
+    {
+      "id": "TC-06",
+      "scenario": "Flexible dates requirement",
+      "userPrompt": "Flexible dates around 2026-12-01 flying from Kolkata to Bangkok for 2 people.",
+      "expected": {
+        "originCity": "Kolkata",
+        "destinationCountries": ["Thailand"],
+        "travelers": 2,
+        "dateFlexible": true
+      },
+      "checks": {
+        "dateFlexible": true,
+        "travelers": 2
+      }
+    },
+    {
+      "id": "TC-07",
+      "scenario": "Family travel with multiple passengers",
+      "userPrompt": "Family vacation for 4 passengers from Delhi to Paris on 2026-12-20 returning 2026-12-30.",
+      "expected": {
+        "originCity": "Delhi",
+        "destinationCountries": ["France"],
+        "travelers": 4
+      },
+      "checks": {
+        "travelers": 4
+      }
+    },
+    {
+      "id": "TC-08",
+      "scenario": "Nearby airport allowance requested",
+      "userPrompt": "From Delhi to London, include nearby secondary airports if it saves money, budget 45000.",
+      "expected": {
+        "originCity": "Delhi",
+        "destinationCountries": ["United Kingdom"],
+        "budgetInr": 45000
+      },
+      "checks": {
+        "requireBudget": true
+      }
+    },
+    {
+      "id": "TC-09",
+      "scenario": "Vague conversational exploration with country intent",
+      "userPrompt": "What is the best way to travel to Japan from Mumbai in November?",
+      "expected": {
+        "originCity": "Mumbai",
+        "destinationCountries": ["Japan"]
+      },
+      "checks": {
+        "requireDestination": true
+      }
+    },
+    {
+      "id": "TC-10",
+      "scenario": "High-budget luxury/fastest preference",
+      "userPrompt": "Need business or fastest route from Delhi to New York on 2026-11-18, budget 150000.",
+      "expected": {
+        "originCity": "Delhi",
+        "destinationCountries": ["United States"],
+        "budgetInr": 150000,
+        "preference": "fastest"
+      },
+      "checks": {
+        "preference": "fastest",
+        "requireBudget": true
+      }
+    },
+    {
+      "id": "TC-11",
+      "scenario": "Edge case: Missing destination country in prompt",
+      "userPrompt": "I want to fly out of Delhi on 2026-11-10 for 1 traveler.",
+      "expected": {
+        "originCity": "Delhi",
+        "departureDate": "2026-11-10"
+      },
+      "checks": {
+        "allowEmptyDestination": true
+      }
+    },
+    {
+      "id": "TC-12",
+      "scenario": "Edge case: Missing departure date",
+      "userPrompt": "Can you check flights from Bangalore to London for 1 passenger under 40000 INR?",
+      "expected": {
+        "originCity": "Bangalore",
+        "destinationCountries": ["United Kingdom"],
+        "budgetInr": 40000
+      },
+      "checks": {
+        "allowEmptyDate": true
+      }
+    }
+  ]
+}

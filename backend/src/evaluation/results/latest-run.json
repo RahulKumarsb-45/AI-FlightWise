@@ -1,0 +1,360 @@
+{
+  "id": "eval-1792917709507",
+  "datasetVersion": "1.0.0",
+  "modelProvider": "rule-based-baseline (offline mode)",
+  "timestamp": "2026-10-25T08:41:49.507Z",
+  "totalCases": 12,
+  "passedCases": 12,
+  "failedCases": 0,
+  "passRate": 100,
+  "avgLatencyMs": 0,
+  "totalDurationMs": 1,
+  "failureBreakdown": {
+    "EXTRACTION_MISMATCH": 0,
+    "BUDGET_VIOLATION": 0,
+    "PREFERENCE_MISMATCH": 0,
+    "DATE_FORMAT_ERROR": 0,
+    "PROVIDER_ERROR": 0
+  },
+  "caseResults": [
+    {
+      "id": "TC-01",
+      "scenario": "Direct one-way search with explicit origin and destination",
+      "userPrompt": "I want to fly from Delhi to London on 2026-11-15 for 1 traveler.",
+      "status": "passed",
+      "durationMs": 0,
+      "failureReasons": [],
+      "extracted": {
+        "originCity": "Delhi",
+        "destinationCountries": [
+          "United Kingdom"
+        ],
+        "departureDate": "2026-11-15",
+        "returnDate": null,
+        "dateFlexible": false,
+        "travelers": 1,
+        "budgetInr": null,
+        "preference": "balanced",
+        "includeNearbyAirports": true
+      },
+      "expected": {
+        "originCity": "Delhi",
+        "destinationCountries": [
+          "United Kingdom"
+        ],
+        "departureDate": "2026-11-15",
+        "travelers": 1
+      }
+    },
+    {
+      "id": "TC-02",
+      "scenario": "Round-trip with return date and budget constraint",
+      "userPrompt": "Looking for flights from Mumbai to Dubai departing 2026-12-05 and returning 2026-12-15 under 35000 INR.",
+      "status": "passed",
+      "durationMs": 0,
+      "failureReasons": [],
+      "extracted": {
+        "originCity": "Mumbai",
+        "destinationCountries": [
+          "United Arab Emirates"
+        ],
+        "departureDate": "2026-12-05",
+        "returnDate": "2026-12-15",
+        "dateFlexible": false,
+        "travelers": 1,
+        "budgetInr": 35000,
+        "preference": "balanced",
+        "includeNearbyAirports": true
+      },
+      "expected": {
+        "originCity": "Mumbai",
+        "destinationCountries": [
+          "United Arab Emirates"
+        ],
+        "departureDate": "2026-12-05",
+        "returnDate": "2026-12-15",
+        "budgetInr": 35000
+      }
+    },
+    {
+      "id": "TC-03",
+      "scenario": "Multi-country European circuit",
+      "userPrompt": "Planning a circuit to France, Italy and Germany from Bengaluru around 2026-11-20.",
+      "status": "passed",
+      "durationMs": 0,
+      "failureReasons": [],
+      "extracted": {
+        "originCity": "Bengaluru",
+        "destinationCountries": [
+          "France",
+          "Germany",
+          "Italy"
+        ],
+        "departureDate": "2026-11-20",
+        "returnDate": null,
+        "dateFlexible": false,
+        "travelers": 1,
+        "budgetInr": null,
+        "preference": "balanced",
+        "includeNearbyAirports": true
+      },
+      "expected": {
+        "originCity": "Bengaluru",
+        "destinationCountries": [
+          "France",
+          "Italy",
+          "Germany"
+        ],
+        "departureDate": "2026-11-20"
+      }
+    },
+    {
+      "id": "TC-04",
+      "scenario": "Cheapest preference specification",
+      "userPrompt": "Find me the cheapest possible flights from Chennai to Singapore next month on 2026-11-10.",
+      "status": "passed",
+      "durationMs": 1,
+      "failureReasons": [],
+      "extracted": {
+        "originCity": "Chennai",
+        "destinationCountries": [
+          "Singapore"
+        ],
+        "departureDate": "2026-11-10",
+        "returnDate": null,
+        "dateFlexible": false,
+        "travelers": 1,
+        "budgetInr": null,
+        "preference": "cheapest",
+        "includeNearbyAirports": true
+      },
+      "expected": {
+        "originCity": "Chennai",
+        "destinationCountries": [
+          "Singapore"
+        ],
+        "preference": "cheapest"
+      }
+    },
+    {
+      "id": "TC-05",
+      "scenario": "Fastest non-stop preference specification",
+      "userPrompt": "I need the fastest flight with minimal stops from Hyderabad to London on 2026-11-25.",
+      "status": "passed",
+      "durationMs": 0,
+      "failureReasons": [],
+      "extracted": {
+        "originCity": "Hyderabad",
+        "destinationCountries": [
+          "United Kingdom"
+        ],
+        "departureDate": "2026-11-25",
+        "returnDate": null,
+        "dateFlexible": false,
+        "travelers": 1,
+        "budgetInr": null,
+        "preference": "fastest",
+        "includeNearbyAirports": true
+      },
+      "expected": {
+        "originCity": "Hyderabad",
+        "destinationCountries": [
+          "United Kingdom"
+        ],
+        "preference": "fastest"
+      }
+    },
+    {
+      "id": "TC-06",
+      "scenario": "Flexible dates requirement",
+      "userPrompt": "Flexible dates around 2026-12-01 flying from Kolkata to Bangkok for 2 people.",
+      "status": "passed",
+      "durationMs": 0,
+      "failureReasons": [],
+      "extracted": {
+        "originCity": "Kolkata",
+        "destinationCountries": [
+          "Thailand"
+        ],
+        "departureDate": "2026-12-01",
+        "returnDate": null,
+        "dateFlexible": true,
+        "travelers": 2,
+        "budgetInr": null,
+        "preference": "balanced",
+        "includeNearbyAirports": true
+      },
+      "expected": {
+        "originCity": "Kolkata",
+        "destinationCountries": [
+          "Thailand"
+        ],
+        "travelers": 2,
+        "dateFlexible": true
+      }
+    },
+    {
+      "id": "TC-07",
+      "scenario": "Family travel with multiple passengers",
+      "userPrompt": "Family vacation for 4 passengers from Delhi to Paris on 2026-12-20 returning 2026-12-30.",
+      "status": "passed",
+      "durationMs": 0,
+      "failureReasons": [],
+      "extracted": {
+        "originCity": "Delhi",
+        "destinationCountries": [
+          "France"
+        ],
+        "departureDate": "2026-12-20",
+        "returnDate": "2026-12-30",
+        "dateFlexible": false,
+        "travelers": 4,
+        "budgetInr": null,
+        "preference": "balanced",
+        "includeNearbyAirports": true
+      },
+      "expected": {
+        "originCity": "Delhi",
+        "destinationCountries": [
+          "France"
+        ],
+        "travelers": 4
+      }
+    },
+    {
+      "id": "TC-08",
+      "scenario": "Nearby airport allowance requested",
+      "userPrompt": "From Delhi to London, include nearby secondary airports if it saves money, budget 45000.",
+      "status": "passed",
+      "durationMs": 0,
+      "failureReasons": [],
+      "extracted": {
+        "originCity": "Delhi",
+        "destinationCountries": [
+          "United Kingdom"
+        ],
+        "departureDate": null,
+        "returnDate": null,
+        "dateFlexible": false,
+        "travelers": 1,
+        "budgetInr": 45000,
+        "preference": "balanced",
+        "includeNearbyAirports": true
+      },
+      "expected": {
+        "originCity": "Delhi",
+        "destinationCountries": [
+          "United Kingdom"
+        ],
+        "budgetInr": 45000
+      }
+    },
+    {
+      "id": "TC-09",
+      "scenario": "Vague conversational exploration with country intent",
+      "userPrompt": "What is the best way to travel to Japan from Mumbai in November?",
+      "status": "passed",
+      "durationMs": 0,
+      "failureReasons": [],
+      "extracted": {
+        "originCity": "Mumbai",
+        "destinationCountries": [
+          "Japan"
+        ],
+        "departureDate": null,
+        "returnDate": null,
+        "dateFlexible": false,
+        "travelers": 1,
+        "budgetInr": null,
+        "preference": "balanced",
+        "includeNearbyAirports": true
+      },
+      "expected": {
+        "originCity": "Mumbai",
+        "destinationCountries": [
+          "Japan"
+        ]
+      }
+    },
+    {
+      "id": "TC-10",
+      "scenario": "High-budget luxury/fastest preference",
+      "userPrompt": "Need business or fastest route from Delhi to New York on 2026-11-18, budget 150000.",
+      "status": "passed",
+      "durationMs": 0,
+      "failureReasons": [],
+      "extracted": {
+        "originCity": "Delhi",
+        "destinationCountries": [
+          "United States"
+        ],
+        "departureDate": "2026-11-18",
+        "returnDate": null,
+        "dateFlexible": false,
+        "travelers": 1,
+        "budgetInr": 150000,
+        "preference": "fastest",
+        "includeNearbyAirports": true
+      },
+      "expected": {
+        "originCity": "Delhi",
+        "destinationCountries": [
+          "United States"
+        ],
+        "budgetInr": 150000,
+        "preference": "fastest"
+      }
+    },
+    {
+      "id": "TC-11",
+      "scenario": "Edge case: Missing destination country in prompt",
+      "userPrompt": "I want to fly out of Delhi on 2026-11-10 for 1 traveler.",
+      "status": "passed",
+      "durationMs": 0,
+      "failureReasons": [],
+      "extracted": {
+        "originCity": "Delhi",
+        "destinationCountries": [],
+        "departureDate": "2026-11-10",
+        "returnDate": null,
+        "dateFlexible": false,
+        "travelers": 1,
+        "budgetInr": null,
+        "preference": "balanced",
+        "includeNearbyAirports": true
+      },
+      "expected": {
+        "originCity": "Delhi",
+        "departureDate": "2026-11-10"
+      }
+    },
+    {
+      "id": "TC-12",
+      "scenario": "Edge case: Missing departure date",
+      "userPrompt": "Can you check flights from Bangalore to London for 1 passenger under 40000 INR?",
+      "status": "passed",
+      "durationMs": 0,
+      "failureReasons": [],
+      "extracted": {
+        "originCity": "Bangalore",
+        "destinationCountries": [
+          "United Kingdom"
+        ],
+        "departureDate": null,
+        "returnDate": null,
+        "dateFlexible": false,
+        "travelers": 1,
+        "budgetInr": 40000,
+        "preference": "balanced",
+        "includeNearbyAirports": true
+      },
+      "expected": {
+        "originCity": "Bangalore",
+        "destinationCountries": [
+          "United Kingdom"
+        ],
+        "budgetInr": 40000
+      }
+    }
+  ]
+}
