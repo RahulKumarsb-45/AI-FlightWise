@@ -1,5 +1,6 @@
 const paymentService = require('../services/paymentService');
 const logger = require('../logger/logger');
+const { trackEvent } = require('../services/analyticsService');
 
 async function createOrder(req, res, next) {
   try {
@@ -20,6 +21,19 @@ async function verifyPayment(req, res, next) {
       razorpayPaymentId,
       razorpaySignature,
     });
+
+    try {
+      await trackEvent({
+        eventName: 'payment_verified',
+        userId: req.user.id,
+        sessionId: req.headers['x-session-id'] || `sess_${req.user.id}`,
+        properties: { plan: subscription?.plan, orderId: razorpayOrderId, paymentId: razorpayPaymentId },
+        idempotencyKey: `pay_${razorpayPaymentId}`,
+      });
+    } catch (trackErr) {
+      logger.warn('Failed to record payment_verified analytics event', { error: trackErr.message });
+    }
+
     res.status(200).json({ status: 'success', data: { subscription } });
   } catch (err) {
     next(err);

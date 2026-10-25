@@ -10,6 +10,11 @@ const weatherRoutes = require('./weatherRoutes');
 const placesRoutes = require('./placesRoutes');
 const feedbackRoutes = require('./feedbackRoutes');
 const evalRoutes = require('./evalRoutes');
+const analyticsRoutes = require('./analyticsRoutes');
+const experimentRoutes = require('./experimentRoutes');
+const copilotRoutes = require('./copilotRoutes');
+const roadmapRoutes = require('./roadmapRoutes');
+const decisionRoutes = require('./decisionRoutes');
 
 const router = express.Router();
 
@@ -17,6 +22,7 @@ router.get('/health', (req, res) => {
   res.status(200).json({ status: 'success', message: 'OK', timestamp: new Date().toISOString() });
 });
 
+// Core FlightWise Travel Routes
 router.use('/auth', authRoutes);
 router.use('/airports', airportRoutes);
 router.use('/countries', countryRoutes);
@@ -26,7 +32,14 @@ router.use('/payments', paymentRoutes);
 router.use('/ai', aiRoutes);
 router.use('/weather', weatherRoutes);
 router.use('/places', placesRoutes);
+
+// Product Management Workspace & Intelligence Routes
 router.use('/feedback', feedbackRoutes);
 router.use('/evaluations', evalRoutes);
+router.use('/analytics', analyticsRoutes);
+router.use('/experiments', experimentRoutes);
+router.use('/copilot', copilotRoutes);
+router.use('/roadmap', roadmapRoutes);
+router.use('/decisions', decisionRoutes);
 
 module.exports = router;

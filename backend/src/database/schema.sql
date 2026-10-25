@@ -343,3 +343,190 @@ CREATE TABLE IF NOT EXISTS evaluation_runs (
 
 CREATE INDEX IF NOT EXISTS idx_eval_runs_created ON evaluation_runs(created_at DESC);
 
+ALTER TABLE evaluation_runs ADD COLUMN IF NOT EXISTS status VARCHAR(20) DEFAULT 'completed';
+ALTER TABLE evaluation_runs ADD COLUMN IF NOT EXISTS token_usage JSONB DEFAULT '{}'::jsonb;
+ALTER TABLE evaluation_runs ADD COLUMN IF NOT EXISTS estimated_cost_usd NUMERIC(8,6) DEFAULT 0;
+ALTER TABLE evaluation_runs ADD COLUMN IF NOT EXISTS extraction_accuracy NUMERIC(5,2) DEFAULT 0;
+ALTER TABLE evaluation_runs ADD COLUMN IF NOT EXISTS constraint_adherence NUMERIC(5,2) DEFAULT 0;
+ALTER TABLE evaluation_runs ADD COLUMN IF NOT EXISTS hallucination_rate NUMERIC(5,2) DEFAULT 0;
+ALTER TABLE evaluation_runs ADD COLUMN IF NOT EXISTS run_duration_ms INT DEFAULT 0;
+
+-- ============================================================
+-- PRODUCT ANALYTICS EVENTS
+-- ============================================================
+CREATE TABLE IF NOT EXISTS analytics_events (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    event_name VARCHAR(100) NOT NULL,
+    timestamp TIMESTAMPTZ NOT NULL DEFAULT now(),
+    user_id UUID REFERENCES users(id) ON DELETE SET NULL,
+    session_id VARCHAR(100) NOT NULL,
+    search_id VARCHAR(100),
+    itinerary_id VARCHAR(100),
+    experiment_id VARCHAR(100),
+    variant VARCHAR(50),
+    properties JSONB DEFAULT '{}'::jsonb,
+    idempotency_key VARCHAR(150),
+    created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+CREATE INDEX IF NOT EXISTS idx_analytics_events_name_time ON analytics_events(event_name, timestamp DESC);
+CREATE INDEX IF NOT EXISTS idx_analytics_events_session ON analytics_events(session_id);
+CREATE INDEX IF NOT EXISTS idx_analytics_events_user ON analytics_events(user_id);
+CREATE INDEX IF NOT EXISTS idx_analytics_events_exp ON analytics_events(experiment_id, variant);
+CREATE INDEX IF NOT EXISTS idx_analytics_events_idempotency ON analytics_events(idempotency_key);
+
+-- ============================================================
+-- CUSTOMER FEEDBACK INTELLIGENCE
+-- ============================================================
+CREATE TABLE IF NOT EXISTS customer_feedback (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    user_id UUID REFERENCES users(id) ON DELETE SET NULL,
+    category VARCHAR(50) NOT NULL DEFAULT 'general',
+    theme VARCHAR(100) NOT NULL DEFAULT 'general_inquiry',
+    sentiment VARCHAR(20) NOT NULL DEFAULT 'neutral',
+    severity VARCHAR(20) NOT NULL DEFAULT 'medium',
+    comment TEXT NOT NULL,
+    search_context JSONB,
+    status VARCHAR(20) NOT NULL DEFAULT 'new',
+    created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+CREATE INDEX IF NOT EXISTS idx_customer_feedback_created ON customer_feedback(created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_customer_feedback_category ON customer_feedback(category);
+CREATE INDEX IF NOT EXISTS idx_customer_feedback_status ON customer_feedback(status);
+CREATE INDEX IF NOT EXISTS idx_customer_feedback_theme ON customer_feedback(theme);
+
+-- ============================================================
+-- A/B EXPERIMENTS & TESTING
+-- ============================================================
+CREATE TABLE IF NOT EXISTS experiments (
+    id VARCHAR(100) PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    description TEXT,
+    hypothesis TEXT NOT NULL,
+    status VARCHAR(20) NOT NULL DEFAULT 'draft',
+    control_variant VARCHAR(50) NOT NULL DEFAULT 'control',
+    variants JSONB NOT NULL DEFAULT '["control", "variant"]'::jsonb,
+    primary_metric VARCHAR(100) NOT NULL DEFAULT 'recommendation_selected',
+    guardrail_metrics JSONB DEFAULT '[]'::jsonb,
+    eligibility_rules JSONB DEFAULT '{}'::jsonb,
+    start_date TIMESTAMPTZ,
+    end_date TIMESTAMPTZ,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+CREATE TABLE IF NOT EXISTS experiment_assignments (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    experiment_id VARCHAR(100) NOT NULL REFERENCES experiments(id) ON DELETE CASCADE,
+    user_id UUID REFERENCES users(id) ON DELETE CASCADE,
+    session_id VARCHAR(100) NOT NULL,
+    variant VARCHAR(50) NOT NULL,
+    assigned_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+    UNIQUE(experiment_id, session_id)
+);
+
+CREATE INDEX IF NOT EXISTS idx_exp_assignments_exp_variant ON experiment_assignments(experiment_id, variant);
+
+CREATE TABLE IF NOT EXISTS experiment_exposures (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    experiment_id VARCHAR(100) NOT NULL REFERENCES experiments(id) ON DELETE CASCADE,
+    user_id UUID REFERENCES users(id) ON DELETE CASCADE,
+    session_id VARCHAR(100) NOT NULL,
+    variant VARCHAR(50) NOT NULL,
+    exposed_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+CREATE INDEX IF NOT EXISTS idx_exp_exposures_exp_variant ON experiment_exposures(experiment_id, variant);
+
+-- ============================================================
+-- PRODUCT REQUIREMENTS DOCUMENTS (PRDs)
+-- ============================================================
+CREATE TABLE IF NOT EXISTS prds (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    user_id UUID REFERENCES users(id) ON DELETE SET NULL,
+    title VARCHAR(255) NOT NULL,
+    status VARCHAR(20) NOT NULL DEFAULT 'draft',
+    problem_statement TEXT,
+    target_users TEXT,
+    evidence TEXT,
+    goals TEXT,
+    non_goals TEXT,
+    solution TEXT,
+    functional_reqs JSONB DEFAULT '[]'::jsonb,
+    nonfunctional_reqs JSONB DEFAULT '[]'::jsonb,
+    user_stories JSONB DEFAULT '[]'::jsonb,
+    acceptance_criteria JSONB DEFAULT '[]'::jsonb,
+    edge_cases JSONB DEFAULT '[]'::jsonb,
+    risks_dependencies JSONB DEFAULT '[]'::jsonb,
+    success_metrics JSONB DEFAULT '[]'::jsonb,
+    rollout_plan TEXT,
+    experiment_plan TEXT,
+    raw_markdown TEXT,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+CREATE INDEX IF NOT EXISTS idx_prds_created ON prds(created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_prds_status ON prds(status);
+
+-- ============================================================
+-- PRODUCT ROADMAP ITEMS
+-- ============================================================
+CREATE TABLE IF NOT EXISTS roadmap_items (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    title VARCHAR(255) NOT NULL,
+    description TEXT,
+    problem_statement TEXT,
+    target_user VARCHAR(150),
+    stage VARCHAR(20) NOT NULL DEFAULT 'next',
+    priority VARCHAR(20) NOT NULL DEFAULT 'medium',
+    reach INT DEFAULT 100,
+    impact NUMERIC(3,1) DEFAULT 2.0,
+    confidence NUMERIC(3,2) DEFAULT 0.8,
+    effort NUMERIC(3,1) DEFAULT 3.0,
+    rice_score NUMERIC(10,2) DEFAULT 0,
+    owner VARCHAR(100),
+    status VARCHAR(30) NOT NULL DEFAULT 'planned',
+    dependencies TEXT[],
+    target_date DATE,
+    source_evidence JSONB,
+    linked_prd_id UUID REFERENCES prds(id) ON DELETE SET NULL,
+    linked_experiment_id VARCHAR(100) REFERENCES experiments(id) ON DELETE SET NULL,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+CREATE INDEX IF NOT EXISTS idx_roadmap_stage ON roadmap_items(stage);
+CREATE INDEX IF NOT EXISTS idx_roadmap_priority ON roadmap_items(priority);
+CREATE INDEX IF NOT EXISTS idx_roadmap_created ON roadmap_items(created_at DESC);
+
+-- ============================================================
+-- PRODUCT DECISION LOG
+-- ============================================================
+CREATE TABLE IF NOT EXISTS decision_log (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    title VARCHAR(255) NOT NULL,
+    date DATE NOT NULL DEFAULT CURRENT_DATE,
+    problem TEXT NOT NULL,
+    evidence_considered TEXT,
+    alternatives TEXT,
+    selected_decision TEXT NOT NULL,
+    rationale TEXT NOT NULL,
+    expected_outcome TEXT,
+    actual_outcome TEXT,
+    risks TEXT,
+    owner VARCHAR(100),
+    follow_up_metric VARCHAR(255),
+    review_date DATE,
+    linked_prd_id UUID REFERENCES prds(id) ON DELETE SET NULL,
+    linked_experiment_id VARCHAR(100) REFERENCES experiments(id) ON DELETE SET NULL,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+CREATE INDEX IF NOT EXISTS idx_decision_log_date ON decision_log(date DESC);
+CREATE INDEX IF NOT EXISTS idx_decision_log_created ON decision_log(created_at DESC);
+
+

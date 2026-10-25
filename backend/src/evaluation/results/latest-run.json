@@ -1,20 +1,40 @@
 {
-  "id": "eval-1792937905914",
+  "id": "8d2a5069-401d-4666-b816-6686d1f96002",
   "datasetVersion": "1.0.0",
   "modelProvider": "rule-based-baseline (offline mode)",
-  "timestamp": "2026-10-25T14:18:25.914Z",
+  "providerType": "offline_deterministic",
+  "timestamp": "2026-10-25T16:27:42.049Z",
+  "status": "completed",
   "totalCases": 12,
   "passedCases": 12,
   "failedCases": 0,
   "passRate": 100,
   "avgLatencyMs": 0,
-  "totalDurationMs": 1,
+  "totalDurationMs": 2,
+  "extractionAccuracy": 100,
+  "constraintAdherence": 100,
+  "hallucinationRate": 0,
+  "errorRate": 0,
+  "tokenUsage": {
+    "promptTokens": 0,
+    "completionTokens": 0,
+    "totalTokens": 0
+  },
+  "estimatedCostUsd": 0,
   "failureBreakdown": {
     "EXTRACTION_MISMATCH": 0,
     "BUDGET_VIOLATION": 0,
     "PREFERENCE_MISMATCH": 0,
     "DATE_FORMAT_ERROR": 0,
     "PROVIDER_ERROR": 0
+  },
+  "metricDefinitions": {
+    "passRate": "Percentage of test cases where all expected fields and constraints matched (passedCases / totalCases)",
+    "extractionAccuracy": "Percentage of individual structured fields extracted correctly (correctFields / totalExpectedFields)",
+    "constraintAdherence": "Percentage of strict travel constraints satisfied without violation (satisfiedConstraints / totalConstraints)",
+    "hallucinationRate": "Percentage of cases returning parameters or destinations not present in prompt",
+    "latency": "Average end-to-end extraction response time in milliseconds per test scenario",
+    "tokenUsage": "Actual token usage reported by Groq LLM API, or 0 for offline baseline"
   },
   "caseResults": [
     {
@@ -23,6 +43,11 @@
       "userPrompt": "I want to fly from Delhi to London on 2026-11-15 for 1 traveler.",
       "status": "passed",
       "durationMs": 0,
+      "tokenUsage": {
+        "promptTokens": 0,
+        "completionTokens": 0,
+        "totalTokens": 0
+      },
       "failureReasons": [],
       "extracted": {
         "originCity": "Delhi",
@@ -51,7 +76,12 @@
       "scenario": "Round-trip with return date and budget constraint",
       "userPrompt": "Looking for flights from Mumbai to Dubai departing 2026-12-05 and returning 2026-12-15 under 35000 INR.",
       "status": "passed",
-      "durationMs": 1,
+      "durationMs": 0,
+      "tokenUsage": {
+        "promptTokens": 0,
+        "completionTokens": 0,
+        "totalTokens": 0
+      },
       "failureReasons": [],
       "extracted": {
         "originCity": "Mumbai",
@@ -81,7 +111,12 @@
       "scenario": "Multi-country European circuit",
       "userPrompt": "Planning a circuit to France, Italy and Germany from Bengaluru around 2026-11-20.",
       "status": "passed",
-      "durationMs": 0,
+      "durationMs": 1,
+      "tokenUsage": {
+        "promptTokens": 0,
+        "completionTokens": 0,
+        "totalTokens": 0
+      },
       "failureReasons": [],
       "extracted": {
         "originCity": "Bengaluru",
@@ -114,6 +149,11 @@
       "userPrompt": "Find me the cheapest possible flights from Chennai to Singapore next month on 2026-11-10.",
       "status": "passed",
       "durationMs": 0,
+      "tokenUsage": {
+        "promptTokens": 0,
+        "completionTokens": 0,
+        "totalTokens": 0
+      },
       "failureReasons": [],
       "extracted": {
         "originCity": "Chennai",
@@ -142,6 +182,11 @@
       "userPrompt": "I need the fastest flight with minimal stops from Hyderabad to London on 2026-11-25.",
       "status": "passed",
       "durationMs": 0,
+      "tokenUsage": {
+        "promptTokens": 0,
+        "completionTokens": 0,
+        "totalTokens": 0
+      },
       "failureReasons": [],
       "extracted": {
         "originCity": "Hyderabad",
@@ -170,6 +215,11 @@
       "userPrompt": "Flexible dates around 2026-12-01 flying from Kolkata to Bangkok for 2 people.",
       "status": "passed",
       "durationMs": 0,
+      "tokenUsage": {
+        "promptTokens": 0,
+        "completionTokens": 0,
+        "totalTokens": 0
+      },
       "failureReasons": [],
       "extracted": {
         "originCity": "Kolkata",
@@ -199,6 +249,11 @@
       "userPrompt": "Family vacation for 4 passengers from Delhi to Paris on 2026-12-20 returning 2026-12-30.",
       "status": "passed",
       "durationMs": 0,
+      "tokenUsage": {
+        "promptTokens": 0,
+        "completionTokens": 0,
+        "totalTokens": 0
+      },
       "failureReasons": [],
       "extracted": {
         "originCity": "Delhi",
@@ -227,6 +282,11 @@
       "userPrompt": "From Delhi to London, include nearby secondary airports if it saves money, budget 45000.",
       "status": "passed",
       "durationMs": 0,
+      "tokenUsage": {
+        "promptTokens": 0,
+        "completionTokens": 0,
+        "totalTokens": 0
+      },
       "failureReasons": [],
       "extracted": {
         "originCity": "Delhi",
@@ -255,6 +315,11 @@
       "userPrompt": "What is the best way to travel to Japan from Mumbai in November?",
       "status": "passed",
       "durationMs": 0,
+      "tokenUsage": {
+        "promptTokens": 0,
+        "completionTokens": 0,
+        "totalTokens": 0
+      },
       "failureReasons": [],
       "extracted": {
         "originCity": "Mumbai",
@@ -282,6 +347,11 @@
       "userPrompt": "Need business or fastest route from Delhi to New York on 2026-11-18, budget 150000.",
       "status": "passed",
       "durationMs": 0,
+      "tokenUsage": {
+        "promptTokens": 0,
+        "completionTokens": 0,
+        "totalTokens": 0
+      },
       "failureReasons": [],
       "extracted": {
         "originCity": "Delhi",
@@ -311,6 +381,11 @@
       "userPrompt": "I want to fly out of Delhi on 2026-11-10 for 1 traveler.",
       "status": "passed",
       "durationMs": 0,
+      "tokenUsage": {
+        "promptTokens": 0,
+        "completionTokens": 0,
+        "totalTokens": 0
+      },
       "failureReasons": [],
       "extracted": {
         "originCity": "Delhi",
@@ -334,6 +409,11 @@
       "userPrompt": "Can you check flights from Bangalore to London for 1 passenger under 40000 INR?",
       "status": "passed",
       "durationMs": 0,
+      "tokenUsage": {
+        "promptTokens": 0,
+        "completionTokens": 0,
+        "totalTokens": 0
+      },
       "failureReasons": [],
       "extracted": {
         "originCity": "Bangalore",

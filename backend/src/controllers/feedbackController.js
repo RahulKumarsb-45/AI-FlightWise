@@ -3,6 +3,12 @@ const { MemoryCache } = require('../cache/MemoryCache');
 const logger = require('../logger/logger');
 const AppError = require('../utils/AppError');
 const crypto = require('crypto');
+const {
+  listFeedback,
+  createFeedback,
+  updateFeedbackStatus,
+  getFeedbackThemesSummary,
+} = require('../services/feedbackIntelligenceService');
 
 const feedbackDedupCache = new MemoryCache();
 const DEDUP_WINDOW_MS = 60 * 1000; // 1 minute window to prevent double-click / rapid resubmissions
@@ -18,6 +24,9 @@ function hashClient(req) {
   return crypto.createHash('sha256').update(ip).digest('hex').slice(0, 16);
 }
 
+/**
+ * Legacy recommendation feedback submission.
+ */
 async function submitFeedback(req, res, next) {
   try {
     const { isHelpful, recommendationRank, reason, comment, searchContext } = req.body;
@@ -84,6 +93,9 @@ async function submitFeedback(req, res, next) {
   }
 }
 
+/**
+ * Legacy recommendation feedback summary.
+ */
 async function getFeedbackSummary(req, res, next) {
   try {
     let summary = {
@@ -154,8 +166,95 @@ async function getFeedbackSummary(req, res, next) {
   }
 }
 
+// ============================================================
+// CUSTOMER FEEDBACK INTELLIGENCE (PM WORKSPACE)
+// ============================================================
+
+async function getCustomerFeedbackList(req, res, next) {
+  try {
+    const { category, status, theme, search, limit, offset } = req.query;
+    const result = await listFeedback({
+      category,
+      status,
+      theme,
+      search,
+      limit: limit ? parseInt(limit, 10) : 20,
+      offset: offset ? parseInt(offset, 10) : 0,
+    });
+
+    res.status(200).json({
+      status: 'success',
+      data: result,
+    });
+  } catch (err) {
+    next(err);
+  }
+}
+
+async function createCustomerFeedback(req, res, next) {
+  try {
+    const { category, theme, sentiment, severity, searchContext } = req.body;
+    const comment = req.body.comment || req.body.description || req.body.title;
+    const userId = req.user?.id || null;
+
+    const item = await createFeedback({
+      userId,
+      category,
+      theme,
+      sentiment,
+      severity,
+      comment,
+      searchContext,
+    });
+
+    res.status(201).json({
+      status: 'success',
+      message: 'Feedback submitted successfully.',
+      data: item,
+    });
+  } catch (err) {
+    next(err);
+  }
+}
+
+async function updateCustomerFeedbackStatus(req, res, next) {
+  try {
+    const { id } = req.params;
+    const { status } = req.body;
+
+    const updated = await updateFeedbackStatus(id, status);
+    if (!updated) {
+      return next(new AppError(`Feedback with ID "${id}" was not found.`, 404, 'FEEDBACK_NOT_FOUND'));
+    }
+
+    res.status(200).json({
+      status: 'success',
+      message: `Feedback status updated to ${status}.`,
+      data: updated,
+    });
+  } catch (err) {
+    next(err);
+  }
+}
+
+async function getCustomerFeedbackThemes(req, res, next) {
+  try {
+    const summary = await getFeedbackThemesSummary();
+    res.status(200).json({
+      status: 'success',
+      data: summary,
+    });
+  } catch (err) {
+    next(err);
+  }
+}
+
 module.exports = {
   submitFeedback,
   getFeedbackSummary,
+  getCustomerFeedbackList,
+  createCustomerFeedback,
+  updateCustomerFeedbackStatus,
+  getCustomerFeedbackThemes,
   _inMemoryFeedbackStore: inMemoryFeedbackStore,
 };

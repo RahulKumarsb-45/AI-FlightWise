@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { useQuery, useQueries } from '@tanstack/react-query';
 import { AlertTriangle, ArrowLeft, Heart, HeartOff } from 'lucide-react';
@@ -24,7 +24,8 @@ import { Button } from '@/components/ui/Button';
 import { formatIndianDate } from '@/utils/format';
 import { estimateAttractionsCostInr } from '@/utils/attractionsEstimate';
 import { computeExpenseBreakdown } from '@/utils/expenseCalculator';
-import { trackResultsViewed, trackItinerarySaved } from '@/lib/analytics';
+import { trackResultsViewed, trackItinerarySaved, getOrCreateSessionId } from '@/lib/analytics';
+import { productService } from '@/services/productService';
 
 function parseSearchParamsToRequest(searchParams) {
   const origin = searchParams.get('origin');
@@ -59,6 +60,7 @@ function ResultsContent() {
   const { toast } = useToast();
   const [saved, setSaved] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [experimentVariant, setExperimentVariant] = useState('control');
   const requestBody = parseSearchParamsToRequest(searchParams);
 
   const { data, isLoading, isError, error } = useQuery({
@@ -67,6 +69,37 @@ function ResultsContent() {
     enabled: !!requestBody,
     retry: false,
   });
+
+  useEffect(() => {
+    let isMounted = true;
+    async function assignExperiment() {
+      try {
+        if (typeof window === 'undefined') return;
+        const sessionId = getOrCreateSessionId();
+        const assignment = await productService.assignExperiment({
+          experimentId: 'flight_recommendation_tradeoffs',
+          sessionId,
+        });
+        if (isMounted && assignment?.variant) {
+          setExperimentVariant(assignment.variant);
+          await productService.logExposure({
+            experimentId: 'flight_recommendation_tradeoffs',
+            sessionId,
+            variant: assignment.variant,
+          });
+        }
+      } catch {
+        // Non-blocking fail-safe
+      }
+    }
+
+    if (data?.recommendations?.length > 0) {
+      assignExperiment();
+    }
+    return () => {
+      isMounted = false;
+    };
+  }, [data?.recommendations?.length]);
 
   const topRecommendation = data?.recommendations?.[0];
   const topDestinationIata = topRecommendation?.destinationAirports?.[0]?.iata;
@@ -353,7 +386,13 @@ function ResultsContent() {
         </h2>
         <div className="space-y-4">
           {recommendations.map((rec, idx) => (
-            <RecommendationCard key={idx} recommendation={rec} rank={idx + 1} highlight={idx === 0} />
+            <RecommendationCard
+              key={idx}
+              recommendation={rec}
+              rank={idx + 1}
+              highlight={idx === 0}
+              experimentVariant={experimentVariant}
+            />
           ))}
         </div>
       </div>

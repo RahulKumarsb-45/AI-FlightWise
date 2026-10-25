@@ -3,6 +3,7 @@ const { query } = require('../database/pool');
 const AppError = require('../utils/AppError');
 const config = require('../config/env');
 const { generateShareToken } = require('../utils/tokens');
+const { trackEvent } = require('../services/analyticsService');
 
 async function optimize(req, res, next) {
   try {
@@ -31,6 +32,23 @@ async function optimize(req, res, next) {
       );
       tripId = insertResult.rows[0].id;
     }
+
+    // Telemetry: record successful search_submitted event without blocking response
+    const sessionId = req.headers['x-session-id'] || (req.user ? `sess_${req.user.id}` : 'sess_guest');
+    trackEvent({
+      eventName: 'search_submitted',
+      userId: req.user?.id || null,
+      sessionId,
+      searchId: tripId || result?.meta?.searchId || null,
+      properties: {
+        origin: req.body.originIata,
+        destination: Array.isArray(req.body.destinationCountries) ? req.body.destinationCountries.join(',') : req.body.destinationCountries,
+        preference: req.body.preference || 'balanced',
+        travelers: req.body.travelers || 1,
+        dateFlexible: !!req.body.dateFlexible,
+        resultsCount: result?.recommendations?.length || 0,
+      },
+    }).catch(() => {});
 
     res.status(200).json({ status: 'success', data: { tripId, ...result } });
   } catch (err) {
@@ -82,6 +100,15 @@ async function saveTrip(req, res, next) {
        ON CONFLICT (user_id, trip_id) DO UPDATE SET notes = EXCLUDED.notes`,
       [req.user.id, req.params.tripId, req.body.notes || null]
     );
+
+    const sessionId = req.headers['x-session-id'] || `sess_${req.user.id}`;
+    trackEvent({
+      eventName: 'trip_saved',
+      userId: req.user.id,
+      sessionId,
+      itineraryId: req.params.tripId,
+      properties: { tripId: req.params.tripId },
+    }).catch(() => {});
 
     res.status(200).json({ status: 'success', message: 'Trip saved' });
   } catch (err) {
@@ -149,6 +176,15 @@ async function createShare(req, res, next) {
         shareToken,
       ]);
     }
+
+    const sessionId = req.headers['x-session-id'] || `sess_${req.user.id}`;
+    trackEvent({
+      eventName: 'trip_shared',
+      userId: req.user.id,
+      sessionId,
+      itineraryId: req.params.tripId,
+      properties: { tripId: req.params.tripId, shareToken },
+    }).catch(() => {});
 
     res.status(200).json({
       status: 'success',

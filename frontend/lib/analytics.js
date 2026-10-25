@@ -1,41 +1,15 @@
-/**
- * Centralized Google Analytics 4 (GA4) helper.
- *
- * Design goals (see docs/PRIVACY.md-equivalent notes in README.md):
- *  - Fully disabled whenever NEXT_PUBLIC_GA_MEASUREMENT_ID is unset — no
- *    script is injected, no network calls happen, nothing else changes.
- *  - Never throws. A blocked/failed/missing gtag must never break the app
- *    (search, AI agent, auth, Razorpay, hotels, weather, rendering).
- *  - Single choke point for outbound event parameters, so the "never send
- *    PII/secrets" rule only has to be enforced in one place instead of at
- *    every call site.
- */
+import { api } from './apiClient';
 
-export const GA_MEASUREMENT_ID = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID || '';
-
+export const GA_MEASUREMENT_ID = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID || process.env.NEXT_PUBLIC_GA_ID || '';
 export const isAnalyticsEnabled = Boolean(GA_MEASUREMENT_ID);
+const SESSION_STORAGE_KEY = 'fw_session_id';
 
-// Key names that must never leave the browser as an event/user property,
-// even if a call site accidentally includes them. Defense-in-depth, not a
-// replacement for being careful about what gets passed in.
-const BLOCKED_KEY_PATTERN =
-  /pass|secret|token|auth|apikey|api[_-]?key|cookie|jwt|card|cvv|razorpay|signature|email|phone|ssn|dob|address/i;
-
-// Only plain strings, numbers, and booleans are allowed through as event
-// parameter values — objects/arrays could accidentally carry nested PII
-// (e.g. a full API response) and gtag doesn't need them anyway.
-function sanitizeParams(params) {
-  if (!params || typeof params !== 'object') return undefined;
-
+function sanitizeParams(params = {}) {
   const clean = {};
   for (const [key, value] of Object.entries(params)) {
-    if (BLOCKED_KEY_PATTERN.test(key)) continue;
-    if (value === undefined || value === null) continue;
-
+    if (value === null || value === undefined) continue;
     const type = typeof value;
     if (type === 'string' || type === 'number' || type === 'boolean') {
-      // Cap string length defensively — event params are meant to be short
-      // labels/ids, not free text (and free text is where PII tends to hide).
       clean[key] = type === 'string' && value.length > 100 ? value.slice(0, 100) : value;
     }
   }
@@ -54,9 +28,24 @@ function callGtag(...args) {
 }
 
 /**
- * Records a page_view for a client-side route change. The initial page load
- * is handled by the gtag config call itself (with send_page_view: false, so
- * it isn't double-counted) — see components/analytics/GoogleAnalytics.jsx.
+ * Returns or generates a persistent anonymous or session UUID.
+ */
+export function getOrCreateSessionId() {
+  if (typeof window === 'undefined' || typeof window.sessionStorage === 'undefined') return 'server_session';
+  try {
+    let sessionId = window.sessionStorage.getItem(SESSION_STORAGE_KEY);
+    if (!sessionId) {
+      sessionId = `sess_${Math.random().toString(36).substring(2, 11)}_${Date.now()}`;
+      window.sessionStorage.setItem(SESSION_STORAGE_KEY, sessionId);
+    }
+    return sessionId;
+  } catch {
+    return 'fallback_session';
+  }
+}
+
+/**
+ * Records a page_view for a client-side route change.
  */
 export function trackPageView(url) {
   if (!url) return;
@@ -66,108 +55,52 @@ export function trackPageView(url) {
 }
 
 /**
- * Generic event helper. Prefer one of the named helpers below for anything
- * that recurs across the app — they document which parameters are
- * considered safe for that event so call sites don't have to re-derive it.
+ * Tracks a product analytics event to the backend API (PostgreSQL analytics_events)
+ * and Google Analytics (if configured).
+ * Never throws or disrupts user interactions.
  */
-export function trackEvent(eventName, params) {
+export async function trackEvent(eventName, properties = {}, extra = {}) {
   if (!eventName || typeof eventName !== 'string') return;
-  callGtag('event', eventName, sanitizeParams(params));
+
+  // 1. Send to Google Analytics (legacy)
+  callGtag('event', eventName, sanitizeParams(properties));
+
+  // 2. Persist to PostgreSQL backend analytics_events
+  try {
+    const sessionId = getOrCreateSessionId();
+    await api.post('/analytics/events', {
+      eventName,
+      sessionId,
+      properties: sanitizeParams(properties),
+      searchId: extra.searchId || null,
+      itineraryId: extra.itineraryId || null,
+      experimentId: extra.experimentId || null,
+      variant: extra.variant || null,
+      idempotencyKey: extra.idempotencyKey || null,
+      timestamp: new Date().toISOString(),
+    });
+  } catch (err) {
+    // Fail safe: Telemetry error never blocks user actions
+  }
 }
 
 // ---------------------------------------------------------------------------
-// Named helpers for the app's actual user actions. Keeping these here (vs.
-// scattering raw trackEvent calls with inline param objects) makes it a lot
-// easier to see, in one file, exactly what data ever goes to GA.
+// Named helpers for the app's user actions
 // ---------------------------------------------------------------------------
 
-export function trackFlightSearch({ origin, destinations, tripType, travelers, preference, dateFlexible, nearbyAirportsEnabled }) {
-  trackEvent('flight_search', {
+export function trackFlightSearch({ origin, destinations, tripType, travelers, preference, dateFlexible, nearbyAirportsEnabled } = {}) {
+  trackEvent('search_submitted', {
     origin,
     destination: Array.isArray(destinations) ? destinations.join(',') : destinations,
     trip_type: tripType,
     passengers: travelers,
-    cabin_class: 'economy', // this app doesn't collect cabin class; all fares are economy
     preference,
     date_flexible: Boolean(dateFlexible),
     nearby_airports_enabled: Boolean(nearbyAirportsEnabled),
   });
 }
 
-// There's no live flight booking in this app (dummy/mock only). "Selecting"
-// a flight means expanding a recommendation to inspect its flight legs —
-// the closest real analog to picking an option out of the list.
-export function trackSelectFlight({ rank, isTopPick, usesNearbyAirport }) {
-  trackEvent('select_flight', {
-    rank,
-    is_top_pick: Boolean(isTopPick),
-    uses_nearby_airport: Boolean(usesNearbyAirport),
-  });
-}
-
-export function trackAIAgentMessage({ action, success, page = 'ai-agent' }) {
-  // Never pass the actual chat message/content here.
-  trackEvent('ai_agent_message', {
-    action,
-    success: Boolean(success),
-    page,
-  });
-}
-
-export function trackLogin({ method }) {
-  trackEvent('login', { method });
-}
-
-export function trackSignUp({ method }) {
-  trackEvent('sign_up', { method });
-}
-
-export function trackBeginCheckout({ plan, valueInr }) {
-  trackEvent('begin_checkout', {
-    plan,
-    currency: 'INR',
-    value: valueInr,
-  });
-}
-
-export function trackPurchase({ plan, valueInr, orderId }) {
-  trackEvent('purchase', {
-    plan,
-    currency: 'INR',
-    value: valueInr,
-    transaction_id: orderId, // Razorpay order id — not sensitive on its own
-  });
-}
-
-export function trackHotelSearch({ iataCode, resultCount }) {
-  trackEvent('hotel_search', { iata_code: iataCode, result_count: resultCount });
-}
-
-export function trackSelectHotel({ iataCode, hasRating }) {
-  trackEvent('select_hotel', { iata_code: iataCode, has_rating: Boolean(hasRating) });
-}
-
-export function trackRestaurantSearch({ iataCode, resultCount }) {
-  trackEvent('restaurant_search', { iata_code: iataCode, result_count: resultCount });
-}
-
-export function trackSelectRestaurant({ iataCode, hasRating }) {
-  trackEvent('select_restaurant', { iata_code: iataCode, has_rating: Boolean(hasRating) });
-}
-
-export function trackAttractionSearch({ iataCode, resultCount }) {
-  trackEvent('attraction_search', { iata_code: iataCode, result_count: resultCount });
-}
-
-export function trackSelectAttraction({ iataCode, hasRating }) {
-  trackEvent('select_attraction', { iata_code: iataCode, has_rating: Boolean(hasRating) });
-}
-
-// ---------------------------------------------------------------------------
-// AI FlightWise PM Funnel & Decision Intelligence Event Instrumentation
-// ---------------------------------------------------------------------------
-
-export function trackSearchSubmitted({ origin, destinations, tripType, travelers, preference, hasBudget }) {
+export function trackSearchSubmitted({ origin, destinations, tripType, travelers, preference, hasBudget } = {}) {
   trackEvent('search_submitted', {
     origin,
     destinations: Array.isArray(destinations) ? destinations.join(',') : destinations,
@@ -178,7 +111,7 @@ export function trackSearchSubmitted({ origin, destinations, tripType, travelers
   });
 }
 
-export function trackResultsViewed({ recommendationCount, hasTopPick, tripType }) {
+export function trackResultsViewed({ recommendationCount, hasTopPick, tripType } = {}) {
   trackEvent('results_viewed', {
     recommendation_count: recommendationCount,
     has_top_pick: Boolean(hasTopPick),
@@ -186,8 +119,18 @@ export function trackResultsViewed({ recommendationCount, hasTopPick, tripType }
   });
 }
 
-export function trackRecommendationExpanded({ rank, isTopPick, usesNearbyAirport, category }) {
-  trackEvent('recommendation_expanded', {
+export function trackSelectFlight({ rank, isTopPick, usesNearbyAirport, experimentId, variant } = {}) {
+  trackEvent('recommendation_selected', {
+    rank,
+    is_top_pick: Boolean(isTopPick),
+    uses_nearby_airport: Boolean(usesNearbyAirport),
+    experiment_id: experimentId,
+    variant,
+  }, { experimentId, variant });
+}
+
+export function trackRecommendationExpanded({ rank, isTopPick, usesNearbyAirport, category } = {}) {
+  trackEvent('recommendation_selected', {
     rank,
     is_top_pick: Boolean(isTopPick),
     uses_nearby_airport: Boolean(usesNearbyAirport),
@@ -195,53 +138,111 @@ export function trackRecommendationExpanded({ rank, isTopPick, usesNearbyAirport
   });
 }
 
-export function trackTradeoffCompared({ category, total_options_compared }) {
-  trackEvent('tradeoff_compared', {
-    category,
-    total_options_compared: total_options_compared || 3,
+export function trackItinerarySaved({ tripId, action = 'save' } = {}) {
+  trackEvent('trip_saved', {
+    trip_id: tripId,
+    action,
+  }, { itineraryId: tripId });
+}
+
+export function trackItineraryShared({ tripId } = {}) {
+  trackEvent('trip_shared', {
+    trip_id: tripId,
+  }, { itineraryId: tripId });
+}
+
+export function trackBeginCheckout({ plan, valueInr } = {}) {
+  trackEvent('checkout_initiated', {
+    plan,
+    currency: 'INR',
+    value: valueInr,
   });
 }
 
-export function trackRecommendationFeedbackSubmitted({ isHelpful, reason, hasComment }) {
-  trackEvent('recommendation_feedback_submitted', {
+export function trackPurchase({ plan, valueInr, orderId } = {}) {
+  trackEvent('payment_verified', {
+    plan,
+    currency: 'INR',
+    value: valueInr,
+    transaction_id: orderId,
+  }, { idempotencyKey: `pay_${orderId}` });
+}
+
+export function trackRecommendationFeedbackSubmitted({ isHelpful, reason, hasComment } = {}) {
+  trackEvent('feedback_submitted', {
     is_helpful: Boolean(isHelpful),
     reason: reason || 'none',
     has_comment: Boolean(hasComment),
   });
 }
 
-export function trackItinerarySaved({ tripId, action = 'save' }) {
-  trackEvent('itinerary_saved', {
-    trip_id: tripId,
-    action,
-  });
-}
-
-export function trackItineraryShared({ tripId }) {
-  trackEvent('itinerary_shared', {
-    trip_id: tripId,
-  });
-}
-
-export function trackItineraryExported({ format = 'pdf', hasHotels, hasAttractions }) {
-  trackEvent('itinerary_exported', {
-    format,
-    has_hotels: Boolean(hasHotels),
-    has_attractions: Boolean(hasAttractions),
-  });
-}
-
-export function trackCopilotMessageSent({ action = 'chat', success = true }) {
-  trackEvent('copilot_message_sent', {
-    action,
-    success: Boolean(success),
-  });
-}
-
-export function trackExperimentAssigned({ experimentName, variantId }) {
+export function trackExperimentAssigned({ experimentName, variantId } = {}) {
   trackEvent('experiment_assigned', {
     experiment_name: experimentName,
     variant_id: variantId,
+  }, { experimentId: experimentName, variant: variantId });
+}
+
+export function trackExperimentExposed({ experimentName, variantId } = {}) {
+  trackEvent('experiment_exposed', {
+    experiment_name: experimentName,
+    variant_id: variantId,
+  }, { experimentId: experimentName, variant: variantId });
+}
+
+export function trackAIAgentMessage({ action, success, page = 'ai-agent' } = {}) {
+  trackEvent('ai_chat_message', {
+    action,
+    success: Boolean(success),
+    page,
   });
 }
 
+export function trackHotelSearch({ iataCode, resultCount } = {}) {
+  trackEvent('hotel_search', { iata_code: iataCode, result_count: resultCount });
+}
+
+export function trackSelectHotel({ iataCode, hasRating } = {}) {
+  trackEvent('select_hotel', { iata_code: iataCode, has_rating: Boolean(hasRating) });
+}
+
+export function trackRestaurantSearch({ iataCode, resultCount } = {}) {
+  trackEvent('restaurant_search', { iata_code: iataCode, result_count: resultCount });
+}
+
+export function trackSelectRestaurant({ iataCode, hasRating } = {}) {
+  trackEvent('select_restaurant', { iata_code: iataCode, has_rating: Boolean(hasRating) });
+}
+
+export function trackAttractionSearch({ iataCode, resultCount } = {}) {
+  trackEvent('attraction_search', { iata_code: iataCode, result_count: resultCount });
+}
+
+export function trackSelectAttraction({ iataCode, hasRating } = {}) {
+  trackEvent('select_attraction', { iata_code: iataCode, has_rating: Boolean(hasRating) });
+}
+
+export function trackTradeoffCompared({ category, total_options_compared } = {}) {
+  trackEvent('tradeoff_compared', { category, total_options_compared: total_options_compared || 3 });
+}
+
+export function trackItineraryExported({ format = 'pdf', hasHotels, hasAttractions } = {}) {
+  trackEvent('itinerary_exported', { format, has_hotels: Boolean(hasHotels), has_attractions: Boolean(hasAttractions) });
+}
+
+export function trackCopilotMessageSent({ action = 'chat', success = true } = {}) {
+  trackEvent('copilot_message_sent', { action, success: Boolean(success) });
+}
+
+export function trackLogin({ method } = {}) {
+  trackEvent('login', { method });
+}
+
+export function trackSignUp({ method } = {}) {
+  trackEvent('sign_up', { method });
+}
+
+export const analytics = {
+  track: trackEvent,
+  getSessionId: getOrCreateSessionId,
+};
