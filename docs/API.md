@@ -204,10 +204,16 @@ Remove a trip from your saved list.
 
 ## Places
 
-Backed by Google Places API (New) — requires `GOOGLE_PLACES_API_KEY` (see `backend/.env.example`). Returns `502 PLACES_PROVIDER_ERROR` if the provider call fails, or `500 PLACES_NOT_CONFIGURED` if no key is set.
+Backed by Geoapify Places API (v2) — requires `GEOAPIFY_API_KEY` (see `backend/.env.example`). Returns `502 PLACES_PROVIDER_ERROR` if the provider call fails, or `500 PLACES_NOT_CONFIGURED` if no key is set.
+
+### `GET /places/:iataCode/hotels` 🔓
+Hotels, guest houses, and hostels near the airport's city (5km radius).
+
+### `GET /places/:iataCode/restaurants` 🔓
+Restaurants, cafes, and catering venues near the airport's city (5km radius).
 
 ### `GET /places/:iataCode/attractions` 🔓
-Tourist attractions/places of interest near the airport's city (10km radius), for the destination's "things to do" section. Distinct from `/places/:iataCode/hotels` and `/places/:iataCode/restaurants`. Response:
+Tourist attractions and sights near the airport's city (10km radius), for the destination's "things to do" section. Response:
 ```json
 {
   "status": "success",
@@ -217,20 +223,19 @@ Tourist attractions/places of interest near the airport's city (10km radius), fo
       {
         "id": "...",
         "name": "Eiffel Tower",
-        "description": "Iconic 19th-century iron tower...",
-        "category": "Tourist attraction",
         "address": "Champ de Mars, 5 Av. Anatole France, 75007 Paris",
         "rating": 4.6,
         "ratingCount": 340000,
-        "mapsUri": "https://maps.google.com/?cid=...",
+        "mapsUri": "https://www.google.com/maps/search/?api=1&query=48.8584,2.2945",
         "location": { "lat": 48.8584, "lon": 2.2945 },
-        "photoName": "places/.../photos/..."
+        "countryCode": "fr",
+        "imageUrl": "/images/things-to-do/thing-1-1.jpg"
       }
     ]
   }
 }
 ```
-`description` and `category` are only populated when Google Places provides them for that place (`editorialSummary` / `primaryTypeDisplayName`) — no data is invented when absent. Use `photoName` with `GET /places/photo?name=...` (existing endpoint) to render a photo.
+Images map to local assets per country set with reliable fallback so UI cards never show broken images.
 
 ---
 

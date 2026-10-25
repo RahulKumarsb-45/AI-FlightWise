@@ -1,9 +1,7 @@
 jest.mock('../../src/providers/flight/mockProvider');
-jest.mock('../../src/providers/flight/amadeusProvider');
 jest.mock('../../src/providers/flight/ignavProvider');
 
 const mockProvider = require('../../src/providers/flight/mockProvider');
-const amadeusProvider = require('../../src/providers/flight/amadeusProvider');
 const ignavProvider = require('../../src/providers/flight/ignavProvider');
 const config = require('../../src/config/env');
 const providerFactory = require('../../src/providers/flight/providerFactory');
@@ -21,11 +19,6 @@ describe('providerFactory', () => {
   test('getProvider() returns ignavProvider when FLIGHT_PROVIDER=ignav', () => {
     config.flightProvider = 'ignav';
     expect(providerFactory.getProvider()).toBe(ignavProvider);
-  });
-
-  test('getProvider() returns amadeusProvider when FLIGHT_PROVIDER=amadeus', () => {
-    config.flightProvider = 'amadeus';
-    expect(providerFactory.getProvider()).toBe(amadeusProvider);
   });
 
   test('getProvider() returns mockProvider when FLIGHT_PROVIDER=mock', () => {
@@ -54,14 +47,6 @@ describe('providerFactory', () => {
     ignavProvider.search.mockRejectedValue(new Error('Ignav credentials are not configured.'));
 
     await expect(providerFactory.searchWithFallback(params)).rejects.toThrow('Ignav credentials are not configured.');
-    expect(mockProvider.search).not.toHaveBeenCalled();
-  });
-
-  test('searchWithFallback does NOT silently substitute mock data when the real provider (amadeus) throws', async () => {
-    config.flightProvider = 'amadeus';
-    amadeusProvider.search.mockRejectedValue(new Error('Amadeus provider error'));
-
-    await expect(providerFactory.searchWithFallback(params)).rejects.toThrow('Amadeus provider error');
     expect(mockProvider.search).not.toHaveBeenCalled();
   });
 

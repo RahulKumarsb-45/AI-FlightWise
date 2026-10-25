@@ -7,7 +7,7 @@
  * suites (auth.test.js, payment.test.js, shareTrip.test.js): it runs the
  * REAL production code path over HTTP against a REAL Postgres database via
  * tests/helpers/db.js, with `axios` as the only mocked boundary (the
- * external Gemini/Anthropic HTTP call). No real AI provider key or network
+ * external AI HTTP call). No real AI provider key or network
  * call is ever used.
  *
  * This is what proves the actual SQL in aiChatService.js is correct against
@@ -254,60 +254,3 @@ describe('GET /api/ai/conversations/:conversationId — real Postgres shape and 
   });
 });
 
-// ---------------------------------------------------------------------
-// Anthropic provider — real end-to-end HTTP round trip
-// ---------------------------------------------------------------------
-describe('POST /api/ai/chat — with AI_PROVIDER=anthropic, real DB round trip', () => {
-  beforeEach(() => {
-    config.ai.provider = 'anthropic';
-    config.ai.anthropic = { apiKey: 'fake-test-anthropic-key', model: 'claude-test-model' };
-  });
-
-  function anthropicSuccess({ reply = 'Sure, tell me more.', extractedParams = null } = {}) {
-    return { data: { content: [{ type: 'text', text: JSON.stringify({ reply, extractedParams }) }] } };
-  }
-
-  test('a full chat round trip persists correctly to Postgres when Anthropic is the configured provider', async () => {
-    const extractedParams = { originCity: 'Bengaluru', destinationCountries: ['UAE'], readyToSearch: false };
-    axios.post.mockResolvedValueOnce(anthropicSuccess({ reply: 'Great choice!', extractedParams }));
-
-    const res = await authed(request(app).post('/api/ai/chat')).send({ message: 'I want to visit the UAE' });
-
-    expect(res.status).toBe(200);
-    expect(res.body.data).toEqual({ conversationId: expect.any(String), reply: 'Great choice!', extractedParams });
-    expect(axios.post).toHaveBeenCalledWith(
-      'https://api.anthropic.com/v1/messages',
-      expect.anything(),
-      expect.objectContaining({ headers: expect.objectContaining({ 'x-api-key': 'fake-test-anthropic-key' }) })
-    );
-
-    const msgResult = await query(
-      `SELECT role, content, structured_params FROM ai_messages WHERE conversation_id = $1 ORDER BY created_at ASC`,
-      [res.body.data.conversationId]
-    );
-    expect(msgResult.rows[0]).toMatchObject({ role: 'user', content: 'I want to visit the UAE' });
-    expect(msgResult.rows[1]).toMatchObject({ role: 'assistant', content: 'Great choice!' });
-    expect(msgResult.rows[1].structured_params).toEqual(extractedParams);
-  });
-
-  test('malformed Anthropic output surfaces as 502 AI_PROVIDER_ERROR and creates no conversation row', async () => {
-    axios.post.mockResolvedValueOnce({ data: { content: [{ type: 'text', text: 'not json' }] } });
-
-    const res = await authed(request(app).post('/api/ai/chat')).send({ message: 'hi' });
-
-    expect(res.status).toBe(502);
-    expect(res.body.errorCode).toBe('AI_PROVIDER_ERROR');
-    const convCount = await query('SELECT count(*)::int AS count FROM ai_conversations WHERE user_id = $1', [userIdA]);
-    expect(convCount.rows[0].count).toBe(0);
-  });
-
-  test('missing ANTHROPIC_API_KEY fails closed with 500 AI_NOT_CONFIGURED and never calls the network', async () => {
-    config.ai.anthropic.apiKey = undefined;
-
-    const res = await authed(request(app).post('/api/ai/chat')).send({ message: 'hi' });
-
-    expect(res.status).toBe(500);
-    expect(res.body.errorCode).toBe('AI_NOT_CONFIGURED');
-    expect(axios.post).not.toHaveBeenCalled();
-  });
-});

@@ -5,11 +5,10 @@
  *  - Fully disabled whenever NEXT_PUBLIC_GA_MEASUREMENT_ID is unset — no
  *    script is injected, no network calls happen, nothing else changes.
  *  - Never throws. A blocked/failed/missing gtag must never break the app
- *    (search, AI agent, auth, Razorpay, hotels, weather, Sentry, rendering).
+ *    (search, AI agent, auth, Razorpay, hotels, weather, rendering).
  *  - Single choke point for outbound event parameters, so the "never send
  *    PII/secrets" rule only has to be enforced in one place instead of at
- *    every call site. Mirrors the same intent as
- *    backend/src/sentry/scrubEvent.js, just for the frontend/GA side.
+ *    every call site.
  */
 
 export const GA_MEASUREMENT_ID = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID || '';

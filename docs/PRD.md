@@ -24,7 +24,7 @@ Travelers, especially budget-conscious travelers, solo explorers, students, and 
 **AI FlightWise** is an AI-powered flight decision platform built to explain trade-offs rather than simply list inventory. Instead of acting as an airline booking engine, AI FlightWise provides:
 1. **Decision Intelligence Matrix:** Direct, quantified comparison across Cheapest, Fastest, and Best Balanced options.
 2. **Deterministic Explainability:** Clear, grounded explanations of *why* an option was selected, its distinct advantages, drawbacks, and the specific traveler persona it best suits.
-3. **FlightWise Copilot:** A conversational AI partner grounded in search constraints that extracts multi-city requirements and explains itinerary trade-offs without fabricating prices or availability.
+3. **Aero AI:** A conversational AI partner grounded in search constraints that extracts multi-city requirements and explains itinerary trade-offs without fabricating prices or availability.
 4. **Holistic Trip Context:** Multi-city circuit routing, nearby airport expansion, destination weather, attractions cost estimation, and living expenses.
 
 ---
@@ -116,11 +116,11 @@ Travelers, especially budget-conscious travelers, solo explorers, students, and 
 - **Frontend:** Next.js 14 App Router, Vanilla CSS + Tailwind utilities, TanStack React Query v5, Lucide React icons.
 - **Backend:** Express.js, Node.js, PostgreSQL with raw parameterized SQL (no ORM overhead).
 - **Optimizer Engine:** Multi-stage pipeline: Airport Expansion → Permutation Generation → Flight Fetch Stage → Pruning → Scoring → Decision Explainability.
-- **AI Module:** Groq / Anthropic structured output extraction with strict JSON schema and deterministic fallback.
+- **AI Module:** Groq structured output extraction with strict JSON schema and deterministic fallback.
 
 ### 5.2 Non-Functional Requirements
 - **Performance:** Recommendation optimization latency < 1.5s for standard searches; evaluation benchmark < 100ms per case in baseline mode.
-- **Privacy & Security:** Zero PII logged to analytics or Sentry; sanitized query params; parameterized SQL preventing SQL injection; JWT access & refresh tokens.
+- **Privacy & Security:** Zero PII logged to analytics; sanitized query params; parameterized SQL preventing SQL injection; JWT access & refresh tokens.
 - **Reliability:** Graceful fallbacks when optional third-party integrations (places, weather, AI) lack live API keys.
 
 ---

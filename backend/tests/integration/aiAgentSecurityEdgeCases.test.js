@@ -87,7 +87,7 @@ beforeEach(() => {
 afterEach(() => {
   config.ai.provider = ORIGINAL_AI_CONFIG.provider;
   config.ai.gemini = { ...ORIGINAL_AI_CONFIG.gemini };
-  config.ai.anthropic = { ...ORIGINAL_AI_CONFIG.anthropic };
+  config.ai.groq = { ...ORIGINAL_AI_CONFIG.groq };
 });
 
 function geminiSuccess({ reply = 'Sure — where are you flying from?', extractedParams = null } = {}) {
@@ -127,7 +127,7 @@ function mockDbForExistingConversation({ conversationId, ownerId, historyRows = 
 function assertNoSecretsLeaked(res) {
   const body = JSON.stringify(res.body);
   expect(body).not.toContain(config.ai.gemini.apiKey);
-  if (config.ai.anthropic?.apiKey) expect(body).not.toContain(config.ai.anthropic.apiKey);
+  if (config.ai.groq?.apiKey) expect(body).not.toContain(config.ai.groq.apiKey);
   expect(body).not.toContain(config.jwt.accessSecret);
   expect(body).not.toContain(config.jwt.refreshSecret);
   expect(body).not.toContain(config.db.url || '');
@@ -450,12 +450,12 @@ describe('POST /api/ai/chat — error safety (provider unavailable, and no secre
     expect(JSON.stringify(res.body)).not.toContain(config.db.url || '__no_db_url_configured__');
   });
 
-  test('every error scenario above is also free of the anthropic API key, even when gemini is the active provider', async () => {
-    config.ai.anthropic = { apiKey: 'fake-test-anthropic-key', model: 'anthropic-test-model' };
+  test('every error scenario above is also free of the groq API key, even when another provider is active', async () => {
+    config.ai.groq = { apiKey: 'fake-test-groq-key', model: 'groq-test-model' };
     axios.post.mockRejectedValueOnce(new Error('connect ECONNREFUSED'));
 
     const res = await authed(request(app).post('/api/ai/chat')).send({ message: 'hi' });
 
-    expect(JSON.stringify(res.body)).not.toContain('fake-test-anthropic-key');
+    expect(JSON.stringify(res.body)).not.toContain('fake-test-groq-key');
   });
 });

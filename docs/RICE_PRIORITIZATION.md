@@ -31,7 +31,7 @@ $$\text{RICE Score} = \frac{\text{Reach} \times \text{Impact} \times \text{Confi
 | **3** | **Automated AI Quality & Evaluation Benchmark** | 10,000 | 2.0 | 90% (0.9) | 1.5 | **12,000** | **Implemented (v1.0)** |
 | **4** | **Nearby Airport Ground Transfer Cost Estimator** | 8,000 | 2.0 | 80% (0.8) | 1.5 | **8,533** | *Planned (v1.1)* |
 | **5** | **Multi-City Circuit Route Visualizer (Interactive Map)**| 12,000 | 1.5 | 80% (0.8) | 2.5 | **5,760** | *Planned (v1.1)* |
-| **6** | **FlightWise Copilot Contextual Itinerary Refinements** | 6,000 | 2.0 | 70% (0.7) | 2.0 | **4,200** | *Planned (v1.2)* |
+| **6** | **Aero AI Contextual Itinerary Refinements** | 6,000 | 2.0 | 70% (0.7) | 2.0 | **4,200** | *Planned (v1.2)* |
 | **7** | **Baggage Fee & Hidden Fare Transparency Breakdown** | 14,000 | 1.0 | 60% (0.6) | 2.5 | **3,360** | *Backlog* |
 | **8** | **Collaborative Group Trip Planning & Voting** | 4,000 | 2.0 | 50% (0.5) | 3.5 | **1,143** | *Backlog* |
 | **9** | **Real-Time Price Volatility Predictor** | 10,000 | 1.5 | 40% (0.4) | 6.0 | **1,000** | *Future Scope* |

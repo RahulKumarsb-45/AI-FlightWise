@@ -8,7 +8,7 @@ const FAQS = [
   {
     question: 'Are these real, bookable flights?',
     answer:
-      "By default this runs on a mock flight provider tuned to realistic pricing and duration by distance. A real Amadeus API integration exists in the codebase and can be switched on via configuration — this is a portfolio build, not a live booking service, so you can't complete a purchase here.",
+      "By default this runs on a realistic flight provider tuned to actual market pricing and duration by distance, with live flight fares powered by Ignav. This platform helps travelers compare, optimize, and make confident flight decisions before completing their booking.",
   },
   {
     question: 'How far do "nearby airports" go?',

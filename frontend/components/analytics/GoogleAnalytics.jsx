@@ -37,9 +37,7 @@ function GAPageViewTracker() {
 
 /**
  * Root-level GA4 setup. Renders nothing visible; entirely a no-op when
- * NEXT_PUBLIC_GA_MEASUREMENT_ID is unset (matches the Sentry
- * NEXT_PUBLIC_SENTRY_DSN pattern used elsewhere in this app — see
- * sentry.client.config.js).
+ * NEXT_PUBLIC_GA_MEASUREMENT_ID is unset.
  *
  * Bootstrap ordering (Q8 correction — see README "Known limitations"):
  * the dataLayer/gtag queue stub is loaded with strategy="beforeInteractive"

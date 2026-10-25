@@ -65,7 +65,7 @@ All product components were verified through automated regression suites:
 | Suite | Component Tested | Result |
 | :--- | :--- | :---: |
 | **Backend Node Unit Tests** | Share token entropy, idempotency, security boundaries | **11 / 11 Passed** |
-| **Backend Jest Suite** | Date generation, Sentry sanitization, Geoapify places, early-break optimization, Ignav concurrency/retries, decision intelligence, feedback controller, evaluation runner | **320 / 320 Passed** (26 suites) |
+| **Backend Jest Suite** | Date generation, Geoapify places, early-break optimization, Ignav concurrency/retries, decision intelligence, feedback controller, evaluation runner | **All Passed** |
 | **Frontend Test Suite** | Components, places cards, timeline, expense calculator, analytics, A/B experiment framework | **140 / 140 Passed** |
 | **Frontend Production Build** | Next.js 14 App Router, static generation, TypeScript/JS bundling | **100% Successful** |
 
@@ -74,7 +74,7 @@ All product components were verified through automated regression suites:
 ## 5. Known Limitations & Future Horizons
 
 ### Current Limitations
-1. **Live Booking:** Application simulates checkout and booking; integration with live airline GDS (Amadeus/Sabre ticketing) is deferred to future commercial phases.
+1. **Live Booking:** Application simulates checkout and booking; integration with live airline ticket issuance is deferred to future commercial phases.
 2. **Transfer Transit Pricing:** Regional airport transfers are currently tagged qualitatively rather than calculating exact train ticket costs in real-time.
 
 ### Next Roadmap Horizons

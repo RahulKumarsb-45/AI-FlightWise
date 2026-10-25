@@ -11,8 +11,8 @@
                                       │
                                       ▼
                           ┌───────────────────────┐
-                          │ Flight Provider Layer  │
-                          │ (mock | Amadeus | Ignav)│
+                          │ Flight Provider Layer │
+                          │     (mock | Ignav)    │
                           └───────────────────────┘
 ```
 
@@ -72,20 +72,11 @@ Two things worth flagging:
 
 ## Caching
 
-- **Flight search results**: three-layer cache keyed by a hash of the exact search params, 20-minute TTL on every layer.
-  - **L0 — in-process memory** (`cache/memoryCache.js`'s `flightMemoryCache`, used from `cache/flightCache.js`): fastest path, this instance only. A hit here skips Redis and Postgres entirely. Populated on every read/write, including as a backfill after a Redis or Postgres hit, so a repeat request for the same search on the same instance is effectively free — this matters most on a single-instance deployment with no Redis configured, where it still meaningfully cuts down on Postgres round trips.
-  - **L1 — Redis** (`cache/redisCache.js`), when `REDIS_URL` is set: shared across every backend instance, so a cache hit on one instance is a hit on all of them.
-  - **L2 — Postgres** (`flight_cache` table, `cache/flightCache.js`): the durable source of truth, unconditionally still written on every cache set. A Postgres hit backfills both Redis and memory.
-  - If `REDIS_URL` is unset, or Redis is unreachable, or the connection drops mid-run, `redisClient.isAvailable()` reports `false` and every read/write silently skips straight to Postgres (after checking memory first) — this is exactly the pre-Redis behavior, so removing `REDIS_URL` at any time is a safe, reversible operation.
-  - A cache-read failure on any layer never blocks a search — it just falls through to the next layer, and ultimately to calling the provider directly.
-- **Static data** (airport search results) and the **Amadeus OAuth token**: in-process memory cache (`cache/memoryCache.js`, separate singleton instances from the flight cache's). Not shared across multiple server instances. These are smaller, cheaper-to-recompute datasets than flight search results, so they weren't moved to Redis — `cache/redisCache.js` is written as a generic namespaced get/set/del helper, so migrating them later is a small, isolated change rather than a redesign.
-
-### Redis connection lifecycle (`cache/redisClient.js`)
-
-- Connects once at boot (`server.js`, before `app.listen`), using node-redis v4's built-in `reconnectStrategy` with capped exponential backoff (200ms × attempt, capped at 3s, giving up after 10 attempts) for reconnecting an *established* connection that drops.
-- A failed **initial** connection attempt (before the socket-level `reconnectStrategy` ever gets involved) is caught and logged, and does not permanently wedge the module: `connectPromise`/`client` are cleared on that failure, so the next call to `connectRedis()` (e.g. triggered by a later incoming request) builds a fresh client and genuinely retries, rather than replaying the same cached `null` forever.
-- `isAvailable()` is the single check every cache read/write makes — it's `false` whenever Redis isn't configured, hasn't finished connecting yet, or has dropped, so callers never need their own try/catch around "is Redis up."
-- On `SIGTERM`/`SIGINT`, `server.js` closes the HTTP server first (draining in-flight requests), then calls `disconnectRedis()` (graceful `QUIT`), then closes the Postgres pool — in that order, so nothing loses its connection mid-query.
+- **Flight search results**: two-layer cache keyed by a hash of the exact search params, 20-minute TTL on every layer.
+  - **L0 — in-process memory** (`cache/memoryCache.js`'s `flightMemoryCache`, used from `cache/flightCache.js`): fastest path, this instance only. A hit here skips Postgres entirely. Populated on every read/write, including as a backfill after a Postgres hit, so a repeat request for the same search on the same instance is effectively free.
+  - **L1 — Postgres** (`flight_cache` table, `cache/flightCache.js`): the durable source of truth, written on cache set and queried on L0 miss.
+  - A cache-read failure on any layer never blocks a search — it just falls through to calling the flight provider directly.
+- **Static data** (airport search results): in-process memory cache (`cache/memoryCache.js`, separate singleton instances from the flight cache's). Not shared across multiple server instances. These are small, fast-to-compute datasets.
 
 ## Provider abstraction
 
@@ -94,38 +85,34 @@ optimizer/  ──depends on──►  providers/flight/providerFactory.js
                                         │
                         ┌───────────────┼───────────────┐
                         ▼               ▼               ▼
-                  mockProvider.js  amadeusProvider.js  ignavProvider.js
+                  mockProvider.js  Provider.js  ignavProvider.js
 ```
 
-The optimizer never imports a concrete provider. `providerFactory.getProvider()` picks based on `FLIGHT_PROVIDER` env var (`mock`, `amadeus`, or `ignav`).
+The optimizer never imports a concrete provider. `providerFactory.getProvider()` picks based on `FLIGHT_PROVIDER` env var (`mock`, ``, or `ignav`).
 
-`searchWithFallback()` does **not** fall back to the mock provider when the configured real provider (Amadeus or Ignav) throws — it used to, but that meant a misconfigured or down real provider could silently serve made-up mock prices as if they were real. Today an error from the configured provider (missing/invalid credentials, a billing problem, an upstream outage) propagates to the caller and becomes a clear error response instead. The mock provider only ever runs when `FLIGHT_PROVIDER=mock` is explicitly set (local dev and automated tests), never as an automatic substitute for a real provider. Per-candidate isolation in the optimizer's `flightFetchStage.js` is unchanged: one candidate's fetch failing (e.g. no offers for one leg) still only drops that candidate rather than failing the whole search.
+`searchWithFallback()` does **not** fall back to the mock provider when the configured real provider (Ignav) throws. An error from the configured provider (missing/invalid credentials, a billing problem, an upstream outage) propagates to the caller and becomes a clear error response instead. The mock provider only ever runs when `FLIGHT_PROVIDER=mock` is explicitly set (local dev and automated tests), never as an automatic substitute for a real provider. Per-candidate isolation in the optimizer's `flightFetchStage.js` is unchanged: one candidate's fetch failing (e.g. no offers for one leg) still only drops that candidate rather than failing the whole search.
 
-## Error monitoring
+## Logging & Error Handling
 
-Sentry is wired into both apps but fully optional and off by default — leave `SENTRY_DSN` / `NEXT_PUBLIC_SENTRY_DSN` unset and neither app makes any Sentry-related network calls.
-
-- **Backend** (`src/instrument.js`): initialized before `express` is required (required first thing in `app.js`) so its instrumentation can patch `http`/`express` correctly. Wired via `Sentry.setupExpressErrorHandler(app)`, placed after routes/`notFoundHandler` but before the existing `middleware/errorHandler.js` — Sentry captures the error and calls `next(err)`, so the app's response shape/status codes are unchanged. Only 5xx `AppError`s and non-`AppError` exceptions are forwarded; expected 4xx errors (validation, bad credentials, 404s) are normal application flow, not incidents.
-- **Frontend** (`sentry.client.config.js` / `sentry.server.config.js` / `sentry.edge.config.js` + `instrumentation.js`): standard `@sentry/nextjs` App Router setup. `app/error.js` (route-level) and `app/global-error.js` (root-layout-level) both call `Sentry.captureException`.
-- **Scrubbing**: `backend/src/sentry/scrubEvent.js` strips anything that looks like a credential (passwords, JWTs, API keys, Razorpay fields, `Authorization`/`Cookie` headers) from every event's `request`, `extra`, and `contexts` before it's sent — see that file's tests (`backend/tests/unit/sentryScrub.test.js`) for the exact behavior.
-- **Disabling**: three independent ways nothing gets sent — no DSN configured, `SENTRY_ENABLED=false` (backend) explicitly, or `NODE_ENV=test` (always off in tests, regardless of DSN).
+- **Backend** (`src/logger/logger.js`): structured JSON logger in production and human-readable format in development.
+- **Centralized error handler** (`src/middleware/errorHandler.js`): normalizes operational `AppError` instances with clear error codes and HTTP statuses, preventing internal stack traces or database connection strings from leaking to clients. Expected 4xx errors (validation, bad credentials, 404s) are clean operational responses.
 
 ## Analytics
 
-Google Analytics 4 (`frontend/lib/analytics.js` + `frontend/components/analytics/GoogleAnalytics.jsx`) follows the same optional/off-by-default pattern as Sentry above, keyed on `NEXT_PUBLIC_GA_MEASUREMENT_ID` instead of a DSN.
+Google Analytics 4 (`frontend/lib/analytics.js` + `frontend/components/analytics/GoogleAnalytics.jsx`) follows the same optional/off-by-default pattern keyed on `NEXT_PUBLIC_GA_MEASUREMENT_ID` instead of a DSN.
 
 - **Loading**: `next/script` (`afterInteractive`) injects `gtag.js` only when a Measurement ID is present; nothing is rendered or requested otherwise.
 - **Page views**: one client-side listener (`usePathname`/`useSearchParams`) sends `page_view` on mount and on every subsequent route change. GA's own automatic pageview is disabled (`send_page_view: false`) so this is the single source of truth and the initial load is never double-counted — App Router client-side navigations don't produce a new document load for GA to see on its own.
 - **Events**: named helpers only (`trackFlightSearch`, `trackSelectFlight`, `trackAIAgentMessage`, `trackLogin`/`trackSignUp`, `trackBeginCheckout`/`trackPurchase`, `trackHotelSearch`/`trackSelectHotel`, `trackRestaurantSearch`/`trackSelectRestaurant`) — no raw `gtag()` calls elsewhere in the app. See the README's Analytics section for the full event list and what each one sends.
-- **Scrubbing**: `trackEvent()` allowlists parameter value types (string/number/boolean only) and drops any key matching a credential/PII pattern before anything reaches `gtag()` — the frontend analog of `backend/src/sentry/scrubEvent.js`.
+- **Scrubbing**: `trackEvent()` allowlists parameter value types (string/number/boolean only) and drops any key matching a credential/PII pattern before anything reaches `gtag()`.
 - **Fail-silent**: every `gtag()` call is wrapped so a blocked, missing, or failed script can never throw — analytics can never break search, the AI agent, auth, Razorpay checkout, hotels/restaurants, weather, or rendering.
 
 ## Progressive Web App
 
 `frontend/public/sw.js` + `frontend/app/manifest.js` + `frontend/components/pwa/PWAProvider.jsx`.
 
-- **Custom service worker, not a library** (e.g. next-pwa): this app's `next.config.js` already wraps webpack once for `output: 'standalone'` and again for `@sentry/nextjs`; adding workbox-webpack-plugin on top for a precache-everything model this app doesn't want (see below) was judged a worse trade than ~150 lines of plain, auditable JS with zero new dependencies. Full reasoning is in the comment block at the top of `sw.js`.
-- **Fetch handling is scoped by construction, not by a denylist**: the handler returns immediately (browser handles the request natively) for anything that isn't a same-origin `GET`. That one check is what keeps the service worker off every mutation (login, OAuth, Razorpay, AI Agent messages, trip saves — all non-GET) and everything cross-origin (the backend API, which is on a separate origin from the frontend in every environment this app ships in; GA; Sentry; OAuth providers; Razorpay checkout; Mapbox). Real navigations (`request.mode === 'navigate'`) get network-first-with-offline-fallback; `/_next/static/*` and the PWA's own icons/manifest get cache-first (both are either content-hashed or small stable brand assets); everything else same-origin (notably Next's RSC data fetches for authenticated pages like `/dashboard`) is left untouched rather than assumed safe to cache.
+- **Custom service worker, not a library**: lightweight, auditable JS (~150 lines) with zero external library overhead. Full reasoning is in the comment block at the top of `sw.js`.
+- **Fetch handling is scoped by construction, not by a denylist**: the handler returns immediately (browser handles the request natively) for anything that isn't a same-origin `GET`. That one check is what keeps the service worker off every mutation (login, OAuth, Razorpay, AI Agent messages, trip saves — all non-GET) and everything cross-origin (the backend API, which is on a separate origin from the frontend; GA; OAuth providers; Razorpay checkout; external map assets). Real navigations (`request.mode === 'navigate'`) get network-first-with-offline-fallback; `/_next/static/*` and the PWA's own icons/manifest get cache-first; everything else same-origin is left untouched rather than assumed safe to cache.
 - **No page HTML is ever cached-then-served-stale.** The offline cache only exists as a fallback for when a navigation's network request itself fails; the app has no page that's safe to serve identically to everyone regardless of auth state, so there's no "serve cached page, revalidate in background" path here.
 - **Update flow**: a newly installed worker sits in `waiting` (no `self.skipWaiting()` in `install`) until the page explicitly posts `{ type: 'SKIP_WAITING' }` to it — which only happens when the person clicks "Refresh" on `PWAProvider`'s update banner. This is deliberate: an automatic takeover mid-payment or mid-multistep-form would be worse than a slightly stale app shell for a few more minutes.
 - **Dev vs. prod**: `PWAProvider` only calls `navigator.serviceWorker.register()` when `NODE_ENV === 'production'` — `next dev`'s unhashed, frequently-changing assets are a bad fit for the cache-first `/_next/static/*` rule.

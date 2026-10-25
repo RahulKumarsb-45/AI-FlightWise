@@ -9,10 +9,6 @@
 jest.mock('axios');
 const axios = require('axios');
 
-jest.mock('../../src/cache/redisCache', () => ({
-  get: jest.fn().mockResolvedValue(null),
-  set: jest.fn().mockResolvedValue(undefined),
-}));
 
 const placesService = require('../../src/services/placesService');
 const config = require('../../src/config/env');

@@ -12,10 +12,9 @@
  * by precaching a build-time manifest of every emitted asset. That's a good
  * fit for apps that want "cache everything, works fully offline". This app
  * doesn't want that:
- *   - Next.js 14 App Router + `output: 'standalone'` + the existing
- *     @sentry/nextjs webpack wrapping in next.config.js is already three
- *     layers of webpack config composition. Bolting workbox-webpack-plugin
- *     on top as a fourth is a real source of build breakage for a feature
+ *   - Next.js 14 App Router + `output: 'standalone'` already has its own
+ *     webpack config composition. Adding workbox-webpack-plugin
+ *     is an unnecessary source of build breakage for a feature
  *     that, for this app, only needs a handful of runtime rules.
  *   - This app's actual caching needs are narrow and mostly about *what not
  *     to cache* (auth, payments, AI Agent responses, personalized pages) —
@@ -168,8 +167,8 @@ self.addEventListener('fetch', (event) => {
   // (see docker-compose.yml / .env.example) — so this one check is also
   // what keeps hands off: the entire /api/* backend (flights, auth, AI
   // Agent, payments, weather, places), Google's gtag.js + analytics
-  // collection endpoint, Sentry's ingest endpoint, the Google OAuth provider
-  // redirect, Razorpay's checkout script/iframe, and Mapbox tiles.
+  // collection endpoint, the Google OAuth provider
+  // redirect, Razorpay's checkout script/iframe, and external assets.
   if (url.origin !== self.location.origin) return;
 
   // Real, top-level browser navigations (address bar, link clicks, back/

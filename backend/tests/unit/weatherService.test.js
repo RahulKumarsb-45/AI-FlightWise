@@ -31,10 +31,7 @@
  *     touches the cache, and does not require `config.weather.apiKey` at
  *     all — it only needs airport lat/lon from the static dataset.
  *   - `weatherCache` (cache/memoryCache.js) is a plain synchronous
- *     in-process Map wrapper — get/set never reject or return promises, and
- *     there is no separate Redis/network boundary for weather caching (that
- *     only exists for the flight-search cache in cache/flightCache.js,
- *     which this suite does not touch).
+ *     in-process Map wrapper — get/set never reject or return promises.
  */
 
 jest.mock('axios');

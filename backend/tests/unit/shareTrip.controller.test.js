@@ -1,14 +1,14 @@
 /**
  * These tests exercise the REAL tripController.js / utils/tokens.js source
- * (not reimplementations of their logic) without needing a live Postgres,
- * Redis, or network — none of which are available in every environment
+ * (not reimplementations of their logic) without needing a live Postgres
+ * or network — none of which are available in every environment
  * this repo is checked into. They are a supplement to, not a replacement
  * for, tests/integration/shareTrip.test.js (which hits real HTTP routes
  * against a real database and is the fuller end-to-end check — run that
  * one too wherever Postgres is available).
  *
  * How: a handful of npm packages the require chain touches purely at
- * module-load time (dotenv, jsonwebtoken, redis, axios) aren't needed for
+ * module-load time (dotenv, jsonwebtoken, axios) aren't needed for
  * anything these tests actually call, so they're stubbed via a temporary
  * `Module._load` patch — restored in `after()`. `database/pool.js` (a
  * LOCAL file) is replaced in `require.cache` at its real resolved path
@@ -23,7 +23,6 @@ const Module = require('module');
 const NOT_INSTALLED_STUBS = {
   dotenv: { config: () => ({}) },
   jsonwebtoken: { sign: () => 'stub.jwt.token', verify: () => ({}) },
-  redis: { createClient: () => ({ on() {}, connect: async () => {}, quit: async () => {}, disconnect() {} }) },
   axios: { create: () => ({ get: async () => ({ data: {} }), post: async () => ({ data: {} }) }) },
 };
 

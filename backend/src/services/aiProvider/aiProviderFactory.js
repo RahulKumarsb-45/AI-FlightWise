@@ -1,11 +1,9 @@
 const groqProvider = require('./groqProvider');
-const anthropicProvider = require('./anthropicProvider');
 const config = require('../../config/env');
 const logger = require('../../logger/logger');
 
 const PROVIDERS = {
   groq: groqProvider,
-  anthropic: anthropicProvider,
 };
 
 function getProvider(name = config.ai.provider) {

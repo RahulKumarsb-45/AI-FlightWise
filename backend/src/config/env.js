@@ -140,17 +140,6 @@ module.exports = {
   flightProvider:
     process.env.FLIGHT_PROVIDER || 'mock',
 
-  amadeus: {
-    clientId:
-      process.env.AMADEUS_CLIENT_ID,
-
-    clientSecret:
-      process.env.AMADEUS_CLIENT_SECRET,
-
-    baseUrl:
-      process.env.AMADEUS_BASE_URL ||
-      'https://test.api.amadeus.com',
-  },
 
   ignav: {
     apiKey:
@@ -165,12 +154,11 @@ module.exports = {
   },
 
   // ============================================================
-  // AI / FLIGHTWISE COPILOT
+  // AI / AERO AI ASSISTANT
   // ============================================================
   //
-  // Groq is the primary AI provider.
-  // Current model: openai/gpt-oss-120b
-  // Anthropic remains available as an optional provider.
+  // Groq is the AI provider.
+  // Model: openai/gpt-oss-120b
   //
 
   ai: {
@@ -184,15 +172,6 @@ module.exports = {
       model:
         process.env.GROQ_MODEL ||
         'openai/gpt-oss-120b',
-    },
-
-    anthropic: {
-      apiKey:
-        process.env.ANTHROPIC_API_KEY,
-
-      model:
-        process.env.ANTHROPIC_MODEL ||
-        'claude-sonnet-4-6',
     },
   },
 
@@ -280,18 +259,6 @@ module.exports = {
       process.env.RAZORPAY_WEBHOOK_SECRET,
   },
 
-  // ============================================================
-  // Email
-  // ============================================================
-
-  email: {
-    resendApiKey:
-      process.env.RESEND_API_KEY,
-
-    from:
-      process.env.EMAIL_FROM ||
-      'noreply@aiflightwise.app',
-  },
 
   // ============================================================
   // Optimizer
@@ -341,45 +308,4 @@ module.exports = {
       ),
   },
 
-  // ============================================================
-  // Redis
-  // ============================================================
-
-  redis: {
-    url:
-      process.env.REDIS_URL || null,
-  },
-
-  // ============================================================
-  // Sentry
-  // ============================================================
-
-  sentry: {
-    dsn:
-      process.env.SENTRY_DSN || '',
-
-    environment:
-      process.env.SENTRY_ENVIRONMENT ||
-      process.env.NODE_ENV ||
-      'development',
-
-    release:
-      process.env.SENTRY_RELEASE ||
-      undefined,
-
-    tracesSampleRate: (() => {
-      const value = parseFloat(
-        process.env.SENTRY_TRACES_SAMPLE_RATE
-      );
-
-      return Number.isFinite(value)
-        ? value
-        : 0.1;
-    })(),
-
-    enabled:
-      !!process.env.SENTRY_DSN &&
-      process.env.SENTRY_ENABLED !== 'false' &&
-      process.env.NODE_ENV !== 'test',
-  },
 };

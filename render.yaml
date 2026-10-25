@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: flight-optimizer-backend
+    name: ai-flightwise-backend
     runtime: docker
     dockerfilePath: ./backend/Dockerfile
     dockerContext: ./backend
@@ -26,9 +26,6 @@ services:
         value: '20'
       - key: STATIC_CACHE_TTL_HOURS
         value: '24'
-      # Optional error monitoring — set SENTRY_DSN manually in the Render
-      # dashboard to enable; leave unset and the app runs exactly as before.
-      # SENTRY_ENVIRONMENT defaults to NODE_ENV if left unset.
       # Set these manually in the Render dashboard — deliberately not
       # generated here so a real secret never ends up committed to git:
       # DATABASE_URL, JWT_ACCESS_SECRET, JWT_REFRESH_SECRET, FRONTEND_URL

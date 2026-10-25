@@ -101,8 +101,8 @@ function splitRoundTripOfferForDisplay(offer) {
  * Fetch offers for one exact flight-leg request.
  *
  * Uses:
- * 1. Memory cache
- * 2. Redis cache
+ * 1. In-memory cache
+ * 2. PostgreSQL cache
  * 3. Provider
  *
  * Also de-duplicates identical requests that are running

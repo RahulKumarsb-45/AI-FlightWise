@@ -17,7 +17,7 @@ Give it an origin airport, 1–4 destination countries, departure/return dates, 
 5. **Intelligent Pruning & Scoring:** Eliminates extreme layovers, excessive duration outliers, and over-budget options; scores remainder on price, speed, and stops.
 6. **Decision Intelligence Matrix:** Generates side-by-side trade-off comparisons across **Cheapest**, **Fastest**, and **Best Balanced** options.
 7. **Grounded Explainability:** Deterministically explains *why* each option was selected, its concrete advantages, compromises, and which traveler persona it best suits.
-8. **FlightWise Copilot:** Conversational assistant that extracts structured multi-city search parameters without hallucinating prices or schedules.
+8. **Aero AI:** Conversational assistant that extracts structured multi-city search parameters without hallucinating prices or schedules.
 9. **Recommendation Feedback:** In-app telemetry allowing travelers to vote on recommendation quality and categorize negative issues.
 10. **AI Quality & Evaluation Dashboard:** Standardized benchmark suite (`/evaluations`) with ground-truth assertions, failure taxonomies, and latency tracking.
 
@@ -28,11 +28,11 @@ Give it an origin airport, 1–4 destination countries, departure/return dates, 
 | Layer | Technologies & Tools |
 | :--- | :--- |
 | **Frontend** | Next.js 14 (App Router), Vanilla CSS + Tailwind utilities, TanStack React Query v5, Lucide Icons, installable PWA (Service Worker) |
-| **Backend** | Node.js, Express.js, PostgreSQL (raw parameterized SQL, no ORM), optional Redis L1 cache, JWT authentication |
-| **AI Layer** | Groq / Anthropic structured output extraction, FlightWise Copilot, deterministic fallback parser |
+| **Backend** | Node.js, Express.js, PostgreSQL (raw parameterized SQL, no ORM), in-memory & PostgreSQL caching layers, JWT authentication |
+| **AI Layer** | Groq structured output extraction, Aero AI Assistant, deterministic fallback parser |
 | **Decision Engine**| Custom multi-stage optimizer: Expansion → Permutations → Fetch → Prune → Score → Explainability |
 | **Evaluation** | Automated synthetic benchmark harness (`backend/src/evaluation`), version-controlled test dataset (`evalDataset.json`) |
-| **Analytics & Telemetry**| Privacy-first Google Analytics 4 choke point (zero PII), Sentry error monitoring, recommendation feedback API |
+| **Analytics & Telemetry**| Privacy-first Google Analytics 4 choke point (zero PII), recommendation feedback API |
 | **Testing** | Node test runner (`node --test`), Jest, Supertest, React Testing Library |
 
 ---
@@ -43,13 +43,13 @@ Give it an origin airport, 1–4 destination countries, departure/return dates, 
 AI FlightWise/
 ├── backend/
 │   ├── src/
-│   │   ├── cache/            # MemoryCache (L0) and Redis (L1) caching layers
+│   │   ├── cache/            # MemoryCache (L0) and PostgreSQL (L1) caching layers
 │   │   ├── controllers/      # Express route controllers (auth, trips, feedback, eval)
 │   │   ├── database/         # PostgreSQL schema.sql, pool.js, migrate.js
 │   │   ├── evaluation/       # Benchmark runner (evalRunner.js) & dataset (evalDataset.json)
 │   │   ├── middleware/       # JWT auth, optionalAuth, error handler
 │   │   ├── optimizer/        # Permutations, pruning, scoring, explainability
-│   │   ├── providers/        # Flight (mock/Amadeus/Ignav), airport, weather, places
+│   │   ├── providers/        # Flight (mock/Ignav), airport, weather, places
 │   │   ├── routes/           # REST endpoints
 │   │   └── validators/       # express-validator request schemas
 │   └── tests/
@@ -161,7 +161,7 @@ Explore the [`docs/`](docs/) directory for detailed portfolio documentation:
 ## Security & Privacy Commitment
 
 1. **Zero Hardcoded Credentials:** All API keys and secrets reside in environment variables and are excluded via `.gitignore`.
-2. **Strict Sanitization:** Client-side analytics and server-side Sentry loggers pass outbound payloads through sanitization choke points that strip emails, tokens, cookies, and payment details.
+2. **Strict Sanitization:** Client-side analytics passes outbound payloads through sanitization choke points that strip emails, tokens, cookies, and payment details. Server logs never output secrets or authorization tokens.
 3. **No Database Destruction:** Database migrations are strictly additive and backward-compatible.
 4. **Deterministic Accuracy:** Live flight availability and booking are clearly disclaimed as simulated; decision comparisons use strictly grounded candidate deltas.
 

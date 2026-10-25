@@ -44,7 +44,7 @@ AI FlightWise identifies a strategic market gap: **Helping travelers understand 
 | **Multi-Country Circuit Optimizer** | **Yes** (Automated N! permutation sequencing) | Multi-city manual entry | Multi-city manual entry | No (single/round-trip only) | Multi-stop transit planning |
 | **Nearby Airport Trade-off Analysis** | **Yes** (Analyzes if secondary airport savings justify transfer) | Nearby airport checkbox | Nearby airport checkbox | No | Evaluates nearest stations |
 | **Integrated Living & Activity Estimates** | **Yes** (Hotels, food, attractions estimate) | Hotel tab (separate search) | Hotel tab (separate search) | Hotel booking (separate search) | Basic rough cost indicators |
-| **Conversational AI Partner** | **Yes** (FlightWise Copilot with structured extraction) | No native chat | Experimental chatbot pilot | "Bunny" AI assistant (booking support) | No native chat |
+| **Conversational AI Partner** | **Yes** (Aero AI with structured extraction) | No native chat | Experimental chatbot pilot | "Bunny" AI assistant (booking support) | No native chat |
 | **Monetization Model** | Portfolio / Pro planning tier (simulated) | Referral / meta-search CPC | Referral / meta-search CPC | Fintech upsells (Price Freeze, Cancel for Any Reason) | Referral affiliate links |
 
 ---
@@ -80,7 +80,7 @@ AI FlightWise identifies a strategic market gap: **Helping travelers understand 
 ## 4. Competitive Differentiation & Moats
 
 1. **Deterministic Decision Architecture:** While competitors treat recommendations as an opaque black box, AI FlightWise explains trade-offs with 100% deterministic mathematical grounding.
-2. **Transparent AI Copilot:** FlightWise Copilot is constrained by strict JSON schemas and ground-truth validation, eliminating the hallucinations that plague general-purpose travel chatbots.
+2. **Transparent Aero AI:** Aero AI is constrained by strict JSON schemas and ground-truth validation, eliminating the hallucinations that plague general-purpose travel chatbots.
 3. **Comprehensive Trip Context:** By connecting flight arrival dates to hotel and local attraction estimates, FlightWise helps travelers evaluate the *real* cost of their journey, not just the airline seat.
 
 ---

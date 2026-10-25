@@ -43,7 +43,7 @@ AI FlightWise evolves in distinct, value-accretive horizons:
 ### Phase 3: Total Journey Intelligence (Target: Q1 2027 - v1.1)
 - [ ] **Secondary Airport Transfer Cost Modeling:** Automatically add estimated ground transit fares (e.g., London Stansted to Central London) to the net itinerary cost.
 - [ ] **Baggage Fee Transparency:** Flag low-cost carriers (LCCs) that exclude carry-on luggage, recalculating real out-of-pocket costs.
-- [ ] **Contextual Copilot Trip Refinements:** Enable FlightWise Copilot to directly modify search filters (e.g., "Exclude layovers over 3 hours") via conversational actions.
+- [ ] **Contextual Aero AI Trip Refinements:** Enable Aero AI to directly modify search filters (e.g., "Exclude layovers over 3 hours") via conversational actions.
 - [ ] **Trip Price Change Indicators:** Visual historical volatility badges indicating whether current fares represent typical or elevated pricing.
 
 ### Phase 4: Collaborative & Multi-Modal Planning (Target: Q2–Q3 2027 - v2.0)

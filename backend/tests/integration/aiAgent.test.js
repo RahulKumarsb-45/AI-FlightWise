@@ -4,11 +4,11 @@
  * These exercise the REAL production code path over HTTP:
  *   routes/aiRoutes.js -> middleware/auth.js -> validators/aiValidators.js
  *     -> controllers/aiController.js -> services/aiChatService.js
- *     -> services/aiProvider/{gemini,anthropic}Provider.js
+ *     -> services/aiProvider/geminiProvider.js
  *
  * Two boundaries are mocked, deliberately:
- *   - `axios`: the module both AI provider files use to reach the external
- *     Gemini/Anthropic HTTP APIs. No real API key or network call is ever
+ *   - `axios`: the module the AI provider uses to reach the external
+ *     AI HTTP APIs. No real API key or network call is ever
  *     made.
  *   - `database/pool` (`query`/`withTransaction`): this repo's other
  *     integration tests (auth.test.js, payment.test.js, shareTrip.test.js)
@@ -74,7 +74,6 @@ beforeEach(() => {
 afterEach(() => {
   config.ai.provider = ORIGINAL_AI_CONFIG.provider;
   config.ai.gemini = { ...ORIGINAL_AI_CONFIG.gemini };
-  config.ai.anthropic = { ...ORIGINAL_AI_CONFIG.anthropic };
 });
 
 function geminiSuccess({ reply = 'Sure — where are you flying from?', extractedParams = null } = {}) {
