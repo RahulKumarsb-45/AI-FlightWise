@@ -96,22 +96,22 @@ export default function HowItWorksPage() {
           </div>
         </section>
 
-        <section className="container-page bg-navy-950 py-16 text-white rounded-3xl my-8">
+        <section className="container-page bg-[#F0F6FF]/70 py-16 text-ink-900 rounded-3xl my-8 border border-electric-100">
           <div className="mx-auto max-w-3xl text-center">
-            <h2 className="font-display text-display-sm text-white">What actually changes your fare</h2>
-            <p className="mt-3 text-ink-300">
+            <h2 className="font-display text-3xl font-extrabold text-ink-950">What actually changes your fare</h2>
+            <p className="mt-3 text-ink-600 text-base leading-relaxed">
               Four optimization levers standard OTA portals ignore because evaluating permutations requires real computation.
             </p>
           </div>
 
           <div className="mt-12 grid gap-6 sm:grid-cols-2 xl:grid-cols-4 xl:gap-8">
             {WHY_IT_WORKS.map((feature) => (
-              <div key={feature.title} className="rounded-2xl border border-navy-800 bg-navy-900/80 p-6 lg:p-7">
-                <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-electric-500/10 text-cyan-400 border border-electric-500/20">
+              <div key={feature.title} className="rounded-2xl border border-white bg-white/95 p-6 lg:p-7 shadow-soft hover:shadow-card transition-all">
+                <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-electric-50 text-electric-600 border border-electric-100">
                   <feature.icon className="h-5 w-5" aria-hidden="true" />
                 </span>
-                <h3 className="mt-4 font-display text-lg font-bold text-white">{feature.title}</h3>
-                <p className="mt-2 text-sm leading-relaxed text-ink-300">{feature.description}</p>
+                <h3 className="mt-4 font-display text-lg font-bold text-ink-900">{feature.title}</h3>
+                <p className="mt-2 text-sm leading-relaxed text-ink-600">{feature.description}</p>
               </div>
             ))}
           </div>

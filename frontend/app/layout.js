@@ -1,9 +1,17 @@
+import { Plus_Jakarta_Sans } from 'next/font/google';
 import { QueryProvider } from '@/lib/QueryProvider';
 import { AuthProvider } from '@/hooks/useAuth';
 import { ToastProvider } from '@/components/ui/Toast';
 import { GoogleAnalytics } from '@/components/analytics/GoogleAnalytics';
 import { PWAProvider } from '@/components/pwa/PWAProvider';
 import './globals.css';
+
+const plusJakarta = Plus_Jakarta_Sans({
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700', '800'],
+  variable: '--font-sans',
+  display: 'swap',
+});
 
 const SITE_URL =
   process.env.NEXT_PUBLIC_SITE_URL ||
@@ -59,13 +67,13 @@ export const metadata = {
 export const viewport = {
   width: 'device-width',
   initialScale: 1,
-  themeColor: '#0B1020',
+  themeColor: '#2457D6',
 };
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en">
-      <body>
+    <html lang="en" className={plusJakarta.variable}>
+      <body className="font-sans bg-[#F8FAFC] text-ink-900 antialiased min-h-screen flex flex-col">
         <PWAProvider />
 
         <GoogleAnalytics />
@@ -80,4 +88,4 @@ export default function RootLayout({ children }) {
       </body>
     </html>
   );
-}
+}

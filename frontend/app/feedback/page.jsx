@@ -9,18 +9,25 @@ import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
 import {
   MessageSquare,
-  Filter,
-  CheckCircle2,
   AlertCircle,
-  Clock,
-  Sparkles,
-  ChevronRight,
-  TrendingDown,
   Layers,
   Search,
   Plus,
+  ChevronDown,
+  ChevronUp,
+  Plane,
+  X,
+  CheckCircle2,
+  Clock,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+
+const THEME_DESCRIPTIONS = {
+  price_transparency: 'Travelers requesting breakdown between base airfare, taxes, and nearby-airport transit costs.',
+  layover_fatigue: 'Concerns regarding excessive layover durations, overnight connections, or tight terminal changes.',
+  flexible_dates: 'Feedback on ±3 day window fare comparisons and date calendar usability.',
+  booking_redirect_clarity: 'Clarity around mock demo data vs live booking provider handoffs.',
+};
 
 export default function FeedbackIntelligencePage() {
   const queryClient = useQueryClient();
@@ -38,12 +45,12 @@ export default function FeedbackIntelligencePage() {
   const [newSentiment, setNewSentiment] = useState('neutral');
   const [newSeverity, setNewSeverity] = useState('medium');
 
-  const { data: themesData, isLoading: themesLoading } = useQuery({
+  const { data: themesData } = useQuery({
     queryKey: ['feedback', 'themes'],
     queryFn: () => productService.getFeedbackThemes(),
   });
 
-  const { data: feedbackData, isLoading: listLoading } = useQuery({
+  const { data: feedbackData } = useQuery({
     queryKey: ['feedback', 'list', selectedTheme, statusFilter, categoryFilter, searchTerm],
     queryFn: () =>
       productService.getCustomerFeedback({
@@ -76,86 +83,110 @@ export default function FeedbackIntelligencePage() {
   return (
     <>
       <Navbar />
-      <main id="main-content" className="min-h-screen bg-slate-50 py-10">
+      <main id="main-content" className="min-h-screen bg-[#F8FAFC] py-10">
         <div className="container-page max-w-6xl">
           {/* Header */}
-          <div className="flex flex-wrap items-center justify-between gap-4 border-b border-ink-100 bg-white p-6 rounded-2xl shadow-soft">
+          <div className="flex flex-wrap items-center justify-between gap-4 border border-ink-100 bg-white p-7 rounded-2xl shadow-soft">
             <div>
-              <div className="flex items-center gap-2.5">
-                <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-tr from-amber-500 via-orange-500 to-rose-500 text-white shadow-soft">
-                  <MessageSquare className="h-5 w-5" aria-hidden="true" />
+              <div className="flex items-center gap-2 mb-1">
+                <span className="text-xs font-semibold uppercase tracking-wider text-electric-700 bg-electric-50 px-2.5 py-0.5 rounded-full border border-electric-200/60">
+                  PM Workspace
                 </span>
-                <div>
-                  <h1 className="font-display text-2xl font-bold text-ink-900">
-                    Customer Feedback Intelligence
-                  </h1>
-                  <p className="mt-0.5 text-xs text-ink-500">
-                    Thematic clustering, sentiment classification, and evidence links to user discovery insights.
-                  </p>
-                </div>
+                <span className="text-xs text-ink-400">·</span>
+                <span className="text-xs text-ink-500 font-medium">Customer Evidence Intelligence</span>
               </div>
+              <h1 className="font-display text-2xl sm:text-3xl font-extrabold text-ink-950">
+                Customer Feedback Intelligence
+              </h1>
+              <p className="mt-1 text-sm text-ink-600 max-w-2xl leading-relaxed">
+                Thematic clustering, sentiment classification, and evidence links to user discovery insights — informing flight search and route planning improvements.
+              </p>
             </div>
 
-            <div className="flex items-center gap-3">
-              <Button
-                size="sm"
-                onClick={() => setShowNewModal(true)}
-                className="bg-electric-600 hover:bg-electric-700 text-white shadow-soft"
-              >
-                <Plus className="h-4 w-4 mr-1.5" />
-                Add Customer Feedback
-              </Button>
-            </div>
+            <Button
+              size="md"
+              onClick={() => setShowNewModal(true)}
+              className="bg-electric-600 hover:bg-electric-700 text-white shadow-soft font-semibold text-sm h-10 px-4"
+            >
+              <Plus className="h-4 w-4 mr-1.5" />
+              Add Customer Feedback
+            </Button>
           </div>
 
           {/* Thematic Pain-Point Clusters */}
           <div className="mt-8">
-            <h2 className="font-display text-base font-bold text-ink-900 mb-3 flex items-center gap-2">
-              <Layers className="h-4 w-4 text-electric-600" />
-              Thematic Pain-Point Clusters ({themes.length})
-            </h2>
+            <div className="flex items-center justify-between mb-4">
+              <div>
+                <h2 className="font-display text-lg font-bold text-ink-950 flex items-center gap-2">
+                  <Layers className="h-5 w-5 text-electric-600" />
+                  Top Customer Problem Themes ({themes.length})
+                </h2>
+                <p className="text-xs text-ink-500 mt-0.5">
+                  Click any thematic cluster below to filter the customer evidence list.
+                </p>
+              </div>
 
-            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+              {selectedTheme && (
+                <button
+                  onClick={() => setSelectedTheme(null)}
+                  className="inline-flex items-center gap-1.5 text-xs font-semibold text-electric-600 hover:text-electric-700 bg-electric-50 border border-electric-200/60 px-2.5 py-1 rounded-full transition-colors"
+                >
+                  <X className="h-3 w-3" />
+                  Clear filter ({selectedTheme.replace(/_/g, ' ')})
+                </button>
+              )}
+            </div>
+
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {themes.map((t) => {
                 const isSelected = selectedTheme === t.theme;
+                const total = t.totalFeedback || 1;
+                const negPct = Math.round(((t.sentimentBreakdown.negative || 0) / total) * 100);
+                const neuPct = Math.round(((t.sentimentBreakdown.neutral || 0) / total) * 100);
+                const posPct = 100 - negPct - neuPct;
+
                 return (
                   <div
                     key={t.theme}
                     onClick={() => setSelectedTheme(isSelected ? null : t.theme)}
                     className={cn(
-                      'cursor-pointer rounded-xl border p-4 bg-white transition-all shadow-soft',
+                      'cursor-pointer rounded-2xl border p-5 bg-white transition-all shadow-soft',
                       isSelected
-                        ? 'border-electric-500 ring-2 ring-electric-500/20'
-                        : 'border-ink-100 hover:border-ink-200'
+                        ? 'border-electric-500 ring-2 ring-electric-500/20 bg-electric-50/20'
+                        : 'border-ink-100 hover:border-electric-200 hover:shadow-card'
                     )}
                   >
                     <div className="flex items-center justify-between">
-                      <span className="font-mono text-xs font-semibold text-ink-900 capitalize">
+                      <span className="font-display text-base font-bold text-ink-950 capitalize">
                         {t.theme.replace(/_/g, ' ')}
                       </span>
-                      <Badge variant="outline" className="text-[11px]">
+                      <span className="text-xs font-bold text-electric-700 bg-electric-50 border border-electric-200/60 px-2.5 py-0.5 rounded-full">
                         {t.totalFeedback} items
-                      </Badge>
+                      </span>
                     </div>
 
-                    <div className="mt-3 flex items-center gap-2 text-xs">
-                      <span className="text-danger-600 font-medium">
-                        {t.sentimentBreakdown.negative} negative
-                      </span>
-                      <span className="text-ink-400">·</span>
-                      <span className="text-ink-500 font-medium">
-                        {t.sentimentBreakdown.neutral} neutral
-                      </span>
-                      <span className="text-ink-400">·</span>
-                      <span className="text-emerald-600 font-medium">
-                        {t.sentimentBreakdown.positive} positive
-                      </span>
+                    <p className="mt-2 text-xs text-ink-500 leading-relaxed min-h-[32px]">
+                      {THEME_DESCRIPTIONS[t.theme] || 'Observations impacting flight comparison and optimization.'}
+                    </p>
+
+                    {/* Sentiment Distribution Visual Bar */}
+                    <div className="mt-3.5">
+                      <div className="flex h-1.5 w-full overflow-hidden rounded-full bg-ink-100">
+                        <div style={{ width: `${negPct}%` }} className="bg-rose-500" title={`Negative: ${negPct}%`} />
+                        <div style={{ width: `${neuPct}%` }} className="bg-slate-400" title={`Neutral: ${neuPct}%`} />
+                        <div style={{ width: `${posPct}%` }} className="bg-emerald-500" title={`Positive: ${posPct}%`} />
+                      </div>
+                      <div className="mt-2 flex items-center justify-between text-xs">
+                        <span className="text-rose-700 font-semibold">{t.sentimentBreakdown.negative} negative</span>
+                        <span className="text-ink-500">{t.sentimentBreakdown.neutral} neutral</span>
+                        <span className="text-emerald-700 font-semibold">{t.sentimentBreakdown.positive} positive</span>
+                      </div>
                     </div>
 
                     {t.highSeverityCount > 0 && (
-                      <div className="mt-2 flex items-center gap-1.5 text-[11px] text-amber-700 font-semibold">
-                        <AlertCircle className="h-3 w-3" />
-                        {t.highSeverityCount} high/critical severity records
+                      <div className="mt-3 pt-2.5 border-t border-ink-100 flex items-center gap-1.5 text-xs text-amber-800 font-semibold">
+                        <AlertCircle className="h-3.5 w-3.5 text-amber-600 shrink-0" />
+                        <span>{t.highSeverityCount} high severity issues reported</span>
                       </div>
                     )}
                   </div>
@@ -166,22 +197,22 @@ export default function FeedbackIntelligencePage() {
 
           {/* Feedback Filter Bar */}
           <div className="mt-8 flex flex-wrap items-center justify-between gap-3 bg-white p-4 rounded-xl border border-ink-100 shadow-soft">
-            <div className="flex flex-wrap items-center gap-2.5">
+            <div className="flex flex-wrap items-center gap-3">
               <div className="relative">
-                <Search className="h-3.5 w-3.5 absolute left-3 top-3 text-ink-400" />
+                <Search className="h-4 w-4 absolute left-3 top-2.5 text-ink-400" />
                 <input
                   type="text"
                   placeholder="Search comments or themes..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-8 pr-3 py-1.5 rounded-lg border border-ink-200 text-xs w-64 focus:outline-electric-500"
+                  className="pl-9 pr-3 py-2 rounded-lg border border-ink-200 text-sm w-64 text-ink-900 placeholder:text-ink-400 focus:outline-none focus:border-electric-500 focus:ring-1 focus:ring-electric-500"
                 />
               </div>
 
               <select
                 value={statusFilter}
                 onChange={(e) => setStatusFilter(e.target.value)}
-                className="px-2.5 py-1.5 rounded-lg border border-ink-200 text-xs text-ink-700"
+                className="px-3 py-2 rounded-lg border border-ink-200 text-sm text-ink-800 focus:outline-none focus:border-electric-500"
               >
                 <option value="">All Statuses</option>
                 <option value="new">New</option>
@@ -192,42 +223,33 @@ export default function FeedbackIntelligencePage() {
               <select
                 value={categoryFilter}
                 onChange={(e) => setCategoryFilter(e.target.value)}
-                className="px-2.5 py-1.5 rounded-lg border border-ink-200 text-xs text-ink-700"
+                className="px-3 py-2 rounded-lg border border-ink-200 text-sm text-ink-800 focus:outline-none focus:border-electric-500"
               >
                 <option value="">All Categories</option>
                 <option value="flight_search">Flight Search</option>
                 <option value="pricing">Pricing</option>
-                <option value="ai_agent">AI Copilot</option>
-                <option value="ui_ux">UI/UX</option>
+                <option value="ai_agent">Aero AI Concierge</option>
+                <option value="ui_ux">UI/UX & Mobile</option>
               </select>
-
-              {selectedTheme && (
-                <button
-                  onClick={() => setSelectedTheme(null)}
-                  className="text-xs text-electric-600 hover:underline font-medium ml-1"
-                >
-                  Clear theme filter ({selectedTheme})
-                </button>
-              )}
             </div>
 
-            <div className="text-xs text-ink-500 font-medium">
+            <div className="text-xs font-semibold text-ink-500">
               Showing {feedbackList.length} feedback records
             </div>
           </div>
 
           {/* Feedback Items List */}
-          <div className="mt-4 rounded-xl border border-ink-100 bg-white shadow-soft overflow-hidden divide-y divide-ink-100">
+          <div className="mt-4 space-y-3">
             {feedbackList.map((item) => {
               const isSelected = selectedFeedback?.id === item.id;
               return (
                 <div
                   key={item.id}
                   onClick={() => setSelectedFeedback(isSelected ? null : item)}
-                  className="p-5 hover:bg-slate-50/60 transition-colors cursor-pointer"
+                  className="rounded-2xl border border-ink-100 bg-white p-6 shadow-soft hover:shadow-card hover:border-electric-200 transition-all cursor-pointer"
                 >
-                  <div className="flex flex-wrap items-center justify-between gap-2">
-                    <div className="flex items-center gap-2">
+                  <div className="flex flex-wrap items-center justify-between gap-2.5">
+                    <div className="flex flex-wrap items-center gap-2">
                       <Badge
                         variant={
                           item.sentiment === 'positive'
@@ -239,20 +261,26 @@ export default function FeedbackIntelligencePage() {
                       >
                         {item.sentiment}
                       </Badge>
-                      <Badge variant="purple" className="capitalize">
+                      <Badge variant="electric" className="capitalize">
                         {item.category.replace(/_/g, ' ')}
                       </Badge>
-                      <span className="font-mono text-xs text-ink-400">#{item.theme}</span>
+                      <span className="font-mono text-xs font-semibold text-ink-600 bg-ink-50 border border-ink-200/60 px-2 py-0.5 rounded">
+                        #{item.theme}
+                      </span>
                       {item.severity === 'high' || item.severity === 'critical' ? (
-                        <span className="text-[11px] font-semibold text-rose-600 uppercase bg-rose-50 px-2 py-0.5 rounded border border-rose-200">
+                        <span className="text-xs font-bold text-rose-700 bg-rose-50 px-2 py-0.5 rounded border border-rose-200 uppercase">
                           {item.severity} severity
                         </span>
                       ) : null}
                     </div>
 
-                    <div className="flex items-center gap-2">
-                      <span className="text-xs text-ink-400">
-                        {new Date(item.created_at).toLocaleDateString('en-IN')}
+                    <div className="flex items-center gap-3">
+                      <span className="text-xs font-medium text-ink-500">
+                        {new Date(item.created_at).toLocaleDateString('en-IN', {
+                          day: 'numeric',
+                          month: 'short',
+                          year: 'numeric',
+                        })}
                       </span>
                       <Badge
                         variant={
@@ -260,7 +288,7 @@ export default function FeedbackIntelligencePage() {
                             ? 'emerald'
                             : item.status === 'reviewed'
                             ? 'electric'
-                            : 'outline'
+                            : 'neutral'
                         }
                       >
                         {item.status}
@@ -268,20 +296,36 @@ export default function FeedbackIntelligencePage() {
                     </div>
                   </div>
 
-                  <p className="mt-3 text-sm font-medium text-ink-900">&ldquo;{item.comment}&rdquo;</p>
+                  <p className="mt-3.5 text-base font-medium text-ink-900 leading-relaxed">
+                    &ldquo;{item.comment}&rdquo;
+                  </p>
 
-                  {/* Expanded Actions */}
+                  {/* Impact on flight-search experience */}
+                  <div className="mt-3 flex items-center justify-between text-xs text-ink-500">
+                    <span className="flex items-center gap-1.5 text-ink-600">
+                      <Plane className="h-3.5 w-3.5 text-electric-600" />
+                      <span>Affects: <strong>{item.category === 'flight_search' ? 'Route search & comparison results' : item.category === 'pricing' ? 'Fare breakdown & savings calculation' : 'Aero AI concierge trade-off explainability'}</strong></span>
+                    </span>
+                    <span className="font-medium text-electric-600 flex items-center gap-1">
+                      {isSelected ? 'Hide details' : 'View evidence details'}
+                      {isSelected ? <ChevronUp className="h-3.5 w-3.5" /> : <ChevronDown className="h-3.5 w-3.5" />}
+                    </span>
+                  </div>
+
+                  {/* Expanded Actions & Evidence */}
                   {isSelected && (
-                    <div className="mt-4 pt-4 border-t border-ink-100 flex items-center justify-between">
-                      <span className="text-xs text-ink-400">
-                        ID: <code className="font-mono">{item.id}</code>
-                      </span>
+                    <div className="mt-4 pt-4 border-t border-ink-100 flex flex-wrap items-center justify-between gap-3 bg-ink-50/50 p-3 rounded-xl">
+                      <div className="text-xs text-ink-500 space-x-2">
+                        <span>Record ID: <code className="font-mono font-semibold text-ink-700">{item.id}</code></span>
+                        <span>·</span>
+                        <span>Source: Customer Discovery Session</span>
+                      </div>
                       <div className="flex items-center gap-2">
                         {item.status !== 'reviewed' && (
                           <Button
                             size="sm"
                             variant="outline"
-                            className="h-7 text-xs"
+                            className="h-8 text-xs font-semibold"
                             onClick={(e) => {
                               e.stopPropagation();
                               statusMutation.mutate({ id: item.id, status: 'reviewed' });
@@ -293,7 +337,7 @@ export default function FeedbackIntelligencePage() {
                         {item.status !== 'resolved' && (
                           <Button
                             size="sm"
-                            className="h-7 text-xs bg-emerald-600 hover:bg-emerald-700 text-white"
+                            className="h-8 text-xs font-semibold bg-emerald-600 hover:bg-emerald-700 text-white"
                             onClick={(e) => {
                               e.stopPropagation();
                               statusMutation.mutate({ id: item.id, status: 'resolved' });
@@ -310,7 +354,7 @@ export default function FeedbackIntelligencePage() {
             })}
 
             {feedbackList.length === 0 && (
-              <div className="p-12 text-center text-ink-400 text-sm">
+              <div className="p-12 text-center text-ink-500 text-sm bg-white rounded-2xl border border-ink-100">
                 No feedback items match the selected criteria.
               </div>
             )}
@@ -318,48 +362,58 @@ export default function FeedbackIntelligencePage() {
 
           {/* New Feedback Modal */}
           {showNewModal && (
-            <div className="fixed inset-0 z-50 flex items-center justify-center bg-ink-900/40 backdrop-blur-xs p-4">
-              <div className="w-full max-w-lg bg-white rounded-2xl p-6 shadow-2xl border border-ink-100">
-                <h3 className="font-display text-lg font-bold text-ink-900">
-                  Record User Research Feedback
-                </h3>
-                <p className="mt-1 text-xs text-ink-500">
-                  Add verified customer quotes or discovery interview observations to the intelligence database.
-                </p>
-
-                <div className="mt-4 space-y-3">
+            <div className="fixed inset-0 z-50 flex items-center justify-center bg-ink-950/40 backdrop-blur-xs p-4">
+              <div className="w-full max-w-lg bg-white rounded-2xl p-7 shadow-2xl border border-ink-100">
+                <div className="flex items-center justify-between border-b border-ink-100 pb-3">
                   <div>
-                    <label className="text-xs font-semibold text-ink-700">Customer Quote / Feedback</label>
+                    <h3 className="font-display text-lg font-bold text-ink-950">
+                      Record Customer Feedback
+                    </h3>
+                    <p className="mt-0.5 text-xs text-ink-500">
+                      Add verified customer discovery quotes to the intelligence database.
+                    </p>
+                  </div>
+                  <button
+                    onClick={() => setShowNewModal(false)}
+                    className="p-1 text-ink-400 hover:text-ink-700 rounded-lg hover:bg-ink-50"
+                  >
+                    <X className="h-5 w-5" />
+                  </button>
+                </div>
+
+                <div className="mt-5 space-y-4">
+                  <div>
+                    <label className="text-xs font-bold text-ink-800">Customer Quote / Observation</label>
                     <textarea
                       rows={3}
                       value={newComment}
                       onChange={(e) => setNewComment(e.target.value)}
                       placeholder="e.g. The flight duration trade-off was not clear between 1-stop and direct options..."
-                      className="w-full mt-1 p-2.5 rounded-lg border border-ink-200 text-xs focus:outline-electric-500"
+                      className="w-full mt-1.5 p-3 rounded-xl border border-ink-200 text-sm text-ink-900 focus:outline-none focus:border-electric-500 focus:ring-1 focus:ring-electric-500"
                     />
                   </div>
 
                   <div className="grid grid-cols-2 gap-3">
                     <div>
-                      <label className="text-xs font-semibold text-ink-700">Category</label>
+                      <label className="text-xs font-bold text-ink-800">Category</label>
                       <select
                         value={newCategory}
                         onChange={(e) => setNewCategory(e.target.value)}
-                        className="w-full mt-1 p-2 rounded-lg border border-ink-200 text-xs"
+                        className="w-full mt-1.5 p-2.5 rounded-xl border border-ink-200 text-xs text-ink-800 focus:outline-none focus:border-electric-500"
                       >
                         <option value="flight_search">Flight Search</option>
                         <option value="pricing">Pricing & Checkout</option>
-                        <option value="ai_agent">Aero AI Copilot</option>
+                        <option value="ai_agent">Aero AI Concierge</option>
                         <option value="ui_ux">UI/UX & Mobile</option>
                       </select>
                     </div>
 
                     <div>
-                      <label className="text-xs font-semibold text-ink-700">Thematic Cluster</label>
+                      <label className="text-xs font-bold text-ink-800">Thematic Cluster</label>
                       <select
                         value={newTheme}
                         onChange={(e) => setNewTheme(e.target.value)}
-                        className="w-full mt-1 p-2 rounded-lg border border-ink-200 text-xs"
+                        className="w-full mt-1.5 p-2.5 rounded-xl border border-ink-200 text-xs text-ink-800 focus:outline-none focus:border-electric-500"
                       >
                         <option value="price_transparency">Price Transparency</option>
                         <option value="layover_fatigue">Layover Fatigue</option>
@@ -371,11 +425,11 @@ export default function FeedbackIntelligencePage() {
 
                   <div className="grid grid-cols-2 gap-3">
                     <div>
-                      <label className="text-xs font-semibold text-ink-700">Sentiment</label>
+                      <label className="text-xs font-bold text-ink-800">Sentiment</label>
                       <select
                         value={newSentiment}
                         onChange={(e) => setNewSentiment(e.target.value)}
-                        className="w-full mt-1 p-2 rounded-lg border border-ink-200 text-xs"
+                        className="w-full mt-1.5 p-2.5 rounded-xl border border-ink-200 text-xs text-ink-800 focus:outline-none focus:border-electric-500"
                       >
                         <option value="negative">Negative</option>
                         <option value="neutral">Neutral</option>
@@ -384,11 +438,11 @@ export default function FeedbackIntelligencePage() {
                     </div>
 
                     <div>
-                      <label className="text-xs font-semibold text-ink-700">Severity</label>
+                      <label className="text-xs font-bold text-ink-800">Severity</label>
                       <select
                         value={newSeverity}
                         onChange={(e) => setNewSeverity(e.target.value)}
-                        className="w-full mt-1 p-2 rounded-lg border border-ink-200 text-xs"
+                        className="w-full mt-1.5 p-2.5 rounded-xl border border-ink-200 text-xs text-ink-800 focus:outline-none focus:border-electric-500"
                       >
                         <option value="low">Low</option>
                         <option value="medium">Medium</option>
@@ -399,7 +453,7 @@ export default function FeedbackIntelligencePage() {
                   </div>
                 </div>
 
-                <div className="mt-6 flex justify-end gap-2.5">
+                <div className="mt-6 flex justify-end gap-3 pt-3 border-t border-ink-100">
                   <Button variant="outline" size="sm" onClick={() => setShowNewModal(false)}>
                     Cancel
                   </Button>
@@ -416,7 +470,7 @@ export default function FeedbackIntelligencePage() {
                         severity: newSeverity,
                       })
                     }
-                    className="bg-electric-600 hover:bg-electric-700 text-white"
+                    className="bg-electric-600 hover:bg-electric-700 text-white font-semibold"
                   >
                     Save Feedback
                   </Button>

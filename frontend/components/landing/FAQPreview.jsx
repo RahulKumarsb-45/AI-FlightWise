@@ -33,7 +33,7 @@ function FAQPreview() {
           <HelpCircle className="h-3 w-3 text-electric-600" />
           Clear Answers
         </span>
-        <h2 className="mt-4 font-display text-display-sm text-navy-950 sm:text-display-md">
+        <h2 className="mt-4 font-display text-display-sm text-ink-950 sm:text-display-md">
           Frequently asked questions
         </h2>
         <p className="mt-3 text-ink-500 leading-relaxed max-w-xl mx-auto">

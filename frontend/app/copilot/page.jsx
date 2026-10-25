@@ -101,24 +101,24 @@ export default function CopilotPage() {
   return (
     <>
       <Navbar />
-      <main id="main-content" className="min-h-screen bg-slate-50 py-10">
+      <main id="main-content" className="min-h-screen bg-[#F8FAFC] py-10">
         <div className="container-page max-w-6xl">
           {/* Header */}
-          <div className="flex flex-wrap items-center justify-between gap-4 border-b border-ink-100 bg-white p-6 rounded-2xl shadow-soft">
+          <div className="flex flex-wrap items-center justify-between gap-4 border border-ink-100 bg-white p-7 rounded-2xl shadow-soft">
             <div>
-              <div className="flex items-center gap-2.5">
-                <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-tr from-purple-600 via-indigo-600 to-electric-600 text-white shadow-soft">
-                  <Sparkles className="h-5 w-5" aria-hidden="true" />
+              <div className="flex items-center gap-2 mb-1">
+                <span className="text-xs font-semibold uppercase tracking-wider text-electric-700 bg-electric-50 px-2.5 py-0.5 rounded-full border border-electric-200/60">
+                  PM Workspace
                 </span>
-                <div>
-                  <h1 className="font-display text-2xl font-bold text-ink-900">
-                    AI Product Manager Copilot
-                  </h1>
-                  <p className="mt-0.5 text-xs text-ink-500">
-                    Evidence-backed opportunity discovery, interactive RICE prioritization, and PRD authoring.
-                  </p>
-                </div>
+                <span className="text-xs text-ink-400">·</span>
+                <span className="text-xs text-ink-500 font-medium">PRD Generation & RICE Prioritization</span>
               </div>
+              <h1 className="font-display text-2xl sm:text-3xl font-extrabold text-ink-950">
+                AI Product Manager Copilot
+              </h1>
+              <p className="mt-1 text-sm text-ink-600 max-w-2xl leading-relaxed">
+                Evidence-backed opportunity discovery, interactive RICE prioritization, and automated PRD authoring linked to real flight metrics.
+              </p>
             </div>
 
             {/* Navigation Tabs */}

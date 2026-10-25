@@ -177,7 +177,7 @@ async function createShare(req, res, next) {
       ]);
     }
 
-    const sessionId = req.headers['x-session-id'] || `sess_${req.user.id}`;
+    const sessionId = req.headers?.['x-session-id'] || `sess_${req.user?.id || 'anon'}`;
     trackEvent({
       eventName: 'trip_shared',
       userId: req.user.id,

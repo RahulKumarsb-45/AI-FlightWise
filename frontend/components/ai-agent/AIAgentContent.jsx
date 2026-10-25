@@ -79,10 +79,10 @@ function ChatBubble({ message }) {
       )}
       <div
         className={cn(
-          'max-w-[85%] sm:max-w-[75%] rounded-2xl px-4 py-3 text-sm leading-relaxed shadow-soft',
+          'max-w-[85%] sm:max-w-[75%] rounded-2xl px-4 py-3.5 text-sm leading-relaxed shadow-soft',
           isUser
-            ? 'bg-gradient-to-r from-electric-600 to-violet-600 text-white rounded-tr-sm'
-            : 'bg-white border border-ink-100/90 text-ink-800 rounded-tl-sm'
+            ? 'bg-electric-600 text-white rounded-tr-sm'
+            : 'bg-white border border-ink-100 text-ink-900 rounded-tl-sm'
         )}
       >
         <span className="sr-only">{isUser ? 'You said: ' : 'Aero AI said: '}</span>
@@ -162,9 +162,9 @@ function AIAgentContent() {
           </div>
         </div>
 
-        <Badge variant="cyan" size="sm" className="hidden sm:inline-flex">
-          Aviation Model v2.4
-        </Badge>
+        <span className="hidden sm:inline-flex items-center gap-1.5 rounded-full border border-electric-200 bg-electric-50 px-3 py-1 text-xs font-semibold text-electric-700">
+          Flight Travel Concierge
+        </span>
       </div>
 
       {/* Chat scroll body */}
@@ -173,13 +173,13 @@ function AIAgentContent() {
           {messages.length === 0 && (
             <div className="mx-auto max-w-xl pt-6 pb-4">
               <div className="text-center">
-                <div className="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-tr from-electric-600 to-cyan-500 text-white shadow-glow-electric mb-3">
+                <div className="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-electric-600 text-white shadow-soft mb-3">
                   <Sparkles className="h-6 w-6" aria-hidden="true" />
                 </div>
                 <h1 className="font-display text-2xl font-bold text-ink-900 sm:text-3xl">
                   Smarter Flights with Aero AI
                 </h1>
-                <p className="mt-2 text-sm text-ink-500 max-w-md mx-auto leading-relaxed">
+                <p className="mt-2 text-sm text-ink-600 max-w-md mx-auto leading-relaxed">
                   Describe your trip in natural language. Aero AI extracts destinations, budgets, and layover tolerances to feed directly into the multi-factor flight optimization engine.
                 </p>
               </div>
@@ -311,15 +311,15 @@ function AIAgentContent() {
           <button
             type="submit"
             disabled={sending || !input.trim()}
-            className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-r from-electric-600 to-violet-600 text-white shadow-soft transition-all hover:shadow-glow-electric hover:scale-105 active:scale-95 disabled:opacity-40 disabled:hover:scale-100"
+            className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-electric-600 text-white shadow-soft transition-all hover:bg-electric-700 active:scale-95 disabled:opacity-40"
             aria-label="Send message to Aero AI"
           >
             <Send className="h-4 w-4" aria-hidden="true" />
           </button>
         </div>
-        <div className="mx-auto max-w-3xl pt-1.5 text-center">
-          <span className="text-[11px] text-ink-400">
-            Aero AI provides decision assistance based on real multi-factor scoring. Prices and schedules are verified against live provider feeds.
+        <div className="mx-auto max-w-3xl pt-2 text-center">
+          <span className="text-xs text-ink-500">
+            Aero AI provides grounded decision guidance based on multi-factor flight scoring (price, duration, stops, layover comfort).
           </span>
         </div>
       </form>

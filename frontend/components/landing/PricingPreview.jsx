@@ -33,7 +33,7 @@ function PricingPreview() {
           <Sparkles className="h-3 w-3 text-electric-600" />
           Transparent Value
         </span>
-        <h2 className="mt-4 font-display text-display-sm text-navy-950 sm:text-display-md">
+        <h2 className="mt-4 font-display text-display-sm text-ink-950 sm:text-display-md">
           Simple, ₹-first pricing
         </h2>
         <p className="mt-3 text-ink-500 leading-relaxed max-w-xl mx-auto">
@@ -59,10 +59,10 @@ function PricingPreview() {
                 Most Popular
               </span>
             )}
-            <h3 className="font-display text-xl font-bold text-navy-950">{plan.name}</h3>
+            <h3 className="font-display text-xl font-bold text-ink-950">{plan.name}</h3>
             <p className="mt-1 text-sm text-ink-500">{plan.tagline}</p>
             <div className="mt-5 pb-5 border-b border-ink-100">
-              <span className="font-mono text-4xl font-bold text-navy-950">
+              <span className="font-mono text-4xl font-bold text-ink-950">
                 {plan.price === 0 ? 'Free' : formatInr(plan.price)}
               </span>
               {plan.price > 0 && <span className="text-sm font-normal text-ink-500"> / month</span>}

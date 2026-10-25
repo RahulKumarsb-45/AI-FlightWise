@@ -13,6 +13,8 @@ const badgeVariants = cva('inline-flex items-center gap-1.5 rounded-full px-2.5 
       cyan: 'bg-cyan-50 text-cyan-800 border-cyan-200/70',
       emerald: 'bg-emerald-50 text-emerald-700 border-emerald-200/70',
       sky: 'bg-sky-50 text-sky-700 border-sky-200/70',
+      purple: 'bg-violet-50 text-violet-700 border-violet-200/70',
+      outline: 'bg-white text-ink-700 border-ink-200',
     },
   },
   defaultVariants: { variant: 'neutral' },

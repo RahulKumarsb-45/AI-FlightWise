@@ -18,7 +18,7 @@ export default function SearchPage() {
             <Sparkles className="h-3.5 w-3.5 text-electric-600" />
             Flight Decision Engine
           </span>
-          <h1 className="mt-4 font-display text-display-sm font-bold text-navy-950 sm:text-display-md">
+          <h1 className="mt-4 font-display text-display-sm font-bold text-ink-950 sm:text-display-md">
             Where are we optimizing today?
           </h1>
           <p className="mt-3 text-ink-500 leading-relaxed max-w-xl mx-auto">

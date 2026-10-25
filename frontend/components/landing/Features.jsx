@@ -33,17 +33,17 @@ const FEATURES = [
 
 function Features() {
   return (
-    <section className="bg-paper py-16 lg:py-24 border-t border-ink-100">
+    <section className="bg-[#F8FAFC] py-16 lg:py-24 border-t border-ink-100">
       <div className="section-wide w-full">
         <div className="mx-auto max-w-3xl text-center">
           <span className="inline-flex items-center gap-1.5 rounded-full border border-electric-200 bg-electric-50 px-3.5 py-1 text-xs font-semibold text-electric-700">
-            <Sparkles className="h-3 w-3 text-electric-600" />
-            Decision Intelligence
+            <Sparkles className="h-3.5 w-3.5 text-electric-600" />
+            Route Optimization Levers
           </span>
-          <h2 className="mt-4 font-display text-display-sm text-navy-950 sm:text-display-md">
+          <h2 className="mt-4 font-display text-3xl sm:text-4xl font-extrabold text-ink-950">
             What actually transforms your fare
           </h2>
-          <p className="mt-3 text-ink-500 leading-relaxed max-w-2xl mx-auto">
+          <p className="mt-3 text-ink-600 leading-relaxed max-w-2xl mx-auto text-base">
             Traditional flight search tools only query exact dates and single airports. AI FlightWise evaluates four multi-dimensional levers simultaneously.
           </p>
         </div>
@@ -52,21 +52,21 @@ function Features() {
           {FEATURES.map((feature) => (
             <div
               key={feature.title}
-              className="group flex flex-col justify-between rounded-2xl border border-ink-100/90 bg-white p-6 shadow-soft transition-all duration-300 hover:border-electric-200 hover:shadow-premium"
+              className="group flex flex-col justify-between rounded-2xl border border-ink-100 bg-white p-6 shadow-soft transition-all duration-300 hover:border-electric-200 hover:shadow-card"
             >
               <div>
                 <div className="flex items-center justify-between">
-                  <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-electric-50 to-violet-50 text-electric-600 border border-electric-100 transition-transform group-hover:scale-105">
+                  <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-electric-50 text-electric-600 border border-electric-100 transition-transform group-hover:scale-105">
                     <feature.icon className="h-5 w-5" aria-hidden="true" />
                   </div>
-                  <span className="rounded-full bg-ink-50 border border-ink-100/80 px-2.5 py-0.5 text-[11px] font-medium text-ink-600">
+                  <span className="rounded-full bg-ink-50 border border-ink-200/60 px-2.5 py-0.5 text-xs font-semibold text-ink-600">
                     {feature.badge}
                   </span>
                 </div>
-                <h3 className="mt-5 font-display text-lg font-bold text-navy-950 group-hover:text-electric-700 transition-colors">
+                <h3 className="mt-5 font-display text-lg font-bold text-ink-900 group-hover:text-electric-700 transition-colors">
                   {feature.title}
                 </h3>
-                <p className="mt-2 text-sm leading-relaxed text-ink-500">
+                <p className="mt-2 text-sm leading-relaxed text-ink-600">
                   {feature.description}
                 </p>
               </div>

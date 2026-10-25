@@ -16,7 +16,7 @@ export default function RegisterPage() {
             </span>
             <div className="flex flex-col">
               <span className="font-display text-lg font-bold tracking-tight text-ink-950">AI FlightWise</span>
-              <span className="text-[10px] font-medium tracking-wider text-ink-400 uppercase -mt-1">Decision Intelligence</span>
+              <span className="text-xs font-medium tracking-wide text-ink-500">Decision Intelligence</span>
             </div>
           </Link>
 
@@ -36,30 +36,27 @@ export default function RegisterPage() {
         </div>
       </div>
 
-      <div className="hidden flex-col justify-between border-l border-navy-800 bg-navy-950 p-12 text-white lg:flex relative overflow-hidden">
-        <div className="absolute -right-24 -top-24 h-96 w-96 rounded-full bg-electric-500/10 blur-3xl pointer-events-none" />
-        <div className="absolute -left-24 -bottom-24 h-96 w-96 rounded-full bg-cyan-500/10 blur-3xl pointer-events-none" />
-
+      <div className="hidden flex-col justify-between border-l border-ink-100 bg-gradient-to-br from-[#EEF4FF] via-[#F8FAFC] to-[#F0F7FF] p-12 text-ink-900 lg:flex relative overflow-hidden">
         <div className="relative z-10 flex items-center justify-between">
-          <span className="rounded-full bg-navy-900/90 border border-navy-700 px-3 py-1 text-xs font-semibold text-cyan-300">
+          <span className="rounded-full bg-white border border-electric-200 px-3.5 py-1 text-xs font-semibold text-electric-700 shadow-xs">
             Free Traveler Tier
           </span>
-          <span className="text-xs text-ink-400">No credit card required</span>
+          <span className="text-xs font-medium text-ink-500">No credit card required</span>
         </div>
 
         <div className="relative z-10 my-auto py-12 text-center">
           <div className="mx-auto max-w-md">
             <RouteArc width={420} height={160} showPlane />
-            <h2 className="mt-6 font-display text-2xl font-bold text-white">
+            <h2 className="mt-6 font-display text-2xl sm:text-3xl font-extrabold text-ink-950">
               Smarter Flights. Better Decisions.
             </h2>
-            <p className="mt-3 text-sm leading-relaxed text-ink-300">
+            <p className="mt-3 text-sm leading-relaxed text-ink-600">
               Unlock flexible date sweeps, alternate airport expansion, budget calculators, and consultations with Aero AI.
             </p>
           </div>
         </div>
 
-        <div className="relative z-10 border-t border-navy-800/80 pt-6 flex items-center justify-between text-xs text-ink-400">
+        <div className="relative z-10 border-t border-ink-200/60 pt-6 flex items-center justify-between text-xs text-ink-500">
           <span>5 free monthly searches included</span>
           <span>Decision scoring & timeline exports</span>
         </div>

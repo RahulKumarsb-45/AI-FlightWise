@@ -31,18 +31,18 @@ function HowItWorks() {
   return (
     <section
       id="how-it-works"
-      className="relative overflow-hidden bg-navy-900 py-16 lg:py-24 border-t border-navy-800"
+      className="relative overflow-hidden bg-white py-16 lg:py-24 border-t border-ink-100"
     >
       <div className="section-wide w-full relative">
         <div className="mx-auto max-w-3xl text-center">
-          <span className="inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-cyan-400">
+          <span className="inline-flex items-center gap-1.5 rounded-full border border-electric-200 bg-electric-50 px-3.5 py-1 text-xs font-semibold text-electric-700">
             Intelligent Workflow
           </span>
-          <h2 className="mt-3 font-display text-display-sm text-white sm:text-display-md">
+          <h2 className="mt-4 font-display text-3xl sm:text-4xl font-extrabold text-ink-950">
             How AI FlightWise works
           </h2>
-          <p className="mt-3 text-ink-300 leading-relaxed max-w-2xl mx-auto">
-            From raw route inputs to explainable, high-conviction flight recommendations — one structured process in four clear steps.
+          <p className="mt-3 text-ink-600 leading-relaxed max-w-2xl mx-auto text-base">
+            From raw itinerary inputs to explainable, high-conviction flight recommendations — one structured process in four clear steps.
           </p>
         </div>
 
@@ -52,21 +52,21 @@ function HowItWorks() {
             return (
               <div
                 key={step.number}
-                className="group relative flex flex-col justify-between rounded-2xl border border-navy-700/60 bg-navy-800/60 p-6 transition-all duration-300 hover:border-cyan-500/50 hover:bg-navy-800 hover:shadow-premium lg:p-7"
+                className="group relative flex flex-col justify-between rounded-2xl border border-ink-100 bg-[#F8FAFC] p-6 transition-all duration-300 hover:border-electric-200 hover:bg-white hover:shadow-card lg:p-7"
               >
                 <div>
                   <div className="flex items-center justify-between">
-                    <span className="font-mono text-xs font-bold tracking-wider text-cyan-400 bg-cyan-950/60 border border-cyan-800/40 rounded-full px-2.5 py-1">
-                      {step.number}
+                    <span className="font-mono text-xs font-bold tracking-wider text-electric-700 bg-white border border-electric-200 rounded-full px-2.5 py-1 shadow-xs">
+                      STEP {step.number}
                     </span>
-                    <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-navy-700/60 text-ink-300 group-hover:text-cyan-400 transition-colors">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-electric-50 text-electric-600 border border-electric-100 transition-colors group-hover:bg-electric-600 group-hover:text-white">
                       <Icon className="h-4 w-4" aria-hidden="true" />
                     </div>
                   </div>
-                  <h3 className="mt-5 font-display text-lg font-bold text-white group-hover:text-cyan-200 transition-colors">
+                  <h3 className="mt-5 font-display text-lg font-bold text-ink-900 group-hover:text-electric-700 transition-colors">
                     {step.title}
                   </h3>
-                  <p className="mt-2 text-sm leading-relaxed text-ink-300">
+                  <p className="mt-2 text-sm leading-relaxed text-ink-600">
                     {step.description}
                   </p>
                 </div>

@@ -221,7 +221,7 @@ function SearchForm() {
                   className={cn(
                     'rounded-lg px-4 py-2 text-sm font-semibold transition-all duration-150',
                     field.value === p.value
-                      ? 'bg-white text-navy-950 shadow-soft'
+                      ? 'bg-white text-ink-950 shadow-soft'
                       : 'text-ink-500 hover:text-ink-900'
                   )}
                 >

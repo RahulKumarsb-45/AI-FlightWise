@@ -95,8 +95,8 @@ export function PWAProvider() {
   return (
     <>
       {isOffline && (
-        <div role="status" aria-live="polite" className="bg-navy-950 py-1.5 text-center text-xs font-medium text-white border-b border-navy-800">
-          You’re offline — search, sign-in, Aero AI, and payments won’t work until you’re back online.
+        <div role="status" aria-live="polite" className="bg-amber-500 py-2 text-center text-xs font-semibold text-white border-b border-amber-600 shadow-xs">
+          You&apos;re offline — search, sign-in, Aero AI, and payments will resume when connection is restored.
         </div>
       )}
 

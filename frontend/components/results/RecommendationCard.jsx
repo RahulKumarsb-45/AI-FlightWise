@@ -128,7 +128,7 @@ function RecommendationCard({ recommendation, rank, highlight, experimentVariant
         </div>
 
         <div className="text-right">
-          <p className="font-mono text-3xl font-bold text-navy-950">{formatInr(totalPriceInr)}</p>
+          <p className="font-mono text-3xl font-bold text-ink-950">{formatInr(totalPriceInr)}</p>
           <p className="text-xs text-ink-400 mt-0.5">all travelers included</p>
         </div>
       </div>
@@ -150,17 +150,17 @@ function RecommendationCard({ recommendation, rank, highlight, experimentVariant
           <div className="mt-2.5 grid grid-cols-1 sm:grid-cols-3 gap-2.5 text-xs">
             <div className="rounded-lg bg-white/80 p-2.5 border border-electric-200/60">
               <span className="block font-medium text-ink-500 text-[11px] uppercase tracking-wider">Price Efficiency</span>
-              <span className="mt-0.5 block font-bold text-navy-950 font-mono text-sm">{formatInr(totalPriceInr)}</span>
+              <span className="mt-0.5 block font-bold text-ink-950 font-mono text-sm">{formatInr(totalPriceInr)}</span>
               <span className="text-[11px] text-ink-600">Calculated value for all travelers</span>
             </div>
             <div className="rounded-lg bg-white/80 p-2.5 border border-electric-200/60">
               <span className="block font-medium text-ink-500 text-[11px] uppercase tracking-wider">Travel Time</span>
-              <span className="mt-0.5 block font-bold text-navy-950 text-sm">{formatDuration(totalDurationMinutes)}</span>
+              <span className="mt-0.5 block font-bold text-ink-950 text-sm">{formatDuration(totalDurationMinutes)}</span>
               <span className="text-[11px] text-ink-600">Door-to-door transit time</span>
             </div>
             <div className="rounded-lg bg-white/80 p-2.5 border border-electric-200/60">
               <span className="block font-medium text-ink-500 text-[11px] uppercase tracking-wider">Stop Trade-Off</span>
-              <span className="mt-0.5 block font-bold text-navy-950 text-sm">
+              <span className="mt-0.5 block font-bold text-ink-950 text-sm">
                 {totalStops === 0 ? '0 Transfers' : `${totalStops} Layover${totalStops > 1 ? 's' : ''}`}
               </span>
               <span className="text-[11px] text-ink-600">

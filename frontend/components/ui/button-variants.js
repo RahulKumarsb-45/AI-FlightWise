@@ -14,10 +14,10 @@ export const buttonVariants = cva(
   {
     variants: {
       variant: {
-        primary: 'bg-gradient-to-r from-electric-500 to-electric-600 text-white hover:from-electric-600 hover:to-electric-700 shadow-soft hover:shadow-glow-electric',
-        accent: 'bg-gradient-to-r from-electric-500 to-violet-500 text-white hover:from-electric-600 hover:to-violet-600 shadow-premium',
-        cyan: 'bg-gradient-to-r from-cyan-400 to-electric-500 text-navy-950 font-semibold hover:opacity-95 shadow-glow-cyan',
-        outline: 'border border-ink-200 bg-white/80 backdrop-blur-sm text-ink-800 hover:bg-ink-50 hover:border-ink-300',
+        primary: 'bg-electric-600 text-white hover:bg-electric-700 shadow-soft hover:shadow-glow-electric',
+        accent: 'bg-gradient-to-r from-electric-600 to-violet-600 text-white hover:from-electric-700 hover:to-violet-700 shadow-soft',
+        cyan: 'bg-gradient-to-r from-electric-600 to-cyan-600 text-white font-semibold hover:from-electric-700 hover:to-cyan-700 shadow-soft',
+        outline: 'border border-ink-200 bg-white text-ink-800 hover:bg-ink-50 hover:border-ink-300 shadow-xs',
         ghost: 'bg-transparent text-ink-700 hover:bg-ink-50 hover:text-ink-900',
         link: 'bg-transparent text-electric-600 underline-offset-4 hover:underline p-0 h-auto',
         danger: 'bg-danger-500 text-white hover:bg-danger-600 shadow-soft',

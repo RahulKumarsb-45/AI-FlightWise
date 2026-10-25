@@ -5,44 +5,40 @@ import Link from 'next/link';
 import { motion } from 'framer-motion';
 import {
   ArrowRight,
-  ShieldCheck,
-  Zap,
   MapPinned,
   CalendarRange,
   Route,
   Sparkles,
   TrendingDown,
-  Clock,
   CheckCircle2,
+  Plane,
 } from 'lucide-react';
 import { buttonVariants } from '@/components/ui/button-variants';
-import { useAuth } from '@/hooks/useAuth';
+import { Badge } from '@/components/ui/Badge';
 
 const CAPABILITIES = [
   { icon: MapPinned, title: 'Nearby Hubs', desc: 'Checks alternate airports within 300km' },
-  { icon: CalendarRange, title: 'Flexible Dates', desc: '±3 days combinatorial fare search' },
+  { icon: CalendarRange, title: 'Flexible Dates', desc: '±3 days window for tariff dips' },
   { icon: Route, title: 'Multi-City Circuits', desc: 'Optimal routing across up to 4 countries' },
 ];
 
 function Hero() {
-  const { isAuthenticated, loading } = useAuth();
-
   return (
-    <section className="relative overflow-hidden bg-navy-950 text-white min-h-[640px] lg:min-h-[720px] flex items-center">
-      {/* Background aviation image with cinematic dark gradient overlays */}
-      <div className="absolute inset-0 z-0">
+    <section className="relative overflow-hidden bg-gradient-to-b from-[#EEF4FF]/70 via-[#F8FAFC] to-[#FFFFFF] text-ink-900 min-h-[640px] lg:min-h-[720px] flex items-center border-b border-ink-100">
+      {/* Background aviation image with gentle light readability overlay */}
+      <div className="absolute inset-0 z-0 pointer-events-none">
         <Image
           src="/images/hero-aviation.jpg"
-          alt="Modern commercial passenger aircraft flying above twilight clouds"
+          alt="Modern commercial passenger aircraft flying through clear blue skies"
           fill
           priority
           sizes="100vw"
-          className="object-cover object-[70%_center] md:object-[60%_center] lg:object-center opacity-45 lg:opacity-55"
+          className="object-cover object-[70%_center] md:object-[60%_center] lg:object-center opacity-25 mix-blend-multiply"
         />
-        {/* Responsive dark gradient overlays for guaranteed WCAG AA text contrast */}
+        {/* Crisp light gradient overlay ensuring 100% WCAG AAA text contrast */}
         <div
           aria-hidden="true"
-          className="absolute inset-0 bg-gradient-to-b from-navy-950/95 via-navy-950/80 to-navy-950/95 lg:bg-gradient-to-r lg:from-navy-950/98 lg:via-navy-950/85 lg:to-navy-950/40"
+          className="absolute inset-0 bg-gradient-to-b from-white/95 via-white/85 to-white/95 lg:bg-gradient-to-r lg:from-white/98 lg:via-white/88 lg:to-white/40"
         />
       </div>
 
@@ -50,143 +46,143 @@ function Hero() {
         <div className="grid gap-12 lg:grid-cols-12 lg:items-center">
           {/* Left Column: Brand, Tagline, Value Prop, CTAs */}
           <motion.div
-            initial={{ opacity: 0, y: 18 }}
+            initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
             className="lg:col-span-7 xl:col-span-7"
           >
-            <div className="inline-flex items-center gap-2 rounded-full border border-cyan-400/30 bg-cyan-950/50 px-3.5 py-1 text-xs font-semibold text-cyan-300 backdrop-blur-md">
-              <Sparkles className="h-3.5 w-3.5 text-cyan-400" aria-hidden="true" />
-              <span>AI FlightWise · Decision Intelligence</span>
+            <div className="inline-flex items-center gap-2 rounded-full border border-electric-200 bg-white/90 px-3.5 py-1 text-xs font-semibold text-electric-700 shadow-xs backdrop-blur-sm">
+              <Plane className="h-3.5 w-3.5 text-electric-600" aria-hidden="true" />
+              <span>AI FlightWise · Intelligent Route Planning</span>
             </div>
 
-            <h1 className="mt-4 font-display text-display-md sm:text-display-lg lg:text-display-xl font-bold tracking-tight text-white">
+            <h1 className="mt-4 font-display text-4xl sm:text-5xl lg:text-[3.5rem] font-extrabold tracking-tight text-ink-950 leading-[1.12]">
               Smarter Flights.
               <br />
-              <span className="bg-gradient-to-r from-cyan-400 via-electric-400 to-violet-400 bg-clip-text text-transparent">
-                Better Decisions.
-              </span>
+              <span className="text-electric-600">Better Decisions.</span>
             </h1>
 
-            <p className="mt-4 max-w-xl text-balance text-base sm:text-lg text-ink-300 leading-relaxed">
-              Stop sifting through chaotic flight listings. AI FlightWise evaluates nearby airports, flexible dates, and multi-city circuits — then explains exactly why each recommendation beats the rest.
+            <p className="mt-5 max-w-xl text-balance text-base sm:text-lg text-ink-600 leading-relaxed">
+              Stop sifting through chaotic flight listings. AI FlightWise evaluates nearby alternate airports, flexible date brackets, and multi-city circuits — then explains exactly why each recommendation beats the rest.
             </p>
 
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
               <Link
                 href="/search"
-                className={`${buttonVariants({ variant: 'cyan', size: 'lg' })} w-full sm:w-auto shadow-glow-cyan`}
+                className={`${buttonVariants({ variant: 'primary', size: 'lg' })} w-full sm:w-auto shadow-soft`}
               >
                 Start Flight Search
-                <ArrowRight className="h-4 w-4 ml-1" aria-hidden="true" />
+                <ArrowRight className="h-4 w-4 ml-1.5" aria-hidden="true" />
               </Link>
               <Link
-                href="/ai-agent"
-                className={`${buttonVariants({ variant: 'outline', size: 'lg' })} w-full sm:w-auto border-navy-700 bg-navy-900/60 text-white backdrop-blur-md hover:bg-navy-800`}
+                href="/how-it-works"
+                className={`${buttonVariants({ variant: 'outline', size: 'lg' })} w-full sm:w-auto bg-white hover:bg-ink-50 text-ink-800`}
               >
-                <Sparkles className="h-4 w-4 text-cyan-400" aria-hidden="true" />
-                Ask Aero AI
+                How It Works
               </Link>
             </div>
 
             {/* Trust and Key Capability Badges */}
-            <div className="mt-10 pt-6 border-t border-navy-800/80 grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div className="mt-10 pt-6 border-t border-ink-100 grid grid-cols-1 sm:grid-cols-3 gap-3.5">
               {CAPABILITIES.map(({ icon: Icon, title, desc }) => (
-                <div key={title} className="flex items-start gap-2.5">
-                  <div className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-navy-800/90 text-cyan-400 border border-navy-700/60">
-                    <Icon className="h-3.5 w-3.5" aria-hidden="true" />
+                <div key={title} className="flex items-start gap-2.5 rounded-xl border border-ink-100 bg-white/90 p-3 shadow-xs">
+                  <div className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-electric-50 text-electric-600 border border-electric-100">
+                    <Icon className="h-4 w-4" aria-hidden="true" />
                   </div>
                   <div>
-                    <p className="text-xs font-semibold text-white">{title}</p>
-                    <p className="text-[11px] text-ink-400">{desc}</p>
+                    <p className="text-xs font-bold text-ink-900">{title}</p>
+                    <p className="text-[11px] text-ink-500 leading-tight mt-0.5">{desc}</p>
                   </div>
                 </div>
               ))}
             </div>
           </motion.div>
 
-          {/* Right Column: Live Decision Intelligence Preview Card */}
+          {/* Right Column: Illustrative Flight Recommendation Preview Card */}
           <motion.div
-            initial={{ opacity: 0, scale: 0.96 }}
+            initial={{ opacity: 0, scale: 0.97 }}
             animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.6, delay: 0.15 }}
+            transition={{ duration: 0.55, delay: 0.1 }}
             className="lg:col-span-5 xl:col-span-5"
           >
-            <div className="relative rounded-2xl border border-navy-700/80 bg-navy-900/90 p-5 shadow-premium backdrop-blur-xl">
-              <div className="flex items-center justify-between border-b border-navy-800 pb-3">
+            <div className="relative rounded-2xl border border-ink-200/90 bg-white p-6 shadow-premium">
+              <div className="flex items-center justify-between border-b border-ink-100 pb-3">
                 <div className="flex items-center gap-2">
-                  <span className="flex h-2.5 w-2.5 rounded-full bg-cyan-400 animate-pulse" />
-                  <span className="text-xs font-semibold uppercase tracking-wider text-ink-300">
-                    Decision Matrix Preview
+                  <span className="flex h-2.5 w-2.5 rounded-full bg-electric-600 animate-pulse" />
+                  <span className="text-xs font-bold uppercase tracking-wider text-ink-500">
+                    Recommendation Preview
                   </span>
                 </div>
-                <span className="rounded-full bg-navy-800 px-2 py-0.5 font-mono text-[11px] text-cyan-300">
+                <span className="rounded-full bg-electric-50 border border-electric-100 px-2.5 py-0.5 font-mono text-xs font-semibold text-electric-700">
                   DEL → LHR
                 </span>
               </div>
 
               {/* Recommendation Options Comparison */}
-              <div className="mt-4 space-y-2.5">
+              <div className="mt-4 space-y-3">
                 {/* Balanced Pick (Highlighted) */}
-                <div className="relative rounded-xl border border-cyan-400/50 bg-gradient-to-r from-navy-800/90 to-navy-900/90 p-3.5 shadow-soft">
+                <div className="relative rounded-xl border border-electric-400 bg-electric-50/60 p-4 shadow-xs">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
-                      <span className="rounded-md bg-gradient-to-r from-electric-500 to-cyan-400 px-2 py-0.5 text-[10px] font-bold text-navy-950">
+                      <span className="rounded-md bg-electric-600 px-2 py-0.5 text-[11px] font-bold text-white shadow-xs">
                         BEST BALANCED
                       </span>
-                      <span className="text-xs text-ink-300">1 Stop (1h 15m)</span>
+                      <span className="text-xs font-medium text-ink-700">1 Stop (1h 15m DOH)</span>
                     </div>
-                    <span className="font-mono text-base font-bold text-white">₹44,500</span>
+                    <span className="font-mono text-lg font-bold text-ink-950">₹44,500</span>
                   </div>
-                  <div className="mt-2 flex items-center justify-between text-xs text-ink-400">
-                    <span className="flex items-center gap-1 text-cyan-300">
-                      <TrendingDown className="h-3 w-3" /> Saves ₹12,300 vs direct
+                  <div className="mt-2.5 flex items-center justify-between text-xs text-ink-600">
+                    <span className="flex items-center gap-1 font-semibold text-emerald-700">
+                      <TrendingDown className="h-3.5 w-3.5 text-emerald-600" /> Saves ₹12,300 vs direct
                     </span>
-                    <span className="font-mono text-[11px] text-ink-300">Score 94/100</span>
+                    <span className="text-xs text-ink-500">10h 15m total</span>
                   </div>
                 </div>
 
                 {/* Cheapest Option */}
-                <div className="rounded-xl border border-navy-800 bg-navy-950/60 p-3 text-xs">
+                <div className="rounded-xl border border-ink-100 bg-paper-50 p-3 text-xs transition-colors hover:border-ink-200">
                   <div className="flex items-center justify-between">
-                    <span className="font-semibold text-ink-300">CHEAPEST</span>
-                    <span className="font-mono text-sm font-semibold text-ink-200">₹39,800</span>
+                    <span className="font-bold text-ink-700">CHEAPEST OPTION</span>
+                    <span className="font-mono text-sm font-semibold text-ink-900">₹39,800</span>
                   </div>
-                  <div className="mt-1 flex items-center justify-between text-ink-400">
-                    <span>2 Stops (6h 40m layover)</span>
-                    <span className="font-mono text-[11px]">Score 81/100</span>
+                  <div className="mt-1 flex items-center justify-between text-ink-500">
+                    <span>2 Stops (6h 40m layovers)</span>
+                    <span>17h 20m total</span>
                   </div>
                 </div>
 
                 {/* Fastest Option */}
-                <div className="rounded-xl border border-navy-800 bg-navy-950/60 p-3 text-xs">
+                <div className="rounded-xl border border-ink-100 bg-paper-50 p-3 text-xs transition-colors hover:border-ink-200">
                   <div className="flex items-center justify-between">
-                    <span className="font-semibold text-ink-300">FASTEST</span>
-                    <span className="font-mono text-sm font-semibold text-ink-200">₹56,800</span>
+                    <span className="font-bold text-ink-700">FASTEST OPTION</span>
+                    <span className="font-mono text-sm font-semibold text-ink-900">₹56,800</span>
                   </div>
-                  <div className="mt-1 flex items-center justify-between text-ink-400">
-                    <span>Non-stop (8h 50m)</span>
-                    <span className="font-mono text-[11px]">Score 88/100</span>
+                  <div className="mt-1 flex items-center justify-between text-ink-500">
+                    <span>Non-stop direct flight</span>
+                    <span>8h 50m total</span>
                   </div>
                 </div>
               </div>
 
               {/* Grounded Rationale Callout */}
-              <div className="mt-4 rounded-xl border border-navy-700/50 bg-navy-950/70 p-3 text-xs leading-relaxed text-ink-300">
-                <p className="flex items-start gap-1.5">
-                  <CheckCircle2 className="h-4 w-4 shrink-0 text-cyan-400 mt-0.5" />
+              <div className="mt-4 rounded-xl border border-emerald-200/80 bg-emerald-50/70 p-3.5 text-xs leading-relaxed text-emerald-950">
+                <div className="flex items-start gap-2">
+                  <CheckCircle2 className="h-4 w-4 shrink-0 text-emerald-600 mt-0.5" />
                   <span>
-                    <strong className="text-white">Why Balanced Wins:</strong> You save ₹12,300 with only 1h 15m additional transit, keeping total duration under 10.5 hours.
+                    <strong className="font-semibold text-emerald-900">Why Balanced Wins:</strong> You save ₹12,300 compared to direct options with only a 1h 15m transfer, keeping total journey under 10.5 hours.
                   </span>
-                </p>
+                </div>
               </div>
 
-              <div className="mt-3.5 text-center">
+              <div className="mt-4 pt-3 border-t border-ink-100 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs">
+                <span className="text-[11px] text-ink-400">
+                  Illustrative recommendation example
+                </span>
                 <Link
                   href="/search"
-                  className="inline-flex items-center gap-1 text-xs font-semibold text-cyan-400 hover:text-cyan-300 transition-colors"
+                  className="inline-flex items-center gap-1 font-semibold text-electric-600 hover:text-electric-700 transition-colors"
                 >
-                  Run your own route optimization →
+                  Run live optimization →
                 </Link>
               </div>
             </div>
