@@ -1,6 +1,3 @@
-// Must be required first: Sentry needs to be initialized before express/http
-// are required so its instrumentation can patch them.
-const Sentry = require('./instrument');
 
 const express = require('express');
 const cors = require('cors');
@@ -11,7 +8,6 @@ const rateLimit = require('express-rate-limit');
 const config = require('./config/env');
 const logger = require('./logger/logger');
 const routes = require('./routes/index');
-const AppError = require('./utils/AppError');
 const { requestIdMiddleware, notFoundHandler, errorHandler } = require('./middleware/errorHandler');
 
 const app = express();
@@ -87,17 +83,6 @@ app.use('/api', routes);
 // ------------------------------------------------------------------
 app.use(notFoundHandler);
 
-// Reports errors to Sentry, then calls next(err) so our own errorHandler
-// still runs and the API response shape/status codes are unchanged.
-// Expected 4xx AppErrors (validation, bad credentials, not-found, etc.) are
-// normal application flow and are not forwarded — only 5xx AppErrors and
-// truly unexpected (non-AppError) exceptions are.
-Sentry.setupExpressErrorHandler(app, {
-  shouldHandleError(error) {
-    if (error instanceof AppError) return error.statusCode >= 500;
-    return true;
-  },
-});
 
 app.use(errorHandler);
 

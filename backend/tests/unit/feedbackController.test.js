@@ -1,3 +1,7 @@
+jest.mock('../../src/database/pool', () => ({
+  query: jest.fn().mockRejectedValue(new Error('Unit test DB offline fallback')),
+}));
+
 const { submitFeedback, getFeedbackSummary, _inMemoryFeedbackStore } = require('../../src/controllers/feedbackController');
 
 describe('feedbackController', () => {

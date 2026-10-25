@@ -26,10 +26,8 @@ This targets three free/cheap-tier services: **Neon** (Postgres), **Render** (ba
    | `JWT_ACCESS_SECRET` | generate one: `openssl rand -hex 32` |
    | `JWT_REFRESH_SECRET` | a **different** random value, same method |
    | `FRONTEND_URL` | your Vercel URL once you have it (step 3) — needed for CORS |
-   | `FLIGHT_PROVIDER` | `mock`, `amadeus` if you have real Amadeus credentials, or `ignav` if you have a real Ignav API key |
+   | `FLIGHT_PROVIDER` | `mock` or `ignav` if you have a real Ignav API key |
    | `PORT` | Render sets this automatically; the app reads `process.env.PORT` |
-   | `SENTRY_DSN` | optional — your Sentry project DSN; leave unset to run without error monitoring |
-   | `SENTRY_ENVIRONMENT` | optional, e.g. `production` — defaults to `NODE_ENV` |
 
    The app **will not start** in production without both JWT secrets set — this is intentional (see `docs/ARCHITECTURE.md`'s auth section).
 
@@ -53,7 +51,6 @@ This targets three free/cheap-tier services: **Neon** (Postgres), **Render** (ba
    | `NEXT_PUBLIC_API_URL` | `https://your-backend.onrender.com/api` |
    | `NEXT_PUBLIC_SITE_URL` | `https://ai-flightwise.vercel.app` |
    | `NEXT_PUBLIC_GA_MEASUREMENT_ID` | optional — your Google Analytics 4 ID |
-   | `NEXT_PUBLIC_SENTRY_DSN` | optional — leave blank to run without error monitoring |
 
    **Important**: `NEXT_PUBLIC_*` variables are baked into the JS bundle at build time. If you change `NEXT_PUBLIC_API_URL` later, you need to trigger a new deploy — restarting the app isn't enough.
 3. Deploy. Vercel gives you a URL like `https://ai-flightwise.vercel.app`.
@@ -75,11 +72,7 @@ If you'd rather not use three separate platforms, `docker-compose.yml` at the pr
 ## What's NOT covered here
 
 - **Custom domains / DNS** — both Render and Vercel support this in their dashboards; not app-specific.
-- **Redis** — optional, supported via `REDIS_URL`. Sits in front of the existing Postgres `flight_cache` table as a fast, cross-instance layer, with an in-process memory layer in front of both (see Architecture doc for the full memory → Redis → Postgres chain). Leave `REDIS_URL` unset to run entirely on memory + Postgres caching — nothing else changes. Recommended once you're running more than one backend instance, since that's when a shared cache actually starts paying off over Postgres alone.
-  - **Local/Docker**: `docker compose up` already includes a `redis` service; the backend container gets `REDIS_URL=redis://redis:6379` automatically. Redis being down or slow to start never blocks the backend container (see `docker-compose.yml`'s `depends_on` comment).
-  - **Render**: add a Render Key Value instance (or any managed Redis, e.g. Upstash/Redis Cloud) and set `REDIS_URL` to its connection string in the backend service's environment variables. Use the `rediss://` (TLS) URL if the provider offers one.
 - **Geoapify Places (v2)** — optional, via `GEOAPIFY_API_KEY`. Powers destination hotels/restaurants (`/api/places/:iataCode/hotels`, `/restaurants`) and tourist attractions (`/attractions`). Leave unset to run without that data — everything else keeps working. **Docker**: set this (and `PLACES_CACHE_TTL_HOURS` if you override it) in `backend/.env` — `docker-compose.yml` passes it through to the backend container.
-- **Sentry error monitoring** — optional, supported via `SENTRY_DSN` (backend) and `NEXT_PUBLIC_SENTRY_DSN` (frontend). Leave both unset to run exactly as before, with no error monitoring and no extra network calls. See the root README's "Error monitoring (Sentry)" section for the full variable list. To also upload source maps during the Vercel build (readable stack traces instead of minified ones), set `SENTRY_AUTH_TOKEN`, `SENTRY_ORG`, and `SENTRY_PROJECT` as build-time environment variables in Vercel — these are never sent to the browser.
-- **Ignav** — optional, via `IGNAV_API_KEY` (get one at [ignav.com/signup](https://ignav.com/signup)). Set `FLIGHT_PROVIDER=ignav` to switch flight search to real, live fares; leave `FLIGHT_PROVIDER=mock` (the default) to keep using generated mock offers. `IGNAV_MARKET` (default `IN`) controls the currency Ignav prices fares in — leave it at `IN` so results stay in INR, matching this app's price display. Backend-only; never exposed to the frontend. Booking stays a dummy flow regardless of which flight provider is configured — Ignav's own booking-links endpoint is not wired up here.
-- **Amadeus / Anthropic / Razorpay production keys** — none of these integrations are live-tested; see the root README's "Current status" section before enabling them for anything beyond experimentation.
+- **Ignav** — optional, via `IGNAV_API_KEY` (get one at [ignav.com/signup](https://ignav.com/signup)). Set `FLIGHT_PROVIDER=ignav` to switch flight search to real, live fares; leave `FLIGHT_PROVIDER=mock` (the default) to keep using generated mock offers. `IGNAV_MARKET` (default `IN`) controls the currency Ignav prices fares in — leave it at `IN` so results stay in INR, matching this app's price display. Backend-only; never exposed to the frontend. Booking stays a simulated flow regardless of which flight provider is configured.
+- **Razorpay production keys** — set test keys (`rzp_test_*`) for testing payment flows before moving to live keys.
 - **PWA / service worker HTTPS requirement** — the installable PWA (see root README) needs a secure origin in production; Vercel provides HTTPS automatically for the frontend deployment above, so nothing extra is needed there. Self-hosting the frontend container elsewhere (the "Local Docker alternative" below) requires your own TLS termination in front of it — service workers simply won't register over plain HTTP on a non-localhost origin.

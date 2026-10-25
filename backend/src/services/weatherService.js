@@ -2,45 +2,16 @@ const axios = require('axios');
 const config = require('../config/env');
 const AppError = require('../utils/AppError');
 const { weatherCache } = require('../cache/memoryCache');
-const redisCache = require('../cache/redisCache');
 const airportService = require('../providers/airport/airportService');
 
 const CACHE_TTL_MS = config.weather.cacheTtlMinutes * 60 * 1000;
-const REDIS_NAMESPACE = 'weathercache';
 
-function redisKeyFor(cacheKey) {
-  return `${REDIS_NAMESPACE}:${cacheKey}`;
-}
-
-/**
- * Same two-layer read used by cache/flightCache.js: in-process memory first
- * (this instance only), then Redis (shared across every backend instance —
- * a no-op that resolves to `undefined` immediately when REDIS_URL isn't
- * set/reachable, exactly like before this change). A Redis hit backfills
- * the memory cache so subsequent reads on this instance skip Redis too.
- * Returns `null` when neither layer has anything cached.
- */
 async function getFromCache(cacheKey) {
-  const memHit = weatherCache.get(cacheKey);
-  if (memHit) return memHit;
-
-  const redisResult = await redisCache.get(redisKeyFor(cacheKey));
-  if (redisResult) {
-    weatherCache.set(cacheKey, redisResult, CACHE_TTL_MS);
-    return redisResult;
-  }
-  return null;
+  return weatherCache.get(cacheKey) || null;
 }
 
-/**
- * Write-through: memory (this instance) + Redis (shared), same TTL as
- * before. redisCache.set() never rejects (see cache/redisCache.js) — a
- * Redis failure is already swallowed there and just means the next request
- * on another instance repeats this same provider call.
- */
 function writeToCache(cacheKey, value) {
   weatherCache.set(cacheKey, value, CACHE_TTL_MS);
-  redisCache.set(redisKeyFor(cacheKey), value, CACHE_TTL_MS);
 }
 
 function requireApiKey() {

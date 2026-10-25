@@ -10,11 +10,9 @@ This guide provides a comprehensive audit of all external APIs and environment c
 | :--- | :--- | :---: | :--- | :--- | :--- | :---: | :--- | :--- |
 | **Flight Search & Optimizer** | Mock Engine | **Yes** | `FLIGHT_PROVIDER=mock` | `backend/.env` | Built-in | **Default** | Never fails. Generates realistic flights deterministically based on Great-Circle distance. | Run searches across any routes without credentials. |
 | **Flight Search (Live)** | Ignav | **Yes** | `IGNAV_API_KEY`<br>`IGNAV_BASE_URL`<br>`IGNAV_MARKET=IN` | `backend/.env` | [ignav.com/signup](https://ignav.com/signup) | Optional | Throws `500 IGNAV_NOT_CONFIGURED` if `FLIGHT_PROVIDER=ignav`. Does **not** silently fall back to mock. | Test with 1-way and round-trip searches between major hubs (e.g. DEL → DXB). |
-| **Flight Search (GDS)** | Amadeus | **Yes** | `AMADEUS_CLIENT_ID`<br>`AMADEUS_CLIENT_SECRET`<br>`AMADEUS_BASE_URL` | `backend/.env` | [developers.amadeus.com](https://developers.amadeus.com) | Optional | Throws `500 AMADEUS_NOT_CONFIGURED` if `FLIGHT_PROVIDER=amadeus`. | Test using test environment (`https://test.api.amadeus.com`). |
 | **Airport Autocomplete** | Curated Local Dataset | **Yes** | None (Static) | Built-in | Built-in | **Default** | In-memory search over 50+ global airports. | `GET /api/airports?q=del` returns Indira Gandhi Intl. |
 | **Airport Autocomplete (Live)** | Ignav | **Yes** | `IGNAV_API_KEY` | `backend/.env` | [ignav.com](https://ignav.com) | Optional | Transparently falls back to curated in-memory dataset if key is missing or request fails. | Set key to search secondary non-curated airports. |
 | **Aero AI Assistant** | Groq (Llama / GPT-OSS) | **Yes** | `GROQ_API_KEY`<br>`GROQ_MODEL=openai/gpt-oss-120b` | `backend/.env` | [console.groq.com](https://console.groq.com) | Optional | Returns `502 AI_PROVIDER_ERROR` (Authentication failed). Chat UI displays error banner. | Test via chat widget on `/results` or `/search`. |
-| **Aero AI Assistant (Alt)** | Anthropic (Claude) | **Yes** | `ANTHROPIC_API_KEY`<br>`ANTHROPIC_MODEL=claude-sonnet-4-6` | `backend/.env` | [console.anthropic.com](https://console.anthropic.com) | Optional | Returns `502 AI_PROVIDER_ERROR` when `AI_PROVIDER=anthropic`. | Set `AI_PROVIDER=anthropic` and provide valid key. |
 | **Weather & Forecast** | OpenWeatherMap | **Yes** | `OPENWEATHER_API_KEY` | `backend/.env` | [openweathermap.org/api](https://openweathermap.org/api) | Optional | Throws `500 WEATHER_NOT_CONFIGURED` on `/api/weather` endpoints. | Test with `GET /api/weather/current?iata=DEL`. |
 | **Seasonal Guidance** | Latitude Heuristic | **Yes** | None (Deterministic) | Built-in | Built-in | Built-in | Always returns honest hemisphere/latitude seasonal advice without external calls. | Test with `GET /api/weather/season?iata=SYD&month=7`. |
 | **Hotels, Dining & Places** | Geoapify Places v2 | **Yes** | `GEOAPIFY_API_KEY`<br>`PLACES_CACHE_TTL_HOURS=24` | `backend/.env` | [geoapify.com](https://www.geoapify.com) | Optional | Throws `500 PLACES_NOT_CONFIGURED` on `/api/places/*` routes if unset. | Test with `GET /api/places/DEL/hotels`. |
@@ -22,9 +20,6 @@ This guide provides a comprehensive audit of all external APIs and environment c
 | **JWT Authentication** | Node `crypto` / JWT | **Yes** | `JWT_ACCESS_SECRET`<br>`JWT_REFRESH_SECRET` | `backend/.env` | Local secret | **Required** | Required in production (server crashes if unset); in development defaults to fallback. | Generate via `openssl rand -hex 32`. |
 | **Google OAuth** | Google Cloud Console | **Yes** | `GOOGLE_CLIENT_ID`<br>`GOOGLE_CLIENT_SECRET`<br>`GOOGLE_CALLBACK_URL` | `backend/.env` | [console.cloud.google.com](https://console.cloud.google.com) | Optional | Social login button redirects to error if unconfigured; email/password login unaffected. | Configure Authorized redirect URI in Google Console. |
 | **Subscription Payments** | Razorpay | **Yes** | `RAZORPAY_KEY_ID`<br>`RAZORPAY_KEY_SECRET` | `backend/.env` | [razorpay.com](https://razorpay.com) | Optional | Throws `500 PAYMENTS_NOT_CONFIGURED` on `/api/payments/create-order`. | Test orders via Razorpay test mode keys (`rzp_test_*`). |
-| **Transactional Email** | Resend | **Configured Only** | `RESEND_API_KEY`<br>`EMAIL_FROM` | `backend/.env` | [resend.com](https://resend.com) | Planned | Variable cataloged in config; no active email-dispatch route called. | Safe to leave blank. |
-| **Distributed Cache** | Redis | **Yes** | `REDIS_URL` | `backend/.env` | Local / Upstash | Optional | Falls back transparently to in-memory cache and Postgres `flight_cache` table. | Optional for multi-instance scalability. |
-| **Error Monitoring** | Sentry | **Yes** | `SENTRY_DSN`<br>`SENTRY_ENABLED=false` | `backend/.env` | [sentry.io](https://sentry.io) | Optional | Sentry completely disabled when DSN is empty or enabled is false. | Leave blank for clean local logs. |
 | **Frontend API Target** | Next.js Public Config | **Yes** | `NEXT_PUBLIC_API_URL` | `frontend/.env.local` | Local URL | **Required** | Connects Next.js client to Express API backend (`http://localhost:5000/api`). | Required for frontend to fetch data. |
 | **Frontend Site URL** | Next.js Public Config | **Yes** | `NEXT_PUBLIC_SITE_URL` | `frontend/.env.local` | Local URL | **Required** | Configures canonical URLs for SEO, sitemaps, and robots.txt (`http://localhost:3000`). | Required for client canonical links. |
 
@@ -48,12 +43,7 @@ The flight optimizer pipeline uses an abstraction layer (`providerFactory.js`). 
   - Configured with `IGNAV_MARKET=IN` to guarantee all fares are returned directly in Indian Rupees (INR), matching the application's native currency.
   - **Zero Silent Fallback**: If Ignav credentials fail or rate limits are reached, the system throws an explicit error (`IGNAV_NOT_CONFIGURED` or `FLIGHT_PROVIDER_ERROR`) rather than serving fabricated mock data.
 
-- **Amadeus Provider (`FLIGHT_PROVIDER=amadeus`)**:
-  - Enterprise GDS integration supporting Amadeus Self-Service APIs.
-  - Requires `AMADEUS_CLIENT_ID` and `AMADEUS_CLIENT_SECRET`.
-  - Implements proactive in-memory OAuth2 token caching to prevent token round-trip latency on search requests.
 
----
 
 ### 2.2 Aero AI Assistant (Conversational Partner)
 
@@ -66,19 +56,14 @@ The conversational assistant inside AI FlightWise is branded **Aero AI**. It is 
   - System prompt instructs Aero AI to extract structured parameters (`originCity`, `destinationCountries`, `departureDate`, `returnDate`, `travelers`, `budgetInr`, `preference`) while prohibiting price or flight schedule hallucinations.
   - Requires `GROQ_API_KEY`.
 
-- **Secondary Provider (`AI_PROVIDER=anthropic`)**:
-  - Claude Sonnet 4.6 integration (`claude-sonnet-4-6`).
-  - Uses direct system instructions and schema boundaries.
-  - Requires `ANTHROPIC_API_KEY`.
 
----
 
 ### 2.3 Destination Weather
 
 - **OpenWeatherMap Integration**:
   - Uses `/weather` for current conditions and `/forecast` for 5-day / 3-hour forecasts.
   - Condenses 3-hour slices into daily midday snapshots for travel decision-making.
-  - Implements multi-tier caching (memory + optional Redis) with `WEATHER_CACHE_TTL_MINUTES=30`.
+  - Implements multi-tier caching (in-memory Map + PostgreSQL) with `WEATHER_CACHE_TTL_MINUTES=30`.
   - Requires `OPENWEATHER_API_KEY`.
 - **Seasonal Guidance Heuristic**:
   - Built-in deterministic calculation based on destination airport latitude and month.
@@ -119,11 +104,11 @@ To maintain strict truth-in-advertising and portfolio credibility:
 
 | Category | Features Included | Description |
 | :--- | :--- | :--- |
-| **Real API Responses** | Ignav Flights, Geoapify Places, OpenWeatherMap Forecasts, Groq / Anthropic LLM Responses | Live HTTP responses received from external third-party servers when valid API credentials are supplied. |
+| **Real API Responses** | Ignav Flights, Geoapify Places, OpenWeatherMap Forecasts, Groq LLM Responses | Live HTTP responses received from external third-party servers when valid API credentials are supplied. |
 | **Deterministic Mock Data** | Mock Flight Provider (`FLIGHT_PROVIDER=mock`) | Distance-scaled, realistic flight schedules and pricing generated on-the-fly without external network calls. |
 | **Heuristic Estimates** | Daily Living Cost Estimator, Seasonal Climate Advice | Mathematical heuristics (₹1,500–₹4,000 per day living cost; hemisphere-based seasonal climate trends) clearly labeled as guidance. |
-| **Cached Responses** | Flight leg cache, Geoapify results, Weather forecasts | In-memory and PostgreSQL/Redis stored responses adhering to configured TTL durations to minimize quota consumption. |
-| **Unverified / Scope-Restricted** | Razorpay Live Mandates, Resend Email Dispatch, Live Airline Booking Checkout | Booking links remain simulated demo flows. Payment mandates and automated email dispatches are non-blocking optional features. |
+| **Cached Responses** | Flight leg cache, Geoapify results, Weather forecasts | In-memory and PostgreSQL stored responses adhering to configured TTL durations to minimize quota consumption. |
+| **Unverified / Scope-Restricted** | Razorpay Live Mandates, Live Airline Booking Checkout | Booking links remain simulated demo flows. Payment mandates and order verifications run in test mode. |
 
 ---
 

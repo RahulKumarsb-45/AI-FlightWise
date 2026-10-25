@@ -6,8 +6,8 @@
  * SCOPE NOTE — read before extending this file:
  * The actual natural-language extraction (turning "2 people, business class,
  * Delhi to Tokyo" into structured fields) is performed entirely by the
- * external Gemini/Anthropic model, per the schema/prompt in
- * services/aiProvider/{gemini,anthropic}Provider.js. This repo's code never
+ * external Gemini model, per the schema/prompt in
+ * services/aiProvider/geminiProvider.js. This repo's code never
  * re-parses, validates, or re-derives those fields — aiChatService.js only
  * stores and echoes back exactly whatever `extractedParams` object the
  * (mocked, in these tests) provider call returns. Per the task's own "do not
@@ -34,7 +34,7 @@
  *     these /api/ai/chat requests)
  *
  * CONFIRMED BY READING CURRENT CODE (do not re-derive elsewhere):
- *   - RESPONSE_SCHEMA / SYSTEM_PROMPT (geminiProvider.js, anthropicProvider.js)
+ *   - RESPONSE_SCHEMA / SYSTEM_PROMPT (geminiProvider.js)
  *     define exactly: originCity, destinationCountries (array, up to 4
  *     COUNTRY names — not airports/cities and not ordered legs), departureDate,
  *     returnDate, dateFlexible, travelers, budgetInr, preference
@@ -63,8 +63,8 @@
  * assert the actual outbound *request* the production code builds and
  * sends to the provider — the current user message, the current
  * conversation-history mapping, and the current SYSTEM_PROMPT/
- * RESPONSE_SCHEMA (Gemini) / SYSTEM_PROMPT (Anthropic) structured-output
- * configuration — via `assertGeminiRequestShape`/`assertAnthropicRequestShape`
+ * RESPONSE_SCHEMA (Gemini) structured-output
+ * configuration — via `assertGeminiRequestShape`
  * below. See the "REQUEST-SHAPE GROUND TRUTH" comment further down for how
  * those expected values were sourced (copied verbatim from production, not
  * invented) and section 1b for the added request-construction tests.
@@ -97,12 +97,12 @@ const { generateAccessToken } = require('../../src/utils/tokens');
 /**
  * REQUEST-SHAPE GROUND TRUTH — copied verbatim, not reinvented.
  *
- * `SYSTEM_PROMPT`/`RESPONSE_SCHEMA` in geminiProvider.js and `SYSTEM_PROMPT`
- * in anthropicProvider.js are internal, unexported consts — production code
+ * `SYSTEM_PROMPT`/`RESPONSE_SCHEMA` in geminiProvider.js
+ * are internal, unexported consts — production code
  * is NOT modified to export them for testing. Instead these constants are
  * copied byte-for-byte from the current provider source files (verified by
- * `view`/`grep` against src/services/aiProvider/geminiProvider.js and
- * anthropicProvider.js at the time this suite was written) and used only as
+ * `view`/`grep` against src/services/aiProvider/geminiProvider.js
+ * at the time this suite was written) and used only as
  * the EXPECTED value in assertions below.
  *
  * This is intentionally a drift guard, not a new schema: if a future change
@@ -148,65 +148,7 @@ const GEMINI_RESPONSE_SCHEMA = {
   required: ['reply', 'extractedParams'],
 };
 
-const ANTHROPIC_SYSTEM_PROMPT = `You are Aero AI, the intelligent travel-planning and flight decision assistant inside AI FlightWise, an AI-powered flight decision platform.
 
-Your ONLY job each turn is to have a warm, brief, natural conversation about the traveler's trip AND extract structured search parameters.
-
-Hard rules:
-- NEVER state specific flight prices, airline names, flight numbers, hotel names, or availability — you have no real-time data.
-- The app supports: up to 4 destination countries per trip, up to 3 nearby-airport alternates, flexible dates within +/-3 days, and three preferences (cheapest, fastest, balanced).
-- Ask ONE clarifying question at a time if origin, destination, or date info is missing.
-- Keep replies to 2-3 sentences.
-
-Respond with ONLY a JSON object (no markdown fences, no other text) matching exactly this shape:
-{
-  "reply": "your conversational response",
-  "extractedParams": {
-    "originCity": "string or null",
-    "destinationCountries": ["array of country names mentioned, empty if none"],
-    "departureDate": "YYYY-MM-DD or null",
-    "returnDate": "YYYY-MM-DD or null",
-    "dateFlexible": true or false,
-    "travelers": number or null,
-    "budgetInr": number or null,
-    "preference": "cheapest" | "fastest" | "balanced" | null,
-    "readyToSearch": true or false
-  }
-}`;
-
-/** Asserts the mocked Gemini call used the current production request shape. */
-function assertGeminiRequestShape({ callIndex = 0, expectedLastContent, expectedContentsLength } = {}) {
-  const [url, body] = axios.post.mock.calls[callIndex];
-  expect(url).toBe(
-    `https://generativelanguage.googleapis.com/v1beta/models/${config.ai.gemini.model}:generateContent?key=${config.ai.gemini.apiKey}`
-  );
-  expect(body.systemInstruction).toEqual({ parts: [{ text: GEMINI_SYSTEM_PROMPT }] });
-  expect(body.generationConfig.responseMimeType).toBe('application/json');
-  expect(body.generationConfig.responseSchema).toEqual(GEMINI_RESPONSE_SCHEMA);
-  if (expectedLastContent) {
-    expect(body.contents[body.contents.length - 1]).toEqual(expectedLastContent);
-  }
-  if (expectedContentsLength !== undefined) {
-    expect(body.contents).toHaveLength(expectedContentsLength);
-  }
-  return body;
-}
-
-/** Asserts the mocked Anthropic call used the current production request shape. */
-function assertAnthropicRequestShape({ callIndex = 0, expectedLastMessage, expectedMessagesLength } = {}) {
-  const [url, body, options] = axios.post.mock.calls[callIndex];
-  expect(url).toBe('https://api.anthropic.com/v1/messages');
-  expect(body.model).toBe(config.ai.anthropic.model);
-  expect(body.system).toBe(ANTHROPIC_SYSTEM_PROMPT);
-  expect(options.headers['x-api-key']).toBe(config.ai.anthropic.apiKey);
-  if (expectedLastMessage) {
-    expect(body.messages[body.messages.length - 1]).toEqual(expectedLastMessage);
-  }
-  if (expectedMessagesLength !== undefined) {
-    expect(body.messages).toHaveLength(expectedMessagesLength);
-  }
-  return body;
-}
 
 const USER_A = { id: '11111111-1111-1111-1111-111111111111', email: 'alice@example.com' };
 
@@ -234,7 +176,6 @@ beforeEach(() => {
 afterEach(() => {
   config.ai.provider = ORIGINAL_AI_CONFIG.provider;
   config.ai.gemini = { ...ORIGINAL_AI_CONFIG.gemini };
-  config.ai.anthropic = { ...ORIGINAL_AI_CONFIG.anthropic };
   fetchFlightsSpy.mockRestore();
 });
 
@@ -499,35 +440,6 @@ describe('POST /api/ai/chat — flight-search extraction (schema pass-through)',
     expect(res.body.data.extractedParams).toBeNull();
   });
 
-  test('works identically through the Anthropic provider for the same kind of message (provider-agnostic pass-through)', async () => {
-    config.ai.provider = 'anthropic';
-    config.ai.anthropic = { apiKey: 'fake-test-anthropic-key', model: 'claude-test-model' };
-    const extractedParams = {
-      originCity: 'Kolkata',
-      destinationCountries: ['Thailand'],
-      departureDate: '2026-10-15',
-      returnDate: '2026-10-22',
-      dateFlexible: false,
-      travelers: 2,
-      budgetInr: 60000,
-      preference: 'cheapest',
-      readyToSearch: true,
-    };
-    axios.post.mockResolvedValueOnce({
-      data: { content: [{ type: 'text', text: JSON.stringify({ reply: 'Sounds good.', extractedParams }) }] },
-    });
-
-    const message = 'Cheapest round trip Kolkata to Thailand, Oct 15-22 2026, 2 travelers, budget 60000';
-    const res = await sendChat(message);
-
-    expect(res.status).toBe(200);
-    expect(res.body.data.extractedParams).toEqual(extractedParams);
-    expect(axios.post).toHaveBeenCalledTimes(1);
-    assertAnthropicRequestShape({
-      expectedLastMessage: { role: 'user', content: message },
-      expectedMessagesLength: 1,
-    });
-  });
 });
 
 // ---------------------------------------------------------------------
@@ -663,42 +575,6 @@ describe('POST /api/ai/chat — extraction request construction (prompt/schema/h
     expect(body.contents[1]).toEqual({ role: 'model', parts: [{ text: 'Great — where are you flying from?' }] }); // 'assistant' -> 'model' per current buildContents()
   });
 
-  test('conversation history is also included correctly (as Anthropic role-mapped messages) when the Anthropic provider is configured', async () => {
-    config.ai.provider = 'anthropic';
-    config.ai.anthropic = { apiKey: 'fake-test-anthropic-key', model: 'claude-test-model' };
-    const conversationId = '77777777-7777-4777-8777-777777777777';
-    dbMock.query.mockImplementation(async (text, params) => {
-      if (text.includes('FROM ai_conversations WHERE id')) {
-        return params[0] === conversationId && params[1] === USER_A.id ? { rows: [{ id: conversationId }] } : { rows: [] };
-      }
-      if (text.includes('FROM ai_messages')) {
-        return { rows: [{ role: 'user', content: 'I want to go to Japan' }, { role: 'assistant', content: 'Where from?' }] };
-      }
-      return { rows: [] };
-    });
-    axios.post.mockResolvedValueOnce({
-      data: {
-        content: [
-          {
-            type: 'text',
-            text: JSON.stringify({
-              reply: 'Ready!',
-              extractedParams: { originCity: 'Delhi', destinationCountries: ['Japan'], dateFlexible: true, readyToSearch: true },
-            }),
-          },
-        ],
-      },
-    });
-
-    await authed(request(app).post('/api/ai/chat')).send({ message: 'From Delhi', conversationId });
-
-    const body = assertAnthropicRequestShape({
-      expectedLastMessage: { role: 'user', content: 'From Delhi' },
-      expectedMessagesLength: 3,
-    });
-    expect(body.messages[0]).toEqual({ role: 'user', content: 'I want to go to Japan' });
-    expect(body.messages[1]).toEqual({ role: 'assistant', content: 'Where from?' }); // Anthropic keeps 'assistant' as-is, unlike Gemini's 'model' remap
-  });
 
   test('tool/service behavior is unchanged: still exactly one provider call per message, no separate extraction call and no flight-search call', async () => {
     axios.post.mockResolvedValueOnce(

@@ -97,8 +97,9 @@ function deterministicExtractionFallback(userPrompt) {
 async function runEvaluation() {
   const dataset = loadDataset();
   const startTime = Date.now();
-  const hasLiveKey = Boolean(config.ai.groqApiKey || config.ai.anthropicApiKey);
-  const useLive = hasLiveKey && !process.argv.includes('--offline');
+  const isTest = process.env.NODE_ENV === 'test';
+  const hasLiveKey = Boolean(config.ai?.groq?.apiKey || config.ai?.groqApiKey);
+  const useLive = hasLiveKey && !isTest && !process.argv.includes('--offline');
   let providerName = useLive ? (config.ai.provider || 'groq') : 'rule-based-baseline (offline mode)';
   let provider = null;
 
@@ -124,7 +125,7 @@ async function runEvaluation() {
   for (const tc of dataset.cases) {
     const caseStart = Date.now();
     let extractedParams = null;
-    let reply = '';
+    let _reply = '';
     let status = 'passed';
     const failureReasons = [];
 
@@ -135,10 +136,10 @@ async function runEvaluation() {
           userMessage: tc.userPrompt,
         });
         extractedParams = res.extractedParams;
-        reply = res.reply;
+        _reply = res.reply;
       } else {
         extractedParams = deterministicExtractionFallback(tc.userPrompt);
-        reply = `I processed your request for ${extractedParams.originCity || 'your trip'}.`;
+        _reply = `I processed your request for ${extractedParams.originCity || 'your trip'}.`;
       }
     } catch (err) {
       status = 'failed';

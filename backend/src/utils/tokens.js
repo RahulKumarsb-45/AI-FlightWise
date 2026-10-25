@@ -59,7 +59,7 @@ function refreshExpiryDate() {
 
 /**
  * Short-lived signed "state" token for the OAuth redirect flow — CSRF
- * protection without needing server-side session storage (Redis, etc.).
+ * protection without needing server-side session storage.
  * The state travels: our redirect -> Google -> back to our callback,
  * and we verify it's genuinely ours and hasn't expired before trusting the
  * authorization code that comes with it.

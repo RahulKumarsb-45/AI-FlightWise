@@ -1,7 +1,7 @@
 /**
  * FLIGHT PROVIDER CONTRACT
  * ========================
- * Every flight provider (mock, Amadeus, Ignav, future providers) must implement:
+ * Every flight provider (mock, Ignav, future providers) must implement:
  *
  *   async search(params) -> Promise<NormalizedFlightOffer[]>
  *
@@ -16,7 +16,7 @@
  *
  * NormalizedFlightOffer = {
  *   id: string,                       // provider-unique offer id
- *   provider: 'mock' | 'amadeus' | 'ignav',
+ *   provider: 'mock' | 'ignav',
  *   priceInr: number,                 // total price, converted to INR
  *   currency: 'INR',
  *   totalDurationMinutes: number,
@@ -36,8 +36,8 @@
  *   durationMinutes: number,
  * }
  *
- * IMPORTANT: The optimizer engine (Part B4) depends ONLY on this shape.
- * It never imports amadeusProvider.js or mockProvider.js directly — it goes
+ * IMPORTANT: The optimizer engine depends ONLY on this shape.
+ * It never imports concrete provider files directly — it goes
  * through providerFactory.getProvider(), so swapping/adding providers never
  * requires touching optimizer code.
  */

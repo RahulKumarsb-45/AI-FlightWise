@@ -1,12 +1,10 @@
 const mockProvider = require('./mockProvider');
-const amadeusProvider = require('./amadeusProvider');
 const ignavProvider = require('./ignavProvider');
 const config = require('../../config/env');
 const logger = require('../../logger/logger');
 
 const PROVIDERS = {
   mock: mockProvider,
-  amadeus: amadeusProvider,
   ignav: ignavProvider,
 };
 

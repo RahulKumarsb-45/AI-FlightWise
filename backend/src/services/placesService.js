@@ -2,56 +2,22 @@ const axios = require('axios');
 const config = require('../config/env');
 const AppError = require('../utils/AppError');
 const { placesCache } = require('../cache/memoryCache');
-const redisCache = require('../cache/redisCache');
 const logger = require('../logger/logger');
 
 // ============================================================
 // CACHE
 // ============================================================
 
-const REDIS_NAMESPACE = 'placescache-v4-local-images';
-
-// Same request already running ho to duplicate Geoapify request
-// nahi bhejenge.
+// Prevent duplicate concurrent requests for the same coordinates
 const inFlightRequests = new Map();
 
-function redisKeyFor(cacheKey) {
-  return `${REDIS_NAMESPACE}:${cacheKey}`;
-}
-
-async function getFromCache(cacheKey, ttlMs) {
-  const memoryValue = placesCache.get(cacheKey);
-
-  if (memoryValue) {
-    return memoryValue;
-  }
-
-  const redisValue = await redisCache.get(
-    redisKeyFor(cacheKey)
-  );
-
-  if (redisValue) {
-    placesCache.set(
-      cacheKey,
-      redisValue,
-      ttlMs
-    );
-
-    return redisValue;
-  }
-
-  return null;
+async function getFromCache(cacheKey) {
+  return placesCache.get(cacheKey) || null;
 }
 
 async function writeToCache(cacheKey, value, ttlMs) {
   placesCache.set(
     cacheKey,
-    value,
-    ttlMs
-  );
-
-  await redisCache.set(
-    redisKeyFor(cacheKey),
     value,
     ttlMs
   );
@@ -295,7 +261,7 @@ async function searchNearby({
     `${lat.toFixed(3)},${lon.toFixed(3)}`;
 
   // ==========================================================
-  // 1. MEMORY / REDIS CACHE
+  // 1. IN-MEMORY CACHE
   // ==========================================================
 
   const cached = await getFromCache(

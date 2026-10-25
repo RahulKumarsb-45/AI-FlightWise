@@ -34,29 +34,6 @@ services:
       retries: 10
 
   # ============================================================
-  # Redis
-  # ============================================================
-
-  redis:
-    image: redis:7-alpine
-    container_name: ai-flightwise-redis
-    restart: unless-stopped
-    networks:
-      - flightwise_network
-
-    ports:
-      - '6379:6379'
-
-    volumes:
-      - flightwise_redis_data:/data
-
-    healthcheck:
-      test: ['CMD', 'redis-cli', 'ping']
-      interval: 5s
-      timeout: 5s
-      retries: 10
-
-  # ============================================================
   # Database Migration
   # ============================================================
 
@@ -138,13 +115,6 @@ services:
       STATIC_CACHE_TTL_HOURS: 24
 
       # =========================
-      # Sentry
-      # =========================
-
-      SENTRY_DSN: ''
-      SENTRY_ENABLED: 'false'
-
-      # =========================
       # Google OAuth
       # =========================
 
@@ -175,13 +145,6 @@ services:
       GROQ_API_KEY: test_fake_groq_key_1234
       GROQ_MODEL: openai/gpt-oss-120b
 
-      # =========================
-      # Other AI Provider
-      # =========================
-
-      ANTHROPIC_API_KEY: test_fake_anthropic_key_1234
-      ANTHROPIC_MODEL: claude-sonnet-4-6
-
     command: ['npm', 'test']
 
   # ============================================================
@@ -200,9 +163,6 @@ services:
       postgres:
         condition: service_healthy
 
-      redis:
-        condition: service_started
-
     ports:
       - '5000:5000'
 
@@ -217,12 +177,6 @@ services:
 
       DATABASE_URL: postgresql://postgres:postgres@postgres:5432/ai_flightwise
       PG_SSL: 'false'
-
-      # =========================
-      # Redis
-      # =========================
-
-      REDIS_URL: ${REDIS_URL:-redis://redis:6379}
 
       # =========================
       # JWT
@@ -247,9 +201,6 @@ services:
 
       FLIGHT_PROVIDER: ${FLIGHT_PROVIDER:-mock}
 
-      AMADEUS_CLIENT_ID: ${AMADEUS_CLIENT_ID:-}
-      AMADEUS_CLIENT_SECRET: ${AMADEUS_CLIENT_SECRET:-}
-
       IGNAV_API_KEY: ${IGNAV_API_KEY:-}
       IGNAV_BASE_URL: ${IGNAV_BASE_URL:-https://ignav.com/api}
       IGNAV_MARKET: ${IGNAV_MARKET:-IN}
@@ -261,13 +212,6 @@ services:
       AI_PROVIDER: ${AI_PROVIDER:-groq}
       GROQ_API_KEY: ${GROQ_API_KEY:-}
       GROQ_MODEL: ${GROQ_MODEL:-openai/gpt-oss-120b}
-
-      # =========================
-      # Other AI Provider
-      # =========================
-
-      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
-      ANTHROPIC_MODEL: ${ANTHROPIC_MODEL:-claude-sonnet-4-6}
 
       # =========================
       # Weather
@@ -289,22 +233,6 @@ services:
       RAZORPAY_KEY_ID: ${RAZORPAY_KEY_ID:-}
       RAZORPAY_KEY_SECRET: ${RAZORPAY_KEY_SECRET:-}
       RAZORPAY_WEBHOOK_SECRET: ${RAZORPAY_WEBHOOK_SECRET:-}
-
-      # =========================
-      # Email
-      # =========================
-
-      RESEND_API_KEY: ${RESEND_API_KEY:-}
-      EMAIL_FROM: ${EMAIL_FROM:-noreply@aiflightwise.app}
-
-      # =========================
-      # Sentry
-      # =========================
-
-      SENTRY_DSN: ${SENTRY_DSN:-}
-      SENTRY_ENVIRONMENT: ${SENTRY_ENVIRONMENT:-production}
-      SENTRY_RELEASE: ${SENTRY_RELEASE:-}
-      SENTRY_TRACES_SAMPLE_RATE: ${SENTRY_TRACES_SAMPLE_RATE:-0.1}
 
       # =========================
       # Optimizer
@@ -347,5 +275,4 @@ services:
 
 volumes:
   flightwise_postgres_data:
-  flightwise_redis_data:
   flightwise_backend_test_node_modules:

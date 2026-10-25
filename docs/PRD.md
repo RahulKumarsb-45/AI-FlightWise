@@ -116,11 +116,11 @@ Travelers, especially budget-conscious travelers, solo explorers, students, and 
 - **Frontend:** Next.js 14 App Router, Vanilla CSS + Tailwind utilities, TanStack React Query v5, Lucide React icons.
 - **Backend:** Express.js, Node.js, PostgreSQL with raw parameterized SQL (no ORM overhead).
 - **Optimizer Engine:** Multi-stage pipeline: Airport Expansion → Permutation Generation → Flight Fetch Stage → Pruning → Scoring → Decision Explainability.
-- **AI Module:** Groq / Anthropic structured output extraction with strict JSON schema and deterministic fallback.
+- **AI Module:** Groq structured output extraction with strict JSON schema and deterministic fallback.
 
 ### 5.2 Non-Functional Requirements
 - **Performance:** Recommendation optimization latency < 1.5s for standard searches; evaluation benchmark < 100ms per case in baseline mode.
-- **Privacy & Security:** Zero PII logged to analytics or Sentry; sanitized query params; parameterized SQL preventing SQL injection; JWT access & refresh tokens.
+- **Privacy & Security:** Zero PII logged to analytics; sanitized query params; parameterized SQL preventing SQL injection; JWT access & refresh tokens.
 - **Reliability:** Graceful fallbacks when optional third-party integrations (places, weather, AI) lack live API keys.
 
 ---

@@ -1,7 +1,6 @@
 /**
  * Unit tests for the AI Chat Agent's provider layer:
  *   services/aiProvider/groqProvider.js
- *   services/aiProvider/anthropicProvider.js
  *   services/aiProvider/aiProviderFactory.js
  *
  * These tests call the REAL provider modules directly.
@@ -14,7 +13,6 @@ const axios = require('axios');
 
 const config = require('../../src/config/env');
 const groqProvider = require('../../src/services/aiProvider/groqProvider');
-const anthropicProvider = require('../../src/services/aiProvider/anthropicProvider');
 const aiProviderFactory = require('../../src/services/aiProvider/aiProviderFactory');
 
 const ORIGINAL_AI_CONFIG = JSON.parse(
@@ -43,10 +41,6 @@ afterEach(() => {
 
   config.ai.groq = {
     ...ORIGINAL_AI_CONFIG.groq,
-  };
-
-  config.ai.anthropic = {
-    ...ORIGINAL_AI_CONFIG.anthropic,
   };
 });
 
@@ -79,24 +73,8 @@ function groqSuccessResponse({
   };
 }
 
-function anthropicSuccessResponse({
-  reply = 'Sure, where are you flying from?',
-  extractedParams = {},
-} = {}) {
-  return {
-    data: {
-      content: [
-        {
-          type: 'text',
-          text: JSON.stringify({
-            reply,
-            extractedParams,
-          }),
-        },
-      ],
-    },
-  };
-}
+
+
 
 function createAxiosError({
   status,
@@ -128,12 +106,6 @@ describe('aiProviderFactory.getProvider', () => {
     ).toBe(groqProvider);
   });
 
-  test('returns the Anthropic provider module for "anthropic"', () => {
-    expect(
-      aiProviderFactory.getProvider('anthropic')
-    ).toBe(anthropicProvider);
-  });
-
   test('throws for an unknown provider name', () => {
     expect(() =>
       aiProviderFactory.getProvider(
@@ -150,12 +122,6 @@ describe('aiProviderFactory.getProvider', () => {
     expect(
       aiProviderFactory.getProvider()
     ).toBe(groqProvider);
-
-    config.ai.provider = 'anthropic';
-
-    expect(
-      aiProviderFactory.getProvider()
-    ).toBe(anthropicProvider);
   });
 });
 
@@ -681,257 +647,6 @@ describe('groqProvider.generateChatReply', () => {
           'AI_PROVIDER_UNAVAILABLE',
         statusCode: 503,
       });
-    }
-  );
-});
-
-/**
- * ============================================================
- * anthropicProvider.generateChatReply
- * ============================================================
- */
-
-describe('anthropicProvider.generateChatReply', () => {
-  test(
-    'fails closed (AI_NOT_CONFIGURED, 500) when ANTHROPIC_API_KEY is missing, and never calls the network',
-    async () => {
-      config.ai.anthropic.apiKey =
-        undefined;
-
-      await expect(
-        anthropicProvider.generateChatReply({
-          userMessage: 'hi',
-        })
-      ).rejects.toMatchObject({
-        errorCode:
-          'AI_NOT_CONFIGURED',
-        statusCode: 500,
-      });
-
-      expect(
-        axios.post
-      ).not.toHaveBeenCalled();
-    }
-  );
-
-  test(
-    'returns the parsed reply and extractedParams on a well-formed provider response',
-    async () => {
-      config.ai.anthropic.apiKey =
-        'fake-test-anthropic-key';
-
-      const extractedParams = {
-        originCity: 'Mumbai',
-        destinationCountries: [],
-        readyToSearch: false,
-      };
-
-      axios.post.mockResolvedValueOnce(
-        anthropicSuccessResponse({
-          reply:
-            'When would you like to travel?',
-          extractedParams,
-        })
-      );
-
-      const result =
-        await anthropicProvider.generateChatReply({
-          history: [],
-          userMessage:
-            'I want a trip',
-        });
-
-      expect(result).toEqual({
-        reply:
-          'When would you like to travel?',
-        extractedParams,
-      });
-    }
-  );
-
-  test(
-    'sends the API key only in the x-api-key header, never in the request body or URL',
-    async () => {
-      config.ai.anthropic.apiKey =
-        'fake-test-anthropic-key';
-
-      axios.post.mockResolvedValueOnce(
-        anthropicSuccessResponse()
-      );
-
-      await anthropicProvider.generateChatReply({
-        userMessage: 'hi',
-      });
-
-      const [
-        url,
-        body,
-        options,
-      ] = axios.post.mock.calls[0];
-
-      expect(url).toBe(
-        'https://api.anthropic.com/v1/messages'
-      );
-
-      expect(
-        JSON.stringify(body)
-      ).not.toContain(
-        'fake-test-anthropic-key'
-      );
-
-      expect(
-        options.headers['x-api-key']
-      ).toBe(
-        'fake-test-anthropic-key'
-      );
-    }
-  );
-
-  test(
-    'strips a ```json code fence before parsing, if present',
-    async () => {
-      config.ai.anthropic.apiKey =
-        'fake-test-anthropic-key';
-
-      const payload = JSON.stringify({
-        reply: 'ok',
-        extractedParams: null,
-      });
-
-      axios.post.mockResolvedValueOnce({
-        data: {
-          content: [
-            {
-              type: 'text',
-              text:
-                '```json\n' +
-                payload +
-                '\n```',
-            },
-          ],
-        },
-      });
-
-      const result =
-        await anthropicProvider.generateChatReply({
-          userMessage: 'hi',
-        });
-
-      expect(result).toEqual({
-        reply: 'ok',
-        extractedParams: null,
-      });
-    }
-  );
-
-  test(
-    'throws AI_PROVIDER_ERROR (502) when the response has no text content',
-    async () => {
-      config.ai.anthropic.apiKey =
-        'fake-test-anthropic-key';
-
-      axios.post.mockResolvedValueOnce({
-        data: {
-          content: [],
-        },
-      });
-
-      await expect(
-        anthropicProvider.generateChatReply({
-          userMessage: 'hi',
-        })
-      ).rejects.toMatchObject({
-        errorCode:
-          'AI_PROVIDER_ERROR',
-        statusCode: 502,
-      });
-    }
-  );
-
-  test(
-    'throws AI_PROVIDER_ERROR (502) when the returned text is not valid JSON',
-    async () => {
-      config.ai.anthropic.apiKey =
-        'fake-test-anthropic-key';
-
-      axios.post.mockResolvedValueOnce({
-        data: {
-          content: [
-            {
-              type: 'text',
-              text:
-                'definitely not json',
-            },
-          ],
-        },
-      });
-
-      await expect(
-        anthropicProvider.generateChatReply({
-          userMessage: 'hi',
-        })
-      ).rejects.toMatchObject({
-        errorCode:
-          'AI_PROVIDER_ERROR',
-        statusCode: 502,
-      });
-    }
-  );
-
-  test(
-    'propagates the raw axios error as-is on timeout',
-    async () => {
-      config.ai.anthropic.apiKey =
-        'fake-test-anthropic-key';
-
-      const timeoutError = new Error(
-        'timeout of 20000ms exceeded'
-      );
-
-      timeoutError.code =
-        'ECONNABORTED';
-
-      axios.post.mockRejectedValueOnce(
-        timeoutError
-      );
-
-      await expect(
-        anthropicProvider.generateChatReply({
-          userMessage: 'hi',
-        })
-      ).rejects.toBe(timeoutError);
-    }
-  );
-
-  test(
-    'propagates the raw axios error as-is on an HTTP error status',
-    async () => {
-      config.ai.anthropic.apiKey =
-        'fake-test-anthropic-key';
-
-      const authError = new Error(
-        'Request failed with status code 401'
-      );
-
-      authError.response = {
-        status: 401,
-        data: {
-          error: {
-            message:
-              'invalid x-api-key',
-          },
-        },
-      };
-
-      axios.post.mockRejectedValueOnce(
-        authError
-      );
-
-      await expect(
-        anthropicProvider.generateChatReply({
-          userMessage: 'hi',
-        })
-      ).rejects.toBe(authError);
     }
   );
 });
