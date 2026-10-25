@@ -1,9 +1,9 @@
 {
-  "id": "fc1c924e-e468-4b3a-abc1-8a728d349c37",
+  "id": "f5e0a1f9-5aa9-4400-92d9-aac6e3651c51",
   "datasetVersion": "1.0.0",
   "modelProvider": "rule-based-baseline (offline mode)",
   "providerType": "offline_deterministic",
-  "timestamp": "2026-10-25T18:23:38.374Z",
+  "timestamp": "2026-10-25T19:55:43.846Z",
   "status": "completed",
   "totalCases": 12,
   "passedCases": 12,

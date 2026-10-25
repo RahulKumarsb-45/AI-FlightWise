@@ -22,8 +22,8 @@ const STEPS = [
   {
     number: '04',
     icon: Bot,
-    title: 'Ask Shreya AI',
-    description: 'Interact with Shreya AI to explore layover trade-offs, nearby airport transfers, and budget breakdowns.',
+    title: 'Ask Aero AI',
+    description: 'Interact with Aero AI to explore layover trade-offs, nearby airport transfers, and budget breakdowns.',
   },
 ];
 

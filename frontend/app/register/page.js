@@ -51,7 +51,7 @@ export default function RegisterPage() {
               Smarter Flights. Better Decisions.
             </h2>
             <p className="mt-3 text-sm leading-relaxed text-ink-600">
-              Unlock flexible date sweeps, alternate airport expansion, budget calculators, and consultations with Shreya AI.
+              Unlock flexible date sweeps, alternate airport expansion, budget calculators, and consultations with Aero AI.
             </p>
           </div>
         </div>

@@ -39,7 +39,7 @@ export default function ContactPage() {
         </span>
         <h1 className="font-display text-display-md text-ink-900">Get in Touch</h1>
         <p className="mt-2 text-sm text-ink-500 max-w-xl">
-          Have questions regarding the multi-factor flight optimization algorithms, Shreya AI integration, or architecture? Reach out directly.
+          Have questions regarding the multi-factor flight optimization algorithms, Aero AI integration, or architecture? Reach out directly.
         </p>
 
         <div className="mt-8 space-y-3.5">

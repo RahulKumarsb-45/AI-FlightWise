@@ -355,7 +355,7 @@ export default function AnalyticsPage() {
 
                     <div className="p-3 bg-slate-50 rounded-xl flex items-center justify-between text-xs">
                       <div>
-                        <span className="font-semibold text-ink-800">Shreya AI Natural Language Queries</span>
+                        <span className="font-semibold text-ink-800">Aero AI Natural Language Queries</span>
                         <p className="text-ink-400 text-[11px]">Chat conversations initiated</p>
                       </div>
                       <span className="font-mono font-bold text-ink-700">

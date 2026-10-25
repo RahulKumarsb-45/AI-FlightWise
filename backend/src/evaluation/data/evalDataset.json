@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "name": "AI FlightWise Shreya AI Evaluation Suite",
+  "name": "AI FlightWise Aero AI Evaluation Suite",
   "description": "Standardized evaluation scenarios testing structured extraction, constraint adherence, explanation consistency, and latency.",
   "cases": [
     {

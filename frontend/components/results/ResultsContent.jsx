@@ -290,10 +290,16 @@ function ResultsContent() {
           <h1 className="font-display text-display-sm text-ink-900">
             {requestBody.originIata} → {requestBody.destinationCountries.join(', ')}
           </h1>
-          <p className="mt-1 text-ink-500">
-            {formatIndianDate(requestBody.departureDate)}
-            {requestBody.returnDate && ` – ${formatIndianDate(requestBody.returnDate)}`} · {requestBody.travelers}{' '}
-            traveler{requestBody.travelers > 1 ? 's' : ''}
+          <p className="mt-1 text-sm text-ink-500 flex flex-wrap items-center gap-1.5">
+            <span>
+              {formatIndianDate(requestBody.departureDate)}
+              {requestBody.returnDate && ` – ${formatIndianDate(requestBody.returnDate)}`} · {requestBody.travelers}{' '}
+              traveler{requestBody.travelers > 1 ? 's' : ''}
+            </span>
+            <span className="text-ink-300">·</span>
+            <span className="inline-flex items-center gap-1 text-xs font-medium text-ink-600 bg-paper-100 px-2.5 py-0.5 rounded-full border border-ink-200">
+              Source: {meta?.flightProvider === 'ignav' ? 'Live IGNAV GDS Inventory' : 'Calibrated market pricing model'}
+            </span>
           </p>
         </div>
         <div className="flex flex-wrap items-center gap-2">

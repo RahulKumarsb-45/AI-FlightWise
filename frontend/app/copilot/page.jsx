@@ -269,13 +269,19 @@ export default function CopilotPage() {
               {generateMutation.data && (
                 <div className="rounded-2xl border border-ink-100 bg-white p-6 shadow-soft space-y-4">
                   <div className="flex items-center justify-between border-b border-ink-100 pb-3">
-                    <div className="flex items-center gap-2">
+                    <div className="flex flex-wrap items-center gap-2">
                       <Badge variant="electric">
                         {generateMutation.data.mode.toUpperCase()}
                       </Badge>
-                      <span className="text-xs text-ink-400">
-                        Evaluated via {generateMutation.data.model}
-                      </span>
+                      {generateMutation.data.isAiGenerated ? (
+                        <span className="inline-flex items-center gap-1 rounded-full border border-emerald-200 bg-emerald-50 px-2 py-0.5 text-xs font-semibold text-emerald-700">
+                          <Sparkles className="h-3 w-3 text-emerald-600" /> Live AI Generated ({generateMutation.data.model})
+                        </span>
+                      ) : (
+                        <span className="inline-flex items-center gap-1 rounded-full border border-ink-200 bg-paper-100 px-2 py-0.5 text-xs font-medium text-ink-600">
+                          Deterministic PM Engine Template ({generateMutation.data.model})
+                        </span>
+                      )}
                     </div>
 
                     {generateMutation.data.mode === 'prd' && (

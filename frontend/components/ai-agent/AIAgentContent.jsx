@@ -69,8 +69,8 @@ function ChatBubble({ message }) {
       {!isUser && (
         <div className="relative h-8 w-8 shrink-0 overflow-hidden rounded-full ring-2 ring-electric-500/20 shadow-sm mt-0.5">
           <Image
-            src="/images/shreya-ai-avatar.png"
-            alt="Shreya AI avatar"
+            src="/images/aero-ai-avatar.png"
+            alt="Aero AI avatar"
             fill
             sizes="32px"
             className="object-cover"
@@ -85,7 +85,7 @@ function ChatBubble({ message }) {
             : 'bg-white border border-ink-100 text-ink-900 rounded-tl-sm'
         )}
       >
-        <span className="sr-only">{isUser ? 'You said: ' : 'Shreya AI said: '}</span>
+        <span className="sr-only">{isUser ? 'You said: ' : 'Aero AI said: '}</span>
         <div className="whitespace-pre-wrap">{message.content}</div>
         {!isUser && <ExtractedSummary params={message.structured_params} />}
       </div>
@@ -143,8 +143,8 @@ function AIAgentContent() {
         <div className="flex items-center gap-3">
           <div className="relative h-9 w-9 shrink-0 overflow-hidden rounded-full ring-2 ring-electric-500/30 shadow-soft">
             <Image
-              src="/images/shreya-ai-avatar.png"
-              alt="Shreya AI Avatar"
+              src="/images/aero-ai-avatar.png"
+              alt="Aero AI Avatar"
               fill
               sizes="36px"
               className="object-cover"
@@ -152,7 +152,7 @@ function AIAgentContent() {
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <span className="text-sm font-semibold text-ink-900">Shreya AI Assistant</span>
+              <span className="text-sm font-semibold text-ink-900">Aero AI Assistant</span>
               <span className="flex items-center gap-1 rounded-full bg-emerald-50 px-2 py-0.5 text-xs font-medium text-emerald-700 border border-emerald-200/60">
                 <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
                 Active
@@ -177,10 +177,10 @@ function AIAgentContent() {
                   <Sparkles className="h-6 w-6" aria-hidden="true" />
                 </div>
                 <h1 className="font-display text-2xl font-bold text-ink-900 sm:text-3xl">
-                  Smarter Flights with Shreya AI
+                  Smarter Flights with Aero AI
                 </h1>
                 <p className="mt-2 text-sm text-ink-600 max-w-md mx-auto leading-relaxed">
-                  Describe your trip in natural language. Shreya AI extracts destinations, budgets, and layover tolerances to feed directly into the multi-factor flight optimization engine.
+                  Describe your trip in natural language. Aero AI extracts destinations, budgets, and layover tolerances to feed directly into the multi-factor flight optimization engine.
                 </p>
               </div>
 
@@ -226,8 +226,8 @@ function AIAgentContent() {
               <div className="flex items-start gap-3 justify-start">
                 <div className="relative h-8 w-8 shrink-0 overflow-hidden rounded-full ring-2 ring-electric-500/20 shadow-sm mt-0.5">
                   <Image
-                    src="/images/shreya-ai-avatar.png"
-                    alt="Shreya AI avatar"
+                    src="/images/aero-ai-avatar.png"
+                    alt="Aero AI avatar"
                     fill
                     sizes="32px"
                     className="object-cover"
@@ -242,7 +242,7 @@ function AIAgentContent() {
                     <span className="h-2 w-2 rounded-full bg-electric-500 animate-bounce" style={{ animationDelay: '150ms' }} />
                     <span className="h-2 w-2 rounded-full bg-electric-500 animate-bounce" style={{ animationDelay: '300ms' }} />
                   </span>
-                  <span>Shreya AI is analyzing flight options...</span>
+                  <span>Aero AI is analyzing flight options...</span>
                 </div>
               </div>
             )}
@@ -251,7 +251,7 @@ function AIAgentContent() {
           {/* Retry state if last send errored */}
           {lastErrorPrompt && !sending && (
             <div className="mx-auto max-w-sm rounded-xl border border-danger-200 bg-danger-50 p-3 text-center">
-              <p className="text-xs text-danger-800">Connection timed out or failed to reach Shreya AI.</p>
+              <p className="text-xs text-danger-800">Connection timed out or failed to reach Aero AI.</p>
               <button
                 onClick={() => handleSend(lastErrorPrompt)}
                 className="mt-2 inline-flex items-center gap-1.5 text-xs font-semibold text-danger-700 hover:text-danger-900 underline"
@@ -269,7 +269,7 @@ function AIAgentContent() {
               </div>
               <p className="text-sm font-semibold text-ink-900">Trip parameters ready for optimization!</p>
               <p className="text-xs text-ink-500 mt-1">
-                Shreya AI has structured your destinations and constraints. Explore the decision matrix to view trade-offs.
+                Aero AI has structured your destinations and constraints. Explore the decision matrix to view trade-offs.
               </p>
               <Button
                 onClick={() => router.push('/search')}
@@ -296,14 +296,14 @@ function AIAgentContent() {
       >
         <div className="mx-auto flex w-full max-w-3xl items-center gap-2">
           <label htmlFor="ai-chat-input" className="sr-only">
-            Message Shreya AI
+            Message Aero AI
           </label>
           <div className="relative flex-1">
             <input
               id="ai-chat-input"
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              placeholder="Ask Shreya AI about flights, budget routes, or destination trade-offs..."
+              placeholder="Ask Aero AI about flights, budget routes, or destination trade-offs..."
               className="w-full rounded-2xl border border-ink-200 bg-paper-50 px-4 py-3 text-sm text-ink-900 outline-none transition-all placeholder:text-ink-400 focus:border-electric-500 focus:bg-white focus:ring-4 focus:ring-electric-100"
               disabled={sending}
             />
@@ -312,14 +312,14 @@ function AIAgentContent() {
             type="submit"
             disabled={sending || !input.trim()}
             className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-electric-600 text-white shadow-soft transition-all hover:bg-electric-700 active:scale-95 disabled:opacity-40"
-            aria-label="Send message to Shreya AI"
+            aria-label="Send message to Aero AI"
           >
             <Send className="h-4 w-4" aria-hidden="true" />
           </button>
         </div>
         <div className="mx-auto max-w-3xl pt-2 text-center">
           <span className="text-xs text-ink-500">
-            Shreya AI provides grounded decision guidance based on multi-factor flight scoring (price, duration, stops, layover comfort).
+            Aero AI provides grounded decision guidance based on multi-factor flight scoring (price, duration, stops, layover comfort).
           </span>
         </div>
       </form>

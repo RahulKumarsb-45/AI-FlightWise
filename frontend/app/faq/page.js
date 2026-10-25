@@ -60,7 +60,7 @@ export default function FAQPage() {
         </span>
         <h1 className="font-display text-display-md text-ink-900">Frequently Asked Questions</h1>
         <p className="mt-2 text-sm text-ink-500 max-w-xl">
-          Everything you need to know about AI FlightWise, multi-factor scoring formulas, nearby airports, and Shreya AI.
+          Everything you need to know about AI FlightWise, multi-factor scoring formulas, nearby airports, and Aero AI.
         </p>
 
         <div className="mt-8 divide-y divide-ink-100 rounded-2xl border border-ink-100/90 bg-white shadow-soft overflow-hidden">

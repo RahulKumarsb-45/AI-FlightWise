@@ -6,7 +6,7 @@ import { ArrowLeft } from 'lucide-react';
 
 /**
  * In-app "Back" control for standalone pages (How It Works, Pricing, About,
- * Shreya AI, etc). Not the browser back button — this is a client-side
+ * Aero AI, etc). Not the browser back button — this is a client-side
  * affordance that:
  *  - goes to the previous page in the app's own history when the visit
  *    actually came from within AI FlightWise, or

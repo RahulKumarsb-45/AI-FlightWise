@@ -22,7 +22,7 @@ export default function OfflinePage() {
         </span>
         <h1 className="mt-8 font-display text-display-md text-ink-900">You’re offline</h1>
         <p className="mt-2 max-w-sm text-ink-500">
-          We can’t reach AI FlightWise right now. Flight search, Shreya AI Assistant, sign-in, and payments all need a
+          We can’t reach AI FlightWise right now. Flight search, Aero AI Assistant, sign-in, and payments all need a
           network connection — this page is available offline so you’re not staring at a browser error.
         </p>
         <OfflineRetryButton />

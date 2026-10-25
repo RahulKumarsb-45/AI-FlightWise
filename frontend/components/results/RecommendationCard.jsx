@@ -110,12 +110,21 @@ function RecommendationCard({ recommendation, rank, highlight, experimentVariant
     >
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2">
             {rank === 1 && <Badge variant="electric">Top pick</Badge>}
             {usesNearbyAirport && (
               <Badge variant="cyan">
                 <MapPin className="h-3 w-3" aria-hidden="true" /> Nearby airport
               </Badge>
+            )}
+            {recommendation.provider === 'ignav' ? (
+              <span className="inline-flex items-center gap-1 rounded-full border border-emerald-200 bg-emerald-50 px-2.5 py-0.5 text-xs font-semibold text-emerald-700">
+                <CheckCircle2 className="h-3 w-3 text-emerald-600" aria-hidden="true" /> Live provider result
+              </span>
+            ) : (
+              <span className="inline-flex items-center gap-1.5 rounded-full border border-ink-200 bg-paper-50 px-2.5 py-0.5 text-xs font-medium text-ink-600">
+                <span className="h-1.5 w-1.5 rounded-full bg-amber-500" aria-hidden="true" /> Calibrated estimate
+              </span>
             )}
           </div>
           <div className="mt-2.5">

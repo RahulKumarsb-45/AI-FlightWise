@@ -25,7 +25,7 @@ const PRIMARY_LINKS = [
   { href: '/how-it-works', label: 'How It Works' },
   { href: '/pricing', label: 'Pricing' },
   { href: '/about', label: 'About' },
-  { href: '/ai-agent', label: 'Shreya AI' },
+  { href: '/ai-agent', label: 'Aero AI' },
 ];
 
 const PM_WORKSPACE_LINKS = [

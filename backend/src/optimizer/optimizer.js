@@ -30,6 +30,7 @@ const {
 } = require('./budget/budgetEstimator');
 
 const logger = require('../logger/logger');
+const config = require('../config/env');
 
 const TOP_N_RECOMMENDATIONS = 5;
 
@@ -207,6 +208,7 @@ async function optimizeTrip(request) {
     .slice(0, TOP_N_RECOMMENDATIONS)
     .map((candidate) => ({
       ...candidate,
+      provider: candidate.legOffers?.[0]?.[0]?.provider || config.flightProvider || 'mock',
 
       explanation: explainCandidate(
         candidate,
@@ -313,6 +315,7 @@ async function optimizeTrip(request) {
       originIata,
       destinationCountries,
       preference,
+      flightProvider: config.flightProvider || 'mock',
 
       permutations: {
         totalGenerated,

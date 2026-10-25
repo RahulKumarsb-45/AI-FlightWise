@@ -34,7 +34,7 @@ async function optimize(req, res, next) {
     }
 
     // Telemetry: record successful search_submitted event without blocking response
-    const sessionId = req.headers['x-session-id'] || (req.user ? `sess_${req.user.id}` : 'sess_guest');
+    const sessionId = req.headers?.['x-session-id'] || (req.user ? `sess_${req.user.id}` : 'sess_guest');
     trackEvent({
       eventName: 'search_submitted',
       userId: req.user?.id || null,

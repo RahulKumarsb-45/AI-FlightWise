@@ -5,7 +5,7 @@ const FOOTER_LINKS = {
   'Flight Travel': [
     { href: '/search', label: 'Flight Search & Optimizer' },
     { href: '/how-it-works', label: 'How Optimization Works' },
-    { href: '/ai-agent', label: 'Shreya AI Travel Concierge' },
+    { href: '/ai-agent', label: 'Aero AI Travel Concierge' },
     { href: '/pricing', label: 'Pricing & Plans' },
   ],
   'Platform': [
@@ -34,7 +34,7 @@ function Footer() {
             </span>
           </Link>
           <p className="mt-3.5 max-w-sm text-sm leading-relaxed text-ink-500">
-            Smarter Flights. Better Decisions. AI-powered flight decision platform with transparent trade-off analysis, nearby airport routing, and Shreya AI assistance.
+            Smarter Flights. Better Decisions. AI-powered flight decision platform with transparent trade-off analysis, nearby airport routing, and Aero AI assistance.
           </p>
           <div className="mt-4 flex items-center gap-2 text-xs text-ink-500">
             <Sparkles className="h-3.5 w-3.5 text-electric-600" aria-hidden="true" />
