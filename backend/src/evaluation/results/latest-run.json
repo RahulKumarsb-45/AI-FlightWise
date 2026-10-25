@@ -1,8 +1,8 @@
 {
-  "id": "eval-1792917709507",
+  "id": "eval-1792922174740",
   "datasetVersion": "1.0.0",
   "modelProvider": "rule-based-baseline (offline mode)",
-  "timestamp": "2026-10-25T08:41:49.507Z",
+  "timestamp": "2026-10-25T09:56:14.740Z",
   "totalCases": 12,
   "passedCases": 12,
   "failedCases": 0,
@@ -51,7 +51,7 @@
       "scenario": "Round-trip with return date and budget constraint",
       "userPrompt": "Looking for flights from Mumbai to Dubai departing 2026-12-05 and returning 2026-12-15 under 35000 INR.",
       "status": "passed",
-      "durationMs": 0,
+      "durationMs": 1,
       "failureReasons": [],
       "extracted": {
         "originCity": "Mumbai",
@@ -113,7 +113,7 @@
       "scenario": "Cheapest preference specification",
       "userPrompt": "Find me the cheapest possible flights from Chennai to Singapore next month on 2026-11-10.",
       "status": "passed",
-      "durationMs": 1,
+      "durationMs": 0,
       "failureReasons": [],
       "extracted": {
         "originCity": "Chennai",

@@ -31,10 +31,10 @@ const STEPS = [
   },
   {
     number: '04',
-    title: 'Ask FlightWise Copilot',
-    description: 'Ask FlightWise Copilot why an option is better and get help understanding your trip.',
+    title: 'Ask Aero AI',
+    description: 'Ask Aero AI why an option is better and get clear decision guidance.',
     detail:
-      'Ask FlightWise Copilot about your flight options in plain language — why one trip beats another, what a nearby-airport swap actually saves, or how to fit your budget.',
+      'Ask Aero AI about your flight options in plain language — why one trip beats another, what a nearby-airport swap actually saves, or how to fit your budget constraints.',
   },
 ];
 
@@ -68,15 +68,14 @@ export default function HowItWorksPage() {
       <Navbar />
       <BackButton />
       <main id="main-content">
-        {/* Intro — same container-page + centered max-width text pattern the
-            homepage uses for every section heading, so this page opens at
-            the same visual width as the homepage rather than a narrow
-            floating column. */}
         <section className="container-page py-16">
           <div className="mx-auto max-w-3xl text-center">
-            <h1 className="font-display text-display-md text-ink-900">How it works</h1>
-            <p className="mt-3 text-ink-500">
-              From your trip details to a recommendation you understand — one flow, four steps.
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-electric-50 px-3 py-1 text-xs font-semibold text-electric-700 border border-electric-200/60 mb-3">
+              Decision Architecture
+            </span>
+            <h1 className="font-display text-display-md text-ink-900">How AI FlightWise Works</h1>
+            <p className="mt-3 text-ink-500 leading-relaxed max-w-xl mx-auto">
+              From raw itinerary constraints to transparent recommendations you understand — one intelligent flow, four rigorous steps.
             </p>
           </div>
 
@@ -84,36 +83,35 @@ export default function HowItWorksPage() {
             {STEPS.map((step) => (
               <div
                 key={step.number}
-                className="flex h-full flex-col rounded-lg border border-ink-100 bg-white p-6 shadow-soft transition-colors hover:border-horizon-200 lg:p-7"
+                className="flex h-full flex-col rounded-2xl border border-ink-100/90 bg-white p-6 shadow-soft transition-all hover:border-electric-300 hover:shadow-premium lg:p-7"
               >
-                <span className="font-mono text-sm text-amber-600">{step.number}</span>
-                <h2 className="mt-2 font-display text-lg text-ink-900">{step.title}</h2>
-                <p className="mt-1.5 text-sm leading-relaxed text-ink-500">{step.description}</p>
+                <span className="font-mono text-xs font-bold tracking-wider text-electric-600 bg-electric-50 rounded-lg px-2.5 py-1 w-fit border border-electric-100">
+                  STEP {step.number}
+                </span>
+                <h2 className="mt-4 font-display text-lg font-bold text-ink-900">{step.title}</h2>
+                <p className="mt-1.5 text-xs font-semibold leading-relaxed text-electric-700">{step.description}</p>
                 <p className="mt-3 text-sm leading-relaxed text-ink-600">{step.detail}</p>
               </div>
             ))}
           </div>
         </section>
 
-        {/* What actually changes your fare — same content family as the
-            homepage Features section, expanded with more detail since this
-            is the dedicated page for it. */}
-        <section className="container-page bg-paper-muted py-16">
+        <section className="container-page bg-navy-950 py-16 text-white rounded-3xl my-8">
           <div className="mx-auto max-w-3xl text-center">
-            <h2 className="font-display text-display-sm text-ink-900">What actually changes your fare</h2>
-            <p className="mt-3 text-ink-500">
-              Four levers most search engines ignore because checking them properly takes real computation.
+            <h2 className="font-display text-display-sm text-white">What actually changes your fare</h2>
+            <p className="mt-3 text-ink-300">
+              Four optimization levers standard OTA portals ignore because evaluating permutations requires real computation.
             </p>
           </div>
 
           <div className="mt-12 grid gap-6 sm:grid-cols-2 xl:grid-cols-4 xl:gap-8">
             {WHY_IT_WORKS.map((feature) => (
-              <div key={feature.title} className="rounded-lg border border-ink-100 bg-white p-6 lg:p-7">
-                <span className="flex h-10 w-10 items-center justify-center rounded-full bg-horizon-50 text-horizon-700">
+              <div key={feature.title} className="rounded-2xl border border-navy-800 bg-navy-900/80 p-6 lg:p-7">
+                <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-electric-500/10 text-cyan-400 border border-electric-500/20">
                   <feature.icon className="h-5 w-5" aria-hidden="true" />
                 </span>
-                <h3 className="mt-3 font-display text-lg text-ink-900">{feature.title}</h3>
-                <p className="mt-1.5 text-sm leading-relaxed text-ink-600">{feature.description}</p>
+                <h3 className="mt-4 font-display text-lg font-bold text-white">{feature.title}</h3>
+                <p className="mt-2 text-sm leading-relaxed text-ink-300">{feature.description}</p>
               </div>
             ))}
           </div>
@@ -121,17 +119,17 @@ export default function HowItWorksPage() {
 
         <section className="container-page py-16 text-center">
           <div className="mx-auto max-w-2xl">
-            <h2 className="font-display text-display-sm text-ink-900">Ready to see it for your trip?</h2>
+            <h2 className="font-display text-display-sm text-ink-900">Ready to optimize your next flight?</h2>
             <p className="mt-3 text-ink-500">
-              Run a real search, or tell FlightWise Copilot where you want to go and let the assistant help you get there.
+              Run a live search across nearby airports and date windows, or consult Aero AI for personalized itinerary guidance.
             </p>
             <div className="mt-6 flex flex-col items-center justify-center gap-3 sm:flex-row">
-              <Link href="/search" className={buttonVariants({ className: 'w-full sm:w-auto' })}>
-                Start a search
-                <ArrowRight className="h-4 w-4" aria-hidden="true" />
+              <Link href="/search" className={buttonVariants({ variant: 'primary', size: 'lg', className: 'w-full sm:w-auto shadow-glow-electric' })}>
+                Start Flight Search
+                <ArrowRight className="h-4 w-4 ml-1.5" aria-hidden="true" />
               </Link>
-              <Link href="/ai-agent" className={buttonVariants({ variant: 'outline', className: 'w-full sm:w-auto' })}>
-                Ask FlightWise Copilot
+              <Link href="/ai-agent" className={buttonVariants({ variant: 'outline', size: 'lg', className: 'w-full sm:w-auto' })}>
+                Ask Aero AI
               </Link>
             </div>
           </div>

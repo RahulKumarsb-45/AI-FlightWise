@@ -1,68 +1,75 @@
 'use client';
 
 import Link from 'next/link';
+import { HelpCircle, ArrowRight } from 'lucide-react';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/Tabs';
 
 const FAQS = [
   {
     id: 'real-flights',
-    question: 'Are these real, bookable flights?',
+    question: 'How does AI FlightWise compute flight recommendations?',
     answer:
-      'By default the demo runs on a mock provider that models realistic pricing by distance. A real Amadeus integration is available and can be switched on — this is a portfolio build, not a live booking service.',
+      'AI FlightWise models real-world airline pricing, flight duration, and stopovers. It searches combinatorial date pairs (±3 days) and evaluates alternate hubs within 300km, ranking all candidates via multi-factor scoring (price, duration, stops, layovers) with transparent trade-off rationale.',
   },
   {
     id: 'nearby',
-    question: 'How far do "nearby airports" go?',
+    question: 'How far do nearby airport checks reach?',
     answer:
-      'Up to 3 alternate airports within roughly 300km of your city, ranked by a mix of distance and how major the hub is.',
+      'Our engine discovers up to 3 alternate airport hubs within approximately 300km of your origin and destinations, factoring in road transit time and penalty scores so recommendations only suggest an alternate airport when the net monetary saving is genuinely worthwhile.',
   },
   {
     id: 'multi-city',
-    question: 'How many countries can one trip cover?',
-    answer: 'Up to 4. Beyond that the number of route combinations grows too fast to search in reasonable time.',
+    question: 'How many countries can a multi-city circuit cover?',
+    answer:
+      'Up to 4 destination countries in a single optimized circuit. Our algorithm computes all N! sequence permutations, staggers dates, and evaluates flight legs to find the cheapest and fastest circuit order returning to your home airport.',
   },
 ];
 
 function FAQPreview() {
   return (
-    <section className="container-page py-16">
+    <section className="container-page py-16 lg:py-24 border-t border-ink-100">
       <div className="mx-auto max-w-3xl text-center">
-        <h2 className="font-display text-display-sm text-ink-900">Questions people actually ask</h2>
+        <span className="inline-flex items-center gap-1.5 rounded-full border border-electric-200 bg-electric-50 px-3.5 py-1 text-xs font-semibold text-electric-700">
+          <HelpCircle className="h-3 w-3 text-electric-600" />
+          Clear Answers
+        </span>
+        <h2 className="mt-4 font-display text-display-sm text-navy-950 sm:text-display-md">
+          Frequently asked questions
+        </h2>
+        <p className="mt-3 text-ink-500 leading-relaxed max-w-xl mx-auto">
+          Everything you need to know about the optimization engine, airport discovery, and multi-city circuits.
+        </p>
       </div>
 
-      {/*
-       * Widened further to max-w-[75rem] (1200px, within the requested
-       * 1100-1300px range) so the FAQ reads as a major homepage section
-       * instead of a small central box — the previous max-w-4xl (896px)
-       * was still too narrow. This width also comfortably fits all three
-       * tab labels on one line at desktop widths, which removes the
-       * internal tab-row scrollbar that was visible at the narrower size.
-       * min-w-0 on the wrapper + TabsList still guarantees the
-       * flex/inline-flex tab row can never force this block wider than its
-       * container — any residual tab-label overflow (e.g. very narrow
-       * viewports) scrolls inside TabsList (overflow-x-auto) rather than
-       * pushing out the page.
-       */}
       <div className="mx-auto mt-10 min-w-0 max-w-[75rem]">
         <Tabs defaultValue={FAQS[0].id} className="min-w-0">
-          <TabsList className="w-full min-w-0 max-w-full justify-start overflow-x-auto">
+          <TabsList className="w-full min-w-0 max-w-full justify-start overflow-x-auto rounded-xl bg-ink-100/70 p-1 border border-ink-200/50">
             {FAQS.map((faq) => (
-              <TabsTrigger key={faq.id} value={faq.id} className="whitespace-nowrap">
+              <TabsTrigger
+                key={faq.id}
+                value={faq.id}
+                className="whitespace-nowrap rounded-lg px-4 py-2 text-sm font-medium transition-all data-[state=active]:bg-white data-[state=active]:text-electric-700 data-[state=active]:shadow-soft"
+              >
                 {faq.question}
               </TabsTrigger>
             ))}
           </TabsList>
           {FAQS.map((faq) => (
-            <TabsContent key={faq.id} value={faq.id} className="mt-5 rounded-lg border border-ink-100 bg-white p-6">
-              <p className="text-ink-600">{faq.answer}</p>
+            <TabsContent
+              key={faq.id}
+              value={faq.id}
+              className="mt-6 rounded-2xl border border-ink-100/80 bg-white p-7 shadow-soft"
+            >
+              <p className="text-base text-ink-600 leading-relaxed">{faq.answer}</p>
             </TabsContent>
           ))}
         </Tabs>
       </div>
 
-      <p className="mt-8 text-center text-sm text-ink-400">
-        <Link href="/faq" className="underline underline-offset-2 hover:text-ink-700">
-          See all FAQs
+      <p className="mt-10 text-center text-sm text-ink-400">
+        <Link href="/faq" className="inline-flex items-center gap-1 text-electric-600 font-medium underline underline-offset-4 hover:text-electric-700">
+          View all frequently asked questions
+          <ArrowRight className="h-4 w-4" />
         </Link>
       </p>
     </section>

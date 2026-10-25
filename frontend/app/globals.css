@@ -15,48 +15,62 @@
     @apply bg-paper text-ink-900 font-body antialiased;
   }
 
-  /* Visible keyboard focus everywhere — never remove outline without replacing it */
+  /* Visible keyboard focus everywhere — refined with electric blue accent */
   :focus-visible {
-    @apply outline-none ring-2 ring-horizon-500 ring-offset-2 ring-offset-paper;
+    @apply outline-none ring-2 ring-electric-500 ring-offset-2 ring-offset-paper;
   }
 
   ::selection {
-    @apply bg-amber-200 text-ink-900;
+    @apply bg-electric-100 text-navy-950;
   }
 
   h1, h2, h3, h4 {
-    @apply font-display text-ink-900;
+    @apply font-display text-navy-900 tracking-tight;
   }
 }
 
 @layer utilities {
-  /*
-   * Site-wide content container. Previously capped at max-w-[100rem]
-   * (1600px), which still left large empty margins on wide desktop/
-   * ultrawide monitors and read as "not full width". Now full-bleed
-   * (no max-width cap) — content stretches to fill the viewport, with
-   * padding that scales up at each breakpoint so it never touches the
-   * screen edge and stays readable on very wide monitors.
-   */
+  /* Site-wide content container with fluid padding */
   .container-page {
     @apply mx-auto w-full px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-24;
   }
 
-  /*
-   * Wider variant used only by the three homepage sections (How It Works,
-   * Features, Meet FlightWise Copilot) that need to visually read as full-width —
-   * viewport-relative gutters on desktop (~5-6vw) rather than
-   * .container-page's fixed-px desktop padding, so the inner content keeps
-   * using ~90%+ of the viewport as screens get wider instead of the ratio
-   * drifting. Intentionally separate from .container-page so Hero, Navbar,
-   * Pricing, FAQ and Footer are unaffected.
-   */
+  /* Wider section container for full-width visual balance */
   .section-wide {
     @apply mx-auto w-full px-4 sm:px-6 md:px-10 lg:px-[5vw] 2xl:px-[6vw];
   }
 
   .text-balance {
     text-wrap: balance;
+  }
+
+  /* Premium aviation gradient overlays */
+  .bg-gradient-aviation {
+    background: linear-gradient(135deg, #0B1020 0%, #111B36 50%, #1A284D 100%);
+  }
+
+  .bg-gradient-electric {
+    background: linear-gradient(135deg, #3867FF 0%, #7657F6 100%);
+  }
+
+  .bg-gradient-cyan {
+    background: linear-gradient(135deg, #3867FF 0%, #49D7F2 100%);
+  }
+
+  .bg-gradient-hero-dark {
+    background: linear-gradient(180deg, rgba(11, 16, 32, 0.88) 0%, rgba(17, 27, 54, 0.72) 45%, rgba(11, 16, 32, 0.94) 100%);
+  }
+
+  .bg-gradient-hero-side {
+    background: linear-gradient(90deg, rgba(11, 16, 32, 0.96) 0%, rgba(11, 16, 32, 0.82) 40%, rgba(17, 27, 54, 0.45) 70%, rgba(11, 16, 32, 0.15) 100%);
+  }
+
+  .glass-card-dark {
+    @apply border border-white/10 bg-navy-900/80 backdrop-blur-md shadow-premium;
+  }
+
+  .glass-card-light {
+    @apply border border-white/60 bg-white/80 backdrop-blur-md shadow-card;
   }
 }
 

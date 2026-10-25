@@ -96,7 +96,7 @@ function TripDetailsContent() {
             />
           )}
           <ShareTripButton tripId={tripId} />
-          <Badge variant="horizon">{trip.status}</Badge>
+          <Badge variant="electric">{trip.status}</Badge>
         </div>
       </div>
 

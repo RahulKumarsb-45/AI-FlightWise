@@ -284,8 +284,8 @@ function ResultsContent() {
           )}
           {isAuthenticated && data?.tripId && <ShareTripButton tripId={data.tripId} />}
           {!isAuthenticated && (
-            <p className="text-sm text-ink-400">
-              <button onClick={() => router.push('/login')} className="text-horizon-700 hover:underline">
+            <p className="text-sm text-ink-500">
+              <button onClick={() => router.push('/login')} className="text-electric-600 font-semibold hover:underline">
                 Login
               </button>{' '}
               to save this trip
@@ -370,10 +370,12 @@ function ResultsContent() {
 
 function EmptyState({ title, description, onBack }) {
   return (
-    <div className="flex flex-col items-center py-20 text-center" role="alert">
-      <AlertTriangle className="h-8 w-8 text-amber-500" aria-hidden="true" />
-      <h2 className="mt-4 font-display text-xl text-ink-900">{title}</h2>
-      <p className="mt-1.5 max-w-sm text-ink-500">{description}</p>
+    <div className="flex flex-col items-center py-16 px-6 text-center rounded-2xl border border-ink-100/90 bg-white shadow-soft" role="alert">
+      <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-amber-50 text-amber-600 border border-amber-200 shadow-soft">
+        <AlertTriangle className="h-6 w-6" aria-hidden="true" />
+      </div>
+      <h2 className="mt-4 font-display text-xl font-bold text-navy-950">{title}</h2>
+      <p className="mt-2 max-w-md text-sm text-ink-500 leading-relaxed">{description}</p>
       <Button onClick={onBack} variant="outline" className="mt-6">
         <ArrowLeft className="h-4 w-4" aria-hidden="true" /> Back to search
       </Button>

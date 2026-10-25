@@ -17,10 +17,10 @@ const Input = forwardRef(({ className, label, error, helperText, id, ...props },
         ref={ref}
         id={inputId}
         className={cn(
-          'h-11 w-full rounded border border-ink-200 bg-white px-3.5 text-[15px] text-ink-900',
-          'placeholder:text-ink-300 transition-colors',
-          'focus-visible:border-horizon-500',
-          error && 'border-danger-500',
+          'h-11 w-full rounded-lg border border-ink-200 bg-white px-3.5 text-[15px] text-ink-900',
+          'placeholder:text-ink-400 transition-all duration-150',
+          'focus-visible:border-electric-500 focus-visible:ring-2 focus-visible:ring-electric-100',
+          error && 'border-danger-500 focus-visible:ring-danger-100',
           className
         )}
         aria-invalid={!!error}

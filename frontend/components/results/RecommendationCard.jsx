@@ -97,21 +97,21 @@ function RecommendationCard({ recommendation, rank, highlight }) {
   return (
     <div
       className={cn(
-        'rounded-xl border bg-white p-5 shadow-soft transition-shadow hover:shadow-card sm:p-6',
-        highlight ? 'border-amber-400 ring-1 ring-amber-400/40' : 'border-ink-100'
+        'rounded-2xl border bg-white p-5 shadow-soft transition-all duration-200 hover:shadow-premium sm:p-6',
+        highlight ? 'border-electric-400 ring-2 ring-electric-400/25' : 'border-ink-100/90'
       )}
     >
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
           <div className="flex items-center gap-2">
-            {rank === 1 && <Badge variant="amber">Top pick</Badge>}
+            {rank === 1 && <Badge variant="electric">Top pick</Badge>}
             {usesNearbyAirport && (
-              <Badge variant="route">
+              <Badge variant="cyan">
                 <MapPin className="h-3 w-3" aria-hidden="true" /> Nearby airport
               </Badge>
             )}
           </div>
-          <div className="mt-2">
+          <div className="mt-2.5">
             <RouteHeadline legs={legs} originAirport={originAirport} destinationAirports={destinationAirports} />
           </div>
           <p className="mt-1 text-sm text-ink-400">
@@ -121,26 +121,26 @@ function RecommendationCard({ recommendation, rank, highlight }) {
         </div>
 
         <div className="text-right">
-          <p className="font-mono text-2xl font-medium text-ink-900">{formatInr(totalPriceInr)}</p>
-          <p className="text-xs text-ink-400">all travelers included</p>
+          <p className="font-mono text-3xl font-bold text-navy-950">{formatInr(totalPriceInr)}</p>
+          <p className="text-xs text-ink-400 mt-0.5">all travelers included</p>
         </div>
       </div>
 
-      <p className="mt-4 rounded-lg bg-ink-50 px-4 py-3 text-sm leading-relaxed text-ink-600">{explanation}</p>
+      <p className="mt-4 rounded-xl bg-ink-50/80 border border-ink-100/70 px-4 py-3 text-sm leading-relaxed text-ink-700">{explanation}</p>
 
       {/* Decision Intelligence Advantages & Trade-offs */}
       {(advantages.length > 0 || disadvantages.length > 0) && (
-        <div className="mt-3 grid gap-2 sm:grid-cols-2 text-xs">
+        <div className="mt-3.5 grid gap-3 sm:grid-cols-2 text-xs">
           {advantages.length > 0 && (
-            <div className="rounded-md bg-emerald-50/60 p-2.5 border border-emerald-100">
-              <span className="font-semibold text-emerald-900 flex items-center gap-1.5 mb-1">
-                <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600" aria-hidden="true" />
+            <div className="rounded-xl bg-emerald-50/80 p-3.5 border border-emerald-200/80">
+              <span className="font-semibold text-emerald-900 flex items-center gap-1.5 mb-1.5">
+                <CheckCircle2 className="h-4 w-4 text-emerald-600 shrink-0" aria-hidden="true" />
                 Key Advantages:
               </span>
               <ul className="space-y-1 text-emerald-800">
                 {advantages.map((adv, i) => (
-                  <li key={i} className="flex items-start gap-1">
-                    <span>•</span>
+                  <li key={i} className="flex items-start gap-1.5">
+                    <span className="text-emerald-500">•</span>
                     <span>{adv}</span>
                   </li>
                 ))}
@@ -149,15 +149,15 @@ function RecommendationCard({ recommendation, rank, highlight }) {
           )}
 
           {disadvantages.length > 0 && (
-            <div className="rounded-md bg-amber-50/60 p-2.5 border border-amber-100">
-              <span className="font-semibold text-amber-900 flex items-center gap-1.5 mb-1">
-                <AlertCircle className="h-3.5 w-3.5 text-amber-600" aria-hidden="true" />
+            <div className="rounded-xl bg-amber-50/80 p-3.5 border border-amber-200/80">
+              <span className="font-semibold text-amber-900 flex items-center gap-1.5 mb-1.5">
+                <AlertCircle className="h-4 w-4 text-amber-600 shrink-0" aria-hidden="true" />
                 Trade-offs to Consider:
               </span>
               <ul className="space-y-1 text-amber-800">
                 {disadvantages.map((dis, i) => (
-                  <li key={i} className="flex items-start gap-1">
-                    <span>•</span>
+                  <li key={i} className="flex items-start gap-1.5">
+                    <span className="text-amber-500">•</span>
                     <span>{dis}</span>
                   </li>
                 ))}
@@ -168,10 +168,10 @@ function RecommendationCard({ recommendation, rank, highlight }) {
       )}
 
       {bestSuitedFor && (
-        <div className="mt-2.5 flex items-center gap-1.5 text-xs text-ink-600">
-          <Sparkles className="h-3.5 w-3.5 text-horizon-600 shrink-0" aria-hidden="true" />
+        <div className="mt-3 flex items-center gap-1.5 text-xs text-ink-600">
+          <Sparkles className="h-3.5 w-3.5 text-electric-600 shrink-0" aria-hidden="true" />
           <span>
-            <strong className="text-ink-800 font-medium">Best suited for: </strong>
+            <strong className="text-navy-900 font-semibold">Best suited for: </strong>
             {bestSuitedFor}
           </span>
         </div>
@@ -180,7 +180,7 @@ function RecommendationCard({ recommendation, rank, highlight }) {
       <button
         type="button"
         onClick={handleToggleExpanded}
-        className="mt-3 flex items-center gap-1 text-sm font-medium text-horizon-700 hover:underline"
+        className="mt-4 flex items-center gap-1.5 text-sm font-semibold text-electric-600 hover:text-electric-700 transition-colors"
       >
         {expanded ? 'Hide' : 'Show'} flight details
         <ChevronDown className={cn('h-4 w-4 transition-transform', expanded && 'rotate-180')} aria-hidden="true" />

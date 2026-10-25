@@ -17,12 +17,12 @@ export default function OfflinePage() {
     <>
       <Navbar />
       <main id="main-content" className="container-page flex flex-col items-center py-24 text-center">
-        <span className="flex h-16 w-16 items-center justify-center rounded-full bg-horizon-50 text-horizon-700">
+        <span className="flex h-16 w-16 items-center justify-center rounded-2xl bg-electric-50 text-electric-600 border border-electric-200 shadow-soft">
           <WifiOff className="h-7 w-7" aria-hidden="true" />
         </span>
         <h1 className="mt-8 font-display text-display-md text-ink-900">You’re offline</h1>
         <p className="mt-2 max-w-sm text-ink-500">
-          We can’t reach AI FlightWise right now. Flight search, FlightWise Copilot, sign-in, and payments all need a
+          We can’t reach AI FlightWise right now. Flight search, Aero AI Assistant, sign-in, and payments all need a
           network connection — this page is available offline so you’re not staring at a browser error.
         </p>
         <OfflineRetryButton />

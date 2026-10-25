@@ -87,14 +87,14 @@ function AirportAutocomplete({ label, placeholder = 'City or airport code', valu
           aria-invalid={!!error}
           aria-describedby={error ? errorId : undefined}
           className={cn(
-            'h-11 w-full rounded-md border bg-white pl-10 pr-9 text-[15px] text-ink-900 placeholder:text-ink-400',
-            'border-ink-200 focus-visible:border-horizon-500 focus-visible:outline-none',
-            error && 'border-danger-500'
+            'h-11 w-full rounded-xl border bg-white pl-10 pr-9 text-[15px] text-ink-900 placeholder:text-ink-400 transition-all duration-150',
+            'border-ink-200 focus-visible:border-electric-500 focus-visible:ring-2 focus-visible:ring-electric-100',
+            error && 'border-danger-500 focus-visible:ring-danger-100'
           )}
         />
         {isFetching && (
           <Loader2
-            className="absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 animate-spin text-ink-400"
+            className="absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 animate-spin text-electric-500"
             aria-hidden="true"
           />
         )}
@@ -105,8 +105,7 @@ function AirportAutocomplete({ label, placeholder = 'City or airport code', valu
         </p>
       )}
 
-      {/* Announces result count changes to screen reader users, who can't
-          see the listbox fill in the way sighted users can. */}
+      {/* Announces result count changes to screen reader users */}
       <p className="sr-only" role="status" aria-live="polite">
         {open && debouncedQuery.trim().length > 0 && !isFetching
           ? `${results.length} airport${results.length === 1 ? '' : 's'} found`
@@ -117,10 +116,10 @@ function AirportAutocomplete({ label, placeholder = 'City or airport code', valu
         <ul
           id={listboxId}
           role="listbox"
-          className="absolute z-30 mt-1.5 max-h-72 w-full overflow-auto rounded-md border border-ink-100 bg-white py-1 shadow-card"
+          className="absolute z-30 mt-2 max-h-72 w-full overflow-auto rounded-xl border border-ink-100 bg-white py-1.5 shadow-premium"
         >
           {results.length === 0 && !isFetching && (
-            <li className="px-3.5 py-2.5 text-sm text-ink-400">No airports found for &quot;{debouncedQuery}&quot;</li>
+            <li className="px-4 py-3 text-sm text-ink-400">No airports found for &quot;{debouncedQuery}&quot;</li>
           )}
           {results.map((airport, idx) => (
             <li key={airport.iata}>
@@ -133,17 +132,17 @@ function AirportAutocomplete({ label, placeholder = 'City or airport code', valu
                 onClick={() => selectAirport(airport)}
                 onMouseEnter={() => setHighlightedIndex(idx)}
                 className={cn(
-                  'flex w-full items-center justify-between gap-3 px-3.5 py-2.5 text-left text-sm',
-                  idx === highlightedIndex ? 'bg-horizon-50' : 'hover:bg-ink-50'
+                  'flex w-full items-center justify-between gap-3 px-4 py-2.5 text-left text-sm transition-colors',
+                  idx === highlightedIndex ? 'bg-electric-50 text-electric-900' : 'hover:bg-ink-50'
                 )}
               >
                 <span>
-                  <span className="font-medium text-ink-900">{airport.city}</span>
-                  <span className="text-ink-400"> · {airport.country}</span>
+                  <span className="font-semibold text-ink-900">{airport.city}</span>
+                  <span className="text-ink-500"> · {airport.country}</span>
                   <br />
                   <span className="text-xs text-ink-400">{airport.name}</span>
                 </span>
-                <span className="shrink-0 rounded bg-ink-100 px-1.5 py-0.5 font-mono text-xs font-medium text-ink-600">
+                <span className="shrink-0 rounded-md bg-ink-100 px-2 py-0.5 font-mono text-xs font-bold text-ink-700">
                   {airport.iata}
                 </span>
               </button>

@@ -95,8 +95,8 @@ export function PWAProvider() {
   return (
     <>
       {isOffline && (
-        <div role="status" aria-live="polite" className="bg-ink-900 py-1.5 text-center text-xs font-medium text-white">
-          You’re offline — search, sign-in, FlightWise Copilot, and payments won’t work until you’re back online.
+        <div role="status" aria-live="polite" className="bg-navy-950 py-1.5 text-center text-xs font-medium text-white border-b border-navy-800">
+          You’re offline — search, sign-in, Aero AI, and payments won’t work until you’re back online.
         </div>
       )}
 
@@ -104,13 +104,13 @@ export function PWAProvider() {
         <div className="fixed inset-x-0 bottom-4 z-[90] flex justify-center px-4 sm:left-auto sm:right-4 sm:justify-end">
           <div
             role="status"
-            className="flex items-center gap-3 rounded-lg border border-ink-100 bg-white px-4 py-3 text-sm shadow-card"
+            className="flex items-center gap-3 rounded-xl border border-ink-100 bg-white px-4 py-3 text-sm shadow-premium"
           >
             <span className="text-ink-700">A new version of AI FlightWise is ready.</span>
             <button
               type="button"
               onClick={applyUpdate}
-              className="inline-flex items-center gap-1.5 rounded bg-horizon-700 px-3 py-1.5 text-xs font-medium text-white transition-colors hover:bg-horizon-800"
+              className="inline-flex items-center gap-1.5 rounded-lg bg-gradient-to-r from-electric-600 to-violet-600 px-3 py-1.5 text-xs font-medium text-white shadow-soft transition-all hover:shadow-glow-electric"
             >
               <RefreshCw className="h-3.5 w-3.5" aria-hidden="true" />
               Refresh

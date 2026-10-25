@@ -3,7 +3,7 @@ import { BackButton } from '@/components/common/BackButton';
 import { ProtectedRoute } from '@/components/common/ProtectedRoute';
 import { AIAgentContent } from '@/components/ai-agent/AIAgentContent';
 
-export const metadata = { title: 'FlightWise Copilot' };
+export const metadata = { title: 'Aero AI · AI FlightWise' };
 
 export default function AIAgentPage() {
   return (

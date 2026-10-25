@@ -50,13 +50,13 @@ export default function EvaluationsPage() {
           <div className="flex flex-wrap items-center justify-between gap-4 border-b border-ink-100 pb-6">
             <div>
               <div className="flex items-center gap-2">
-                <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-horizon-700 text-white">
+                <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-gradient-to-tr from-electric-600 to-cyan-500 text-white shadow-soft">
                   <Sparkles className="h-4 w-4" aria-hidden="true" />
                 </span>
                 <h1 className="font-display text-display-sm text-ink-900">AI Quality & Evaluation</h1>
               </div>
               <p className="mt-1 text-sm text-ink-500">
-                Ground-truth synthetic benchmark suite for FlightWise Copilot structured extraction, constraint
+                Ground-truth synthetic benchmark suite for Aero AI structured extraction, constraint
                 adherence, and latency.
               </p>
             </div>

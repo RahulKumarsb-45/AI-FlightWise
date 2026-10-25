@@ -92,7 +92,7 @@ function SearchForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="rounded-xl border border-ink-100 bg-white p-5 shadow-card sm:p-7">
+    <form onSubmit={handleSubmit(onSubmit)} className="rounded-2xl border border-ink-100/90 bg-white p-6 shadow-premium sm:p-8">
       <div className="grid gap-5 sm:grid-cols-2">
         <Controller
           name="originAirport"
@@ -140,7 +140,7 @@ function SearchForm() {
           placeholder="e.g. 80000"
           label={
             <span className="flex items-center gap-1.5">
-              <Wallet className="h-3.5 w-3.5" aria-hidden="true" /> Budget (₹, optional)
+              <Wallet className="h-3.5 w-3.5 text-ink-500" aria-hidden="true" /> Budget (₹, optional)
             </span>
           }
           error={errors.budgetInr?.message}
@@ -153,7 +153,7 @@ function SearchForm() {
           max={9}
           label={
             <span className="flex items-center gap-1.5">
-              <Users className="h-3.5 w-3.5" aria-hidden="true" /> Travelers
+              <Users className="h-3.5 w-3.5 text-ink-500" aria-hidden="true" /> Travelers
             </span>
           }
           error={errors.travelers?.message}
@@ -161,39 +161,45 @@ function SearchForm() {
         />
       </div>
 
-      <label className="mt-5 flex items-center gap-2.5">
-        <input
-          type="checkbox"
-          className="h-4 w-4 rounded border-ink-300"
-          aria-describedby={dateFlexible ? 'date-flexible-hint' : undefined}
-          {...register('dateFlexible')}
-        />
-        <span className="text-sm text-ink-700">
-          Flexible dates <span className="text-ink-400">(search ±3 days for a better fare)</span>
-        </span>
-      </label>
-      {dateFlexible && (
-        <p id="date-flexible-hint" className="mt-1.5 ml-6 text-xs text-ink-400">
-          We&apos;ll check dates a few days either side of what you picked above.
-        </p>
-      )}
+      <div className="mt-6 pt-5 border-t border-ink-100 space-y-3.5">
+        <label className="flex items-start sm:items-center gap-2.5 cursor-pointer">
+          <input
+            type="checkbox"
+            className="mt-0.5 sm:mt-0 h-4 w-4 rounded border-ink-300 text-electric-600 focus:ring-electric-500"
+            aria-describedby={dateFlexible ? 'date-flexible-hint' : undefined}
+            {...register('dateFlexible')}
+          />
+          <span className="text-sm font-medium text-ink-800">
+            Flexible dates <span className="font-normal text-ink-400">(search ±3 days for lower fares)</span>
+          </span>
+        </label>
+        {dateFlexible && (
+          <p id="date-flexible-hint" className="ml-6 text-xs text-electric-600">
+            We will analyze departure and return flights across the surrounding 7-day window.
+          </p>
+        )}
 
-      <label className="mt-3 flex items-center gap-2.5">
-        <input type="checkbox" className="h-4 w-4 rounded border-ink-300" {...register('nearbyAirportsEnabled')} />
-        <span className="text-sm text-ink-700">
-          Include nearby airports <span className="text-ink-400">(up to 3 alternates within ~300km)</span>
-        </span>
-      </label>
+        <label className="flex items-start sm:items-center gap-2.5 cursor-pointer">
+          <input
+            type="checkbox"
+            className="mt-0.5 sm:mt-0 h-4 w-4 rounded border-ink-300 text-electric-600 focus:ring-electric-500"
+            {...register('nearbyAirportsEnabled')}
+          />
+          <span className="text-sm font-medium text-ink-800">
+            Include nearby airports <span className="font-normal text-ink-400">(evaluates alternate hubs within ~300km)</span>
+          </span>
+        </label>
+      </div>
 
-      <div className="mt-5">
-        <span id="optimize-for-label" className="mb-1.5 flex items-center gap-1.5 text-sm font-medium text-ink-700">
-          <ArrowLeftRight className="h-3.5 w-3.5" aria-hidden="true" /> Optimize for
+      <div className="mt-6">
+        <span id="optimize-for-label" className="mb-2 flex items-center gap-1.5 text-sm font-medium text-ink-800">
+          <ArrowLeftRight className="h-3.5 w-3.5 text-electric-600" aria-hidden="true" /> Optimization Priority
         </span>
         <Controller
           name="preference"
           control={control}
           render={({ field }) => (
-            <div role="radiogroup" aria-labelledby="optimize-for-label" className="inline-flex rounded-lg bg-ink-50 p-1">
+            <div role="radiogroup" aria-labelledby="optimize-for-label" className="inline-flex rounded-xl bg-ink-100/70 p-1 border border-ink-200/50">
               {PREFERENCES.map((p) => (
                 <button
                   key={p.value}
@@ -209,14 +215,14 @@ function SearchForm() {
                     const delta = e.key === 'ArrowRight' ? 1 : -1;
                     const nextIndex = (currentIndex + delta + PREFERENCES.length) % PREFERENCES.length;
                     field.onChange(PREFERENCES[nextIndex].value);
-                    // Roving tabindex (WAI-ARIA radiogroup pattern): move
-                    // focus to the newly-selected radio button.
                     const siblings = Array.from(e.currentTarget.parentElement?.children || []);
                     siblings[nextIndex]?.focus();
                   }}
                   className={cn(
-                    'rounded px-4 py-1.5 text-sm font-medium transition-colors',
-                    field.value === p.value ? 'bg-white text-ink-900 shadow-soft' : 'text-ink-500 hover:text-ink-800'
+                    'rounded-lg px-4 py-2 text-sm font-semibold transition-all duration-150',
+                    field.value === p.value
+                      ? 'bg-white text-navy-950 shadow-soft'
+                      : 'text-ink-500 hover:text-ink-900'
                   )}
                 >
                   {p.label}
@@ -227,10 +233,15 @@ function SearchForm() {
         />
       </div>
 
-      <Button type="submit" size="lg" loading={submitting} className="mt-7 w-full sm:w-auto">
-        <Sparkles className="h-4 w-4" aria-hidden="true" />
-        Optimize my trip
-      </Button>
+      <div className="mt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <Button type="submit" size="lg" loading={submitting} className="w-full sm:w-auto">
+          <Sparkles className="h-4 w-4" aria-hidden="true" />
+          Optimize Flight Journey
+        </Button>
+        <span className="text-xs text-ink-400">
+          Evaluates permutations in real-time
+        </span>
+      </div>
     </form>
   );
 }

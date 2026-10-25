@@ -6,7 +6,7 @@ import { ArrowLeft } from 'lucide-react';
 
 /**
  * In-app "Back" control for standalone pages (How It Works, Pricing, About,
- * FlightWise Copilot, etc). Not the browser back button — this is a client-side
+ * Aero AI, etc). Not the browser back button — this is a client-side
  * affordance that:
  *  - goes to the previous page in the app's own history when the visit
  *    actually came from within AI FlightWise, or
@@ -48,7 +48,7 @@ function BackButton({ fallbackHref = '/', label = 'Back' }) {
       <Link
         href={fallbackHref}
         onClick={handleClick}
-        className="inline-flex min-h-[40px] items-center gap-1.5 rounded-full px-3 py-2 text-sm font-medium text-ink-500 transition-colors hover:bg-ink-50 hover:text-ink-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-horizon-500 focus-visible:ring-offset-2 focus-visible:ring-offset-paper"
+        className="inline-flex min-h-[40px] items-center gap-1.5 rounded-full px-3 py-2 text-sm font-medium text-ink-500 transition-colors hover:bg-ink-100/60 hover:text-ink-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-electric-500 focus-visible:ring-offset-2 focus-visible:ring-offset-paper"
       >
         <ArrowLeft className="h-4 w-4" aria-hidden="true" />
         {label}

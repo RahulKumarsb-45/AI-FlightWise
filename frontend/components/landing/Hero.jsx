@@ -3,172 +3,194 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { ArrowRight, ShieldCheck, Zap, Users, MapPinned, CalendarRange, Route } from 'lucide-react';
+import {
+  ArrowRight,
+  ShieldCheck,
+  Zap,
+  MapPinned,
+  CalendarRange,
+  Route,
+  Sparkles,
+  TrendingDown,
+  Clock,
+  CheckCircle2,
+} from 'lucide-react';
 import { buttonVariants } from '@/components/ui/button-variants';
 import { useAuth } from '@/hooks/useAuth';
 
-const TRUST_ITEMS = [
-  { icon: ShieldCheck, label: 'Trusted recommendations' },
-  { icon: Zap, label: 'Saves time & money' },
-  { icon: Users, label: 'Built for Indian travelers' },
+const CAPABILITIES = [
+  { icon: MapPinned, title: 'Nearby Hubs', desc: 'Checks alternate airports within 300km' },
+  { icon: CalendarRange, title: 'Flexible Dates', desc: '±3 days combinatorial fare search' },
+  { icon: Route, title: 'Multi-City Circuits', desc: 'Optimal routing across up to 4 countries' },
 ];
-
-const BENEFITS = [
-  { icon: MapPinned, title: 'More airports', subtitle: 'More options' },
-  { icon: CalendarRange, title: 'Smarter dates', subtitle: 'Lower fares' },
-  { icon: Route, title: 'Multi-city trips', subtitle: 'Bigger savings' },
-];
-
-function BenefitItems() {
-  return (
-    <>
-      {BENEFITS.map(({ icon: Icon, title, subtitle }) => (
-        <div key={title} className="flex items-center gap-3">
-          <Icon className="h-5 w-5 shrink-0 text-horizon-700" aria-hidden="true" />
-          <div>
-            <p className="text-sm font-semibold text-ink-900">{title}</p>
-            <p className="text-xs text-ink-500">{subtitle}</p>
-          </div>
-        </div>
-      ))}
-    </>
-  );
-}
 
 function Hero() {
-    const { isAuthenticated, loading } = useAuth();
+  const { isAuthenticated, loading } = useAuth();
+
   return (
-    <section className="relative overflow-hidden bg-horizon-900">
-      {/*
-       * Background photo fills the entire hero (not a boxed-in image).
-       * object-position is tuned per breakpoint so the airplane stays in
-       * frame as the visible crop narrows on smaller viewports — the photo
-       * itself is wider (16:9-ish) than most of these viewport ratios, so a
-       * single fixed position would push the plane off-screen on phones.
-       */}
-      <div className="absolute inset-0">
+    <section className="relative overflow-hidden bg-navy-950 text-white min-h-[640px] lg:min-h-[720px] flex items-center">
+      {/* Background aviation image with cinematic dark gradient overlays */}
+      <div className="absolute inset-0 z-0">
         <Image
-          src="/images/Airoplanee.png"
-          alt=""
+          src="/images/hero-aviation.jpg"
+          alt="Modern commercial passenger aircraft flying above twilight clouds"
           fill
           priority
           sizes="100vw"
-          className="object-cover object-[78%_center] sm:object-[70%_center] md:object-[66%_center] lg:object-[60%_center] xl:object-[54%_center]"
+          className="object-cover object-[70%_center] md:object-[60%_center] lg:object-center opacity-45 lg:opacity-55"
         />
-        {/*
-         * Subtle readability scrim, not an opaque cover — the sky, clouds,
-         * mountains and airplane all stay visible. Vertical on mobile/
-         * tablet (copy sits on top of the photo), horizontal from the left
-         * on desktop (copy sits in the left column, photo dominates the
-         * right two-thirds).
-         */}
+        {/* Responsive dark gradient overlays for guaranteed WCAG AA text contrast */}
         <div
           aria-hidden="true"
-          className="absolute inset-0 bg-gradient-to-b from-white/93 from-10% via-white/60 via-45% to-white/15 to-90% lg:bg-gradient-to-r lg:from-white/92 lg:from-0% lg:via-white/45 lg:via-40% lg:to-transparent lg:to-75%"
+          className="absolute inset-0 bg-gradient-to-b from-navy-950/95 via-navy-950/80 to-navy-950/95 lg:bg-gradient-to-r lg:from-navy-950/98 lg:via-navy-950/85 lg:to-navy-950/40"
         />
       </div>
 
-      <div className="container-page relative">
-        <div className="grid gap-6 py-10 sm:py-12 lg:grid-cols-2 lg:items-center lg:gap-6 lg:py-14 xl:py-16">
-          {/* Left column: headline, copy, CTAs, trust items */}
+      <div className="container-page relative z-10 py-16 lg:py-20">
+        <div className="grid gap-12 lg:grid-cols-12 lg:items-center">
+          {/* Left Column: Brand, Tagline, Value Prop, CTAs */}
           <motion.div
-            initial={{ opacity: 0, y: 16 }}
+            initial={{ opacity: 0, y: 18 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
-            className="relative"
+            className="lg:col-span-7 xl:col-span-7"
           >
-            <span className="inline-flex items-center text-xs font-semibold uppercase tracking-[0.2em] text-horizon-500">
-              AI FlightWise — Smarter Flights. Better Decisions.
-            </span>
+            <div className="inline-flex items-center gap-2 rounded-full border border-cyan-400/30 bg-cyan-950/50 px-3.5 py-1 text-xs font-semibold text-cyan-300 backdrop-blur-md">
+              <Sparkles className="h-3.5 w-3.5 text-cyan-400" aria-hidden="true" />
+              <span>AI FlightWise · Decision Intelligence</span>
+            </div>
 
-            <h1 className="mt-3 text-balance font-display text-display-md text-ink-900 sm:text-display-lg lg:text-display-xl">
-              Stop searching flights.
+            <h1 className="mt-4 font-display text-display-md sm:text-display-lg lg:text-display-xl font-bold tracking-tight text-white">
+              Smarter Flights.
               <br />
-              <span className="text-amber-600">Start optimizing trips.</span>
+              <span className="bg-gradient-to-r from-cyan-400 via-electric-400 to-violet-400 bg-clip-text text-transparent">
+                Better Decisions.
+              </span>
             </h1>
 
-            <p className="mt-4 max-w-xl text-balance text-lg text-ink-600">
-              Tell us your budget and dates. We check nearby airports, flexible dates, and
-              multi-city routes — then explain exactly why each recommendation beats the rest.
+            <p className="mt-4 max-w-xl text-balance text-base sm:text-lg text-ink-300 leading-relaxed">
+              Stop sifting through chaotic flight listings. AI FlightWise evaluates nearby airports, flexible dates, and multi-city circuits — then explains exactly why each recommendation beats the rest.
             </p>
 
-           <div className="mt-6 flex flex-col gap-3 sm:flex-row">
-           <Link
-  href={
-    loading
-      ? '#'
-      : isAuthenticated
-        ? '/dashboard'
-        : '/register?redirect=/dashboard'
-  }
-  className={`${buttonVariants({ size: 'lg' })} w-full sm:w-auto`}
->
-  Plan your first trip
-  <ArrowRight className="h-4 w-4" aria-hidden="true" />
-</Link>
+            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
               <Link
-                href="/#how-it-works"
-                className={`${buttonVariants({ variant: 'outline', size: 'lg' })} w-full border-ink-200 bg-white/70 backdrop-blur-sm hover:bg-white sm:w-auto`}
+                href="/search"
+                className={`${buttonVariants({ variant: 'cyan', size: 'lg' })} w-full sm:w-auto shadow-glow-cyan`}
               >
-                See how it works
+                Start Flight Search
+                <ArrowRight className="h-4 w-4 ml-1" aria-hidden="true" />
+              </Link>
+              <Link
+                href="/ai-agent"
+                className={`${buttonVariants({ variant: 'outline', size: 'lg' })} w-full sm:w-auto border-navy-700 bg-navy-900/60 text-white backdrop-blur-md hover:bg-navy-800`}
+              >
+                <Sparkles className="h-4 w-4 text-cyan-400" aria-hidden="true" />
+                Ask Aero AI
               </Link>
             </div>
 
-            <ul className="mt-6 flex flex-wrap gap-x-6 gap-y-3">
-              {TRUST_ITEMS.map(({ icon: Icon, label }) => (
-                <li key={label} className="flex items-center gap-2 text-sm font-medium text-ink-700">
-                  <Icon className="h-4 w-4 text-horizon-700" aria-hidden="true" />
-                  {label}
-                </li>
+            {/* Trust and Key Capability Badges */}
+            <div className="mt-10 pt-6 border-t border-navy-800/80 grid grid-cols-1 sm:grid-cols-3 gap-4">
+              {CAPABILITIES.map(({ icon: Icon, title, desc }) => (
+                <div key={title} className="flex items-start gap-2.5">
+                  <div className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-navy-800/90 text-cyan-400 border border-navy-700/60">
+                    <Icon className="h-3.5 w-3.5" aria-hidden="true" />
+                  </div>
+                  <div>
+                    <p className="text-xs font-semibold text-white">{title}</p>
+                    <p className="text-[11px] text-ink-400">{desc}</p>
+                  </div>
+                </div>
               ))}
-            </ul>
+            </div>
           </motion.div>
 
-          {/*
-           * Right column reserves vertical space for the photo/airplane on
-           * large screens, via a fixed min-height rather than content — its
-           * two children (caption + benefits panel below) are both
-           * absolutely positioned, so this column's rendered height is
-           * always exactly that min-height, regardless of how tall the
-           * left column's headline/copy get at a given breakpoint. That
-           * makes the benefits panel's position below stable and
-           * predictable, instead of drifting with text length the way a
-           * percentage-of-the-whole-row offset did.
-           */}
-          <div className="relative hidden lg:block lg:min-h-[340px] xl:min-h-[380px]">
-            <span
-              aria-hidden="true"
-              className="absolute right-6 top-2 -rotate-3 font-display text-lg italic text-ink-700 xl:right-10 xl:top-4 xl:text-xl"
-            >
-              Better trips ahead
-              <svg
-                viewBox="0 0 160 20"
-                className="mt-1 h-3 w-32 text-amber-600 xl:w-36"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="3"
-                strokeLinecap="round"
-              >
-                <path d="M4 12c30-14 100-14 152 2" />
-              </svg>
-            </span>
+          {/* Right Column: Live Decision Intelligence Preview Card */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.96 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.6, delay: 0.15 }}
+            className="lg:col-span-5 xl:col-span-5"
+          >
+            <div className="relative rounded-2xl border border-navy-700/80 bg-navy-900/90 p-5 shadow-premium backdrop-blur-xl">
+              <div className="flex items-center justify-between border-b border-navy-800 pb-3">
+                <div className="flex items-center gap-2">
+                  <span className="flex h-2.5 w-2.5 rounded-full bg-cyan-400 animate-pulse" />
+                  <span className="text-xs font-semibold uppercase tracking-wider text-ink-300">
+                    Decision Matrix Preview
+                  </span>
+                </div>
+                <span className="rounded-full bg-navy-800 px-2 py-0.5 font-mono text-[11px] text-cyan-300">
+                  DEL → LHR
+                </span>
+              </div>
 
-            {/*
-             * Benefits panel, large screens only: sits below the airplane
-             * caption and above this column's own lower edge — which, since
-             * the two-column grid is vertically centered, lands in the
-             * lower-middle of the hero rather than at the section's true
-             * bottom.
-             */}
-            <div className="absolute bottom-8 right-0 z-10 flex w-fit gap-8 rounded-2xl border border-ink-100 bg-white/95 p-4 shadow-card backdrop-blur xl:bottom-10">
-              <BenefitItems />
+              {/* Recommendation Options Comparison */}
+              <div className="mt-4 space-y-2.5">
+                {/* Balanced Pick (Highlighted) */}
+                <div className="relative rounded-xl border border-cyan-400/50 bg-gradient-to-r from-navy-800/90 to-navy-900/90 p-3.5 shadow-soft">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <span className="rounded-md bg-gradient-to-r from-electric-500 to-cyan-400 px-2 py-0.5 text-[10px] font-bold text-navy-950">
+                        BEST BALANCED
+                      </span>
+                      <span className="text-xs text-ink-300">1 Stop (1h 15m)</span>
+                    </div>
+                    <span className="font-mono text-base font-bold text-white">₹44,500</span>
+                  </div>
+                  <div className="mt-2 flex items-center justify-between text-xs text-ink-400">
+                    <span className="flex items-center gap-1 text-cyan-300">
+                      <TrendingDown className="h-3 w-3" /> Saves ₹12,300 vs direct
+                    </span>
+                    <span className="font-mono text-[11px] text-ink-300">Score 94/100</span>
+                  </div>
+                </div>
+
+                {/* Cheapest Option */}
+                <div className="rounded-xl border border-navy-800 bg-navy-950/60 p-3 text-xs">
+                  <div className="flex items-center justify-between">
+                    <span className="font-semibold text-ink-300">CHEAPEST</span>
+                    <span className="font-mono text-sm font-semibold text-ink-200">₹39,800</span>
+                  </div>
+                  <div className="mt-1 flex items-center justify-between text-ink-400">
+                    <span>2 Stops (6h 40m layover)</span>
+                    <span className="font-mono text-[11px]">Score 81/100</span>
+                  </div>
+                </div>
+
+                {/* Fastest Option */}
+                <div className="rounded-xl border border-navy-800 bg-navy-950/60 p-3 text-xs">
+                  <div className="flex items-center justify-between">
+                    <span className="font-semibold text-ink-300">FASTEST</span>
+                    <span className="font-mono text-sm font-semibold text-ink-200">₹56,800</span>
+                  </div>
+                  <div className="mt-1 flex items-center justify-between text-ink-400">
+                    <span>Non-stop (8h 50m)</span>
+                    <span className="font-mono text-[11px]">Score 88/100</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Grounded Rationale Callout */}
+              <div className="mt-4 rounded-xl border border-navy-700/50 bg-navy-950/70 p-3 text-xs leading-relaxed text-ink-300">
+                <p className="flex items-start gap-1.5">
+                  <CheckCircle2 className="h-4 w-4 shrink-0 text-cyan-400 mt-0.5" />
+                  <span>
+                    <strong className="text-white">Why Balanced Wins:</strong> You save ₹12,300 with only 1h 15m additional transit, keeping total duration under 10.5 hours.
+                  </span>
+                </p>
+              </div>
+
+              <div className="mt-3.5 text-center">
+                <Link
+                  href="/search"
+                  className="inline-flex items-center gap-1 text-xs font-semibold text-cyan-400 hover:text-cyan-300 transition-colors"
+                >
+                  Run your own route optimization →
+                </Link>
+              </div>
             </div>
-          </div>
-        </div>
-
-        {/* Same benefits panel, stacked in normal flow below the hero copy on mobile/tablet. */}
-        <div className="relative z-10 mb-8 grid grid-cols-1 gap-4 rounded-xl border border-ink-100 bg-white/95 p-4 shadow-card backdrop-blur sm:grid-cols-3 sm:gap-6 lg:hidden">
-          <BenefitItems />
+          </motion.div>
         </div>
       </div>
     </section>

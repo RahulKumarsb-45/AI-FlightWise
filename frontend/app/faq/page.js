@@ -47,21 +47,30 @@ const FAQS = [
   },
 ];
 
+import { BackButton } from '@/components/common/BackButton';
+
 export default function FAQPage() {
   return (
     <>
       <Navbar />
-      <main id="main-content" className="container-page max-w-4xl py-16">
-        <h1 className="font-display text-display-md text-ink-900">Frequently asked questions</h1>
+      <BackButton />
+      <main id="main-content" className="container-page max-w-4xl py-14">
+        <span className="inline-flex items-center gap-1.5 rounded-full bg-electric-50 px-3 py-1 text-xs font-semibold text-electric-700 border border-electric-200/60 mb-3">
+          Knowledge Base
+        </span>
+        <h1 className="font-display text-display-md text-ink-900">Frequently Asked Questions</h1>
+        <p className="mt-2 text-sm text-ink-500 max-w-xl">
+          Everything you need to know about AI FlightWise, multi-factor scoring formulas, nearby airports, and Aero AI.
+        </p>
 
-        <div className="mt-8 divide-y divide-ink-100 rounded-xl border border-ink-100 bg-white">
+        <div className="mt-8 divide-y divide-ink-100 rounded-2xl border border-ink-100/90 bg-white shadow-soft overflow-hidden">
           {FAQS.map((faq) => (
-            <details key={faq.question} className="group px-5 py-4">
-              <summary className="flex cursor-pointer list-none items-center justify-between gap-4 font-medium text-ink-900">
+            <details key={faq.question} className="group px-6 py-4.5 transition-colors hover:bg-paper-50/50">
+              <summary className="flex cursor-pointer list-none items-center justify-between gap-4 font-semibold text-ink-900">
                 {faq.question}
                 <ChevronDown className="h-4 w-4 shrink-0 text-ink-400 transition-transform group-open:rotate-180" />
               </summary>
-              <p className="mt-2.5 text-sm leading-relaxed text-ink-600">{faq.answer}</p>
+              <p className="mt-3 text-sm leading-relaxed text-ink-600 pr-6">{faq.answer}</p>
             </details>
           ))}
         </div>

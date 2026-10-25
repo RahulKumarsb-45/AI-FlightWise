@@ -16,9 +16,9 @@ function OAuthButtons() {
     <div className="grid grid-cols-1 gap-3">
       <a
         href={`${API_URL}/auth/google`}
-        className="flex items-center justify-center gap-2 rounded-md border border-ink-200 bg-white py-2.5 text-sm font-medium text-ink-700 transition-colors hover:bg-ink-50"
+        className="flex items-center justify-center gap-2.5 rounded-xl border border-ink-200/90 bg-white py-2.5 text-sm font-semibold text-ink-700 shadow-soft transition-all hover:bg-ink-50/60 hover:border-ink-300 hover:shadow-sm"
       >
-        <GoogleIcon /> Google
+        <GoogleIcon /> Continue with Google
       </a>
     </div>
   );

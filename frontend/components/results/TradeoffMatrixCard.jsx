@@ -71,15 +71,15 @@ export function TradeoffMatrixCard({ matrix, categories = {}, recommendations = 
   return (
     <section
       aria-labelledby="decision-intelligence-title"
-      className="rounded-xl border border-horizon-200 bg-gradient-to-br from-white via-horizon-50/20 to-amber-50/20 p-5 shadow-soft sm:p-6"
+      className="rounded-2xl border border-electric-200/80 bg-gradient-to-br from-white via-electric-50/20 to-violet-50/20 p-6 shadow-soft sm:p-7"
     >
       <div className="flex flex-wrap items-center justify-between gap-3 border-b border-ink-100 pb-4">
         <div>
-          <div className="flex items-center gap-2">
-            <span className="flex h-6 w-6 items-center justify-center rounded-md bg-horizon-100 text-horizon-800">
+          <div className="flex items-center gap-2.5">
+            <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-electric-100 text-electric-700">
               <GitCompare className="h-4 w-4" aria-hidden="true" />
             </span>
-            <h2 id="decision-intelligence-title" className="font-display text-base font-semibold text-ink-900 sm:text-lg">
+            <h2 id="decision-intelligence-title" className="font-display text-lg font-bold text-navy-950 sm:text-xl">
               Flight Decision Intelligence & Trade-offs
             </h2>
           </div>
@@ -89,13 +89,13 @@ export function TradeoffMatrixCard({ matrix, categories = {}, recommendations = 
         </div>
 
         {matrix?.summary && (
-          <div className="rounded-lg bg-amber-50 px-3 py-1.5 text-xs font-medium text-amber-900 border border-amber-200/60">
+          <div className="rounded-full bg-electric-50 px-3.5 py-1 text-xs font-semibold text-electric-800 border border-electric-200/70">
             {matrix.summary}
           </div>
         )}
       </div>
 
-      <div className="mt-5 grid gap-4 md:grid-cols-3">
+      <div className="mt-6 grid gap-4 md:grid-cols-3">
         {options.map((opt) => {
           const isCheapest = opt.category === 'cheapest';
           const isFastest = opt.category === 'fastest';
@@ -106,72 +106,72 @@ export function TradeoffMatrixCard({ matrix, categories = {}, recommendations = 
               key={opt.category}
               onClick={() => handleInteraction(opt.category)}
               className={cn(
-                'flex flex-col justify-between rounded-lg border p-4 transition-all hover:shadow-card',
+                'flex flex-col justify-between rounded-xl border p-5 transition-all duration-200 hover:shadow-card cursor-pointer',
                 isBalanced
-                  ? 'border-horizon-400 bg-white ring-1 ring-horizon-400/30'
-                  : 'border-ink-100 bg-white/90 hover:border-ink-200'
+                  ? 'border-electric-400 bg-white ring-2 ring-electric-400/25 shadow-soft'
+                  : 'border-ink-100/90 bg-white/95 hover:border-ink-200'
               )}
             >
               <div>
                 <div className="flex items-center justify-between gap-2">
-                  <Badge variant={isBalanced ? 'amber' : isCheapest ? 'emerald' : 'sky'}>
+                  <Badge variant={isBalanced ? 'electric' : isCheapest ? 'emerald' : 'sky'}>
                     {opt.badge}
                   </Badge>
-                  <span className="text-xs uppercase font-semibold tracking-wider text-ink-400">
+                  <span className="text-[11px] uppercase font-bold tracking-wider text-ink-400">
                     {opt.category}
                   </span>
                 </div>
 
-                <h3 className="mt-3 font-display text-lg font-bold text-ink-900">
+                <h3 className="mt-3.5 font-display text-lg font-bold text-navy-950">
                   {opt.title}
                 </h3>
 
                 <div className="mt-3 flex items-baseline gap-2">
-                  <span className="font-mono text-2xl font-semibold text-ink-900">
+                  <span className="font-mono text-3xl font-bold text-navy-950">
                     {formatInr(opt.priceInr)}
                   </span>
                   <span className="text-xs text-ink-400">total</span>
                 </div>
 
-                <div className="mt-3 space-y-2 border-t border-ink-100 pt-3 text-xs text-ink-600">
+                <div className="mt-3.5 space-y-2 border-t border-ink-100 pt-3 text-xs text-ink-600">
                   <div className="flex items-center justify-between">
                     <span className="flex items-center gap-1.5 text-ink-500">
-                      <Clock className="h-3.5 w-3.5" aria-hidden="true" /> Travel time:
+                      <Clock className="h-3.5 w-3.5 text-ink-400" aria-hidden="true" /> Travel time:
                     </span>
-                    <span className="font-medium text-ink-800">{formatDuration(opt.durationMinutes)}</span>
+                    <span className="font-semibold text-navy-950">{formatDuration(opt.durationMinutes)}</span>
                   </div>
 
                   <div className="flex items-center justify-between">
                     <span className="flex items-center gap-1.5 text-ink-500">
-                      <Plane className="h-3.5 w-3.5" aria-hidden="true" /> Layovers:
+                      <Plane className="h-3.5 w-3.5 text-ink-400" aria-hidden="true" /> Layovers:
                     </span>
-                    <span className="font-medium text-ink-800">
+                    <span className="font-semibold text-navy-950">
                       {opt.stops === 0 ? 'Direct (0 stops)' : `${opt.stops} stop${opt.stops > 1 ? 's' : ''}`}
                     </span>
                   </div>
 
                   <div className="flex items-center justify-between">
                     <span className="flex items-center gap-1.5 text-ink-500">
-                      <Info className="h-3.5 w-3.5" aria-hidden="true" /> Airport:
+                      <Info className="h-3.5 w-3.5 text-ink-400" aria-hidden="true" /> Airport:
                     </span>
-                    <span className="font-medium text-ink-800">
+                    <span className="font-semibold text-navy-950">
                       {opt.primaryAirport ? 'Primary hub' : 'Regional / Nearby'}
                     </span>
                   </div>
                 </div>
 
-                <div className="mt-3 rounded bg-ink-50 p-2.5 text-xs text-ink-700">
-                  <p className="font-semibold text-ink-800">Why this option:</p>
-                  <p className="mt-0.5 leading-relaxed">{opt.whySelected}</p>
+                <div className="mt-3.5 rounded-lg bg-ink-50/80 p-3 text-xs text-ink-700 border border-ink-100/60">
+                  <p className="font-semibold text-navy-900">Why this option:</p>
+                  <p className="mt-0.5 leading-relaxed text-ink-600">{opt.whySelected}</p>
                 </div>
 
-                <div className="mt-2 text-xs text-ink-500">
-                  <span className="font-medium text-ink-700">Best for: </span>
+                <div className="mt-2.5 text-xs text-ink-500">
+                  <span className="font-semibold text-navy-900">Best for: </span>
                   {opt.bestSuitedFor}
                 </div>
               </div>
 
-              <div className="mt-4 border-t border-ink-100 pt-2.5 text-[11px] font-medium text-horizon-800">
+              <div className="mt-4 border-t border-ink-100 pt-3 text-[11px] font-semibold text-electric-700">
                 {opt.tradeoffHighlight}
               </div>
             </div>
