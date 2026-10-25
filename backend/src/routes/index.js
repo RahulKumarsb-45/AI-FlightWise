@@ -9,9 +9,7 @@ const aiRoutes = require('./aiRoutes');
 const weatherRoutes = require('./weatherRoutes');
 const placesRoutes = require('./placesRoutes');
 const feedbackRoutes = require('./feedbackRoutes');
-const evalRoutes = require('./evalRoutes');
 const analyticsRoutes = require('./analyticsRoutes');
-const experimentRoutes = require('./experimentRoutes');
 const copilotRoutes = require('./copilotRoutes');
 const roadmapRoutes = require('./roadmapRoutes');
 const decisionRoutes = require('./decisionRoutes');
@@ -33,11 +31,9 @@ router.use('/ai', aiRoutes);
 router.use('/weather', weatherRoutes);
 router.use('/places', placesRoutes);
 
-// Product Management Workspace & Intelligence Routes
+// Product Management Workspace & Intelligence Routes (Analytics, Feedback, Copilot, Roadmap, Decisions)
 router.use('/feedback', feedbackRoutes);
-router.use('/evaluations', evalRoutes);
 router.use('/analytics', analyticsRoutes);
-router.use('/experiments', experimentRoutes);
 router.use('/copilot', copilotRoutes);
 router.use('/roadmap', roadmapRoutes);
 router.use('/decisions', decisionRoutes);

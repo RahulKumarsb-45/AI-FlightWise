@@ -7,9 +7,10 @@ import {
   useState,
   useCallback,
   useMemo,
+  useRef,
 } from 'react';
-import { usePathname } from 'next/navigation';
 import { authService } from '@/services/authService';
+import { setSessionExpiredHandler } from '@/lib/apiClient';
 
 const AuthContext = createContext(null);
 
@@ -17,84 +18,88 @@ export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [subscription, setSubscription] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [authError, setAuthError] = useState(null);
 
-  const pathname = usePathname();
+  // In-flight restoration deduplication
+  const restorePromiseRef = useRef(null);
 
   /**
-   * Restore the existing session when the application loads.
-   *
-   * IMPORTANT:
-   * The OAuth callback page handles its own refresh.
-   * Therefore AuthProvider must NOT call silentRefresh()
-   * while the user is on /auth/callback.
-   *
-   * This prevents two refresh requests from happening
-   * at the same time and invalidating the refresh token.
+   * Restore the existing session.
+   * Runs once on initial app load, and can be invoked manually if needed.
    */
-  useEffect(() => {
-    // OAuth callback handles authentication itself.
-    if (pathname === '/auth/callback') {
-      setLoading(false);
-      return;
+  const restoreSession = useCallback(async () => {
+    if (restorePromiseRef.current) {
+      return restorePromiseRef.current;
     }
 
-    let cancelled = false;
-
-    async function restoreSession() {
+    restorePromiseRef.current = (async () => {
       try {
         const token = await authService.silentRefresh();
-
-        // Component/page changed before request finished.
-        if (cancelled) return;
-
         if (token) {
           try {
-            const { user: me, subscription: sub } =
-              await authService.me();
-
-            if (!cancelled) {
-              setUser(me);
-              setSubscription(sub);
-            }
-          } catch {
-            if (!cancelled) {
+            const { user: me, subscription: sub } = await authService.me();
+            setUser(me);
+            setSubscription(sub);
+            setAuthError(null);
+            return me;
+          } catch (err) {
+            if (err?.status === 401 || err?.status === 403) {
               setUser(null);
               setSubscription(null);
+              setAuthError({ type: 'unauthenticated' });
+            } else {
+              setAuthError({ type: 'network_error', message: err?.message || 'Network error' });
             }
+            return null;
           }
         } else {
-          if (!cancelled) {
-            setUser(null);
-            setSubscription(null);
-          }
-        }
-      } catch {
-        // No valid session. This is normal for logged-out users.
-        if (!cancelled) {
+          // Silent refresh returned null (401 session invalid / no refresh cookie)
           setUser(null);
           setSubscription(null);
+          setAuthError({ type: 'unauthenticated' });
+          return null;
         }
+      } catch (err) {
+        // Network error during silentRefresh()
+        setAuthError({ type: 'network_error', message: err?.message || 'Network error' });
+        return null;
       } finally {
-        if (!cancelled) {
-          setLoading(false);
-        }
+        setLoading(false);
+        restorePromiseRef.current = null;
       }
-    }
+    })();
+
+    return restorePromiseRef.current;
+  }, []);
+
+  // Restore session once on initial app load
+  useEffect(() => {
+    let cancelled = false;
+
+    // Listen for automatic token expiration from API client
+    setSessionExpiredHandler(() => {
+      if (!cancelled) {
+        setUser(null);
+        setSubscription(null);
+        setAuthError({ type: 'unauthenticated' });
+      }
+    });
 
     restoreSession();
 
     return () => {
       cancelled = true;
+      setSessionExpiredHandler(null);
     };
-  }, [pathname]);
+  }, [restoreSession]);
 
   /**
    * Normal email/password login.
    */
   const login = useCallback(async (credentials) => {
     const loggedInUser = await authService.login(credentials);
-
     setUser(loggedInUser);
+    setAuthError(null);
 
     try {
       const { subscription: sub } = await authService.me();
@@ -122,6 +127,7 @@ export function AuthProvider({ children }) {
     } finally {
       setUser(null);
       setSubscription(null);
+      setAuthError(null);
     }
   }, []);
 
@@ -131,13 +137,11 @@ export function AuthProvider({ children }) {
    */
   const refetchUser = useCallback(async () => {
     try {
-      const { user: me, subscription: sub } =
-        await authService.me();
-
+      const { user: me, subscription: sub } = await authService.me();
       setUser(me);
       setSubscription(sub);
     } catch {
-      // Keep the existing state if the request fails.
+      // Keep existing state if request fails
     }
   }, []);
 
@@ -149,9 +153,11 @@ export function AuthProvider({ children }) {
       user,
       subscription,
       loading,
+      authError,
       login,
       register,
       logout,
+      restoreSession,
       refetchUser,
       isAuthenticated: !!user,
     }),
@@ -159,9 +165,11 @@ export function AuthProvider({ children }) {
       user,
       subscription,
       loading,
+      authError,
       login,
       register,
       logout,
+      restoreSession,
       refetchUser,
     ]
   );

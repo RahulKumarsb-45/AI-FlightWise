@@ -25,9 +25,20 @@ if (config.nodeEnv === 'production') {
 // Security & core middleware
 // ------------------------------------------------------------------
 app.use(helmet());
+const allowedOrigins = [
+  config.frontendUrl,
+  'http://localhost:3000',
+  'http://127.0.0.1:3000',
+].filter(Boolean);
+
 app.use(
   cors({
-    origin: config.frontendUrl,
+    origin: (origin, callback) => {
+      if (!origin || allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      }
+      return callback(null, false);
+    },
     credentials: true, // required so the httpOnly refresh_token cookie is sent/received
   })
 );
@@ -43,15 +54,19 @@ app.use(express.urlencoded({ extended: true, limit: '1mb' }));
 app.use(cookieParser());
 app.use(requestIdMiddleware);
 
+// Health check route — always accessible, never rate limited
+app.get('/api/health', (req, res) => {
+  res.status(200).json({ status: 'success', message: 'OK', timestamp: new Date().toISOString() });
+});
+
 // General API rate limit (auth routes have their own stricter limit).
-// Skipped entirely in tests — automated test suites fire many requests in
-// quick succession and aren't the traffic pattern this limit protects against.
+// Skipped entirely in tests; generous headroom in dev to prevent blocking interactive QA
 if (config.nodeEnv !== 'test') {
   app.use(
     '/api',
     rateLimit({
       windowMs: 15 * 60 * 1000,
-      max: 100,
+      max: config.nodeEnv === 'development' ? 2000 : 100,
       standardHeaders: true,
       legacyHeaders: false,
     })

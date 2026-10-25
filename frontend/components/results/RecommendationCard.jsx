@@ -63,9 +63,8 @@ function LegDetail({ leg, offer }) {
   );
 }
 
-function RecommendationCard({ recommendation, rank, highlight, experimentVariant = 'control' }) {
+function RecommendationCard({ recommendation, rank, highlight }) {
   const [expanded, setExpanded] = useState(false);
-  const isVariant = experimentVariant === 'variant';
   const {
     legs,
     legOffers,
@@ -88,8 +87,6 @@ function RecommendationCard({ recommendation, rank, highlight, experimentVariant
           rank,
           isTopPick: rank === 1,
           usesNearbyAirport,
-          experimentId: 'flight_recommendation_tradeoffs',
-          variant: experimentVariant,
         });
         trackRecommendationExpanded({ rank, isTopPick: rank === 1, usesNearbyAirport });
       }

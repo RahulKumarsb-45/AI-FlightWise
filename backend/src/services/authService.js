@@ -185,13 +185,18 @@ async function refreshSession(rawRefreshToken, { userAgent, ipAddress } = {}) {
   }
 
   if (session.revoked) {
-    // This exact refresh token was already rotated/used once before. A legitimate
-    // client would only ever present the LATEST token, so this means either a
-    // replay of an old request or a stolen token being used after the real
-    // owner already rotated past it — revoke every session for this user as a
-    // precaution, not just this one.
-    await query(`UPDATE sessions SET revoked = true WHERE user_id = $1`, [payload.sub]);
-    logger.warn('Refresh token reuse detected — all sessions revoked', { userId: payload.sub });
+    const revokedAtMs = session.revoked_at ? new Date(session.revoked_at).getTime() : 0;
+    const gracePeriodMs = 30000; // 30-second window to accommodate concurrent requests and network latency
+    const isWithinGracePeriod = session.revoked_at && (Date.now() - revokedAtMs) < gracePeriodMs;
+
+    if (!isWithinGracePeriod) {
+      // Replay outside grace window — revoke all sessions as a precaution against token theft
+      await query(`UPDATE sessions SET revoked = true, revoked_at = now() WHERE user_id = $1`, [payload.sub]);
+      logger.warn('Refresh token reuse detected — all sessions revoked', { userId: payload.sub });
+    } else {
+      logger.info('Rotated refresh token presented within grace window — rejecting without blanket revocation', { userId: payload.sub });
+    }
+
     throw new AppError('Refresh token already used. Please log in again.', 401, 'AUTH_REFRESH_REUSE_DETECTED');
   }
 
@@ -199,8 +204,16 @@ async function refreshSession(rawRefreshToken, { userAgent, ipAddress } = {}) {
     throw new AppError('Session expired. Please log in again.', 401, 'AUTH_SESSION_EXPIRED');
   }
 
-  // revoke old session (rotation)
-  await query(`UPDATE sessions SET revoked = true WHERE id = $1`, [session.id]);
+  // Atomically revoke old session (rotation concurrency guard)
+  const revokeResult = await query(
+    `UPDATE sessions SET revoked = true, revoked_at = now() WHERE id = $1 AND revoked = false RETURNING id`,
+    [session.id]
+  );
+
+  if (revokeResult.rows.length === 0) {
+    // A concurrent request just rotated this session between our SELECT and UPDATE
+    throw new AppError('Refresh token already used. Please log in again.', 401, 'AUTH_REFRESH_REUSE_DETECTED');
+  }
 
   const user = await findUserById(payload.sub);
   if (!user) {
@@ -213,7 +226,7 @@ async function refreshSession(rawRefreshToken, { userAgent, ipAddress } = {}) {
 async function logout(rawRefreshToken) {
   if (!rawRefreshToken) return;
   const tokenHash = hashToken(rawRefreshToken);
-  await query(`UPDATE sessions SET revoked = true WHERE refresh_token_hash = $1`, [tokenHash]);
+  await query(`UPDATE sessions SET revoked = true, revoked_at = now() WHERE refresh_token_hash = $1`, [tokenHash]);
 }
 
 function sanitizeUser(user) {

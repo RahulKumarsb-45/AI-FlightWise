@@ -9,7 +9,6 @@ import {
   Plane,
   Sparkles,
   BarChart3,
-  FlaskConical,
   MessageSquare,
   Map,
   FileCheck2,
@@ -25,13 +24,10 @@ const PRIMARY_LINKS = [
   { href: '/how-it-works', label: 'How It Works' },
   { href: '/pricing', label: 'Pricing' },
   { href: '/about', label: 'About' },
-  { href: '/ai-agent', label: 'Aero AI' },
 ];
 
 const PM_WORKSPACE_LINKS = [
   { href: '/analytics', label: 'Product Analytics', icon: BarChart3, desc: 'Funnels & route telemetry' },
-  { href: '/experiments', label: 'A/B Experiments', icon: FlaskConical, desc: 'Statistical significance & testing' },
-  { href: '/evaluations', label: 'AI Quality Evaluation', icon: Sparkles, desc: 'Model benchmarks & accuracy' },
   { href: '/feedback', label: 'Customer Feedback', icon: MessageSquare, desc: 'Thematic clusters & evidence' },
   { href: '/copilot', label: 'PM Decision Copilot', icon: Sparkles, desc: 'Evidence PRDs & RICE scoring' },
   { href: '/roadmap', label: 'Product Roadmap', icon: Map, desc: 'Now / Next / Later initiatives' },
@@ -72,8 +68,8 @@ function Navbar() {
           </span>
         </Link>
 
-        {/* Primary Consumer Navigation Links */}
-        <div className="hidden items-center justify-self-center gap-6 lg:gap-8 md:flex">
+        {/* Primary Consumer Navigation Links & Aero AI Button */}
+        <div className="hidden items-center justify-self-center gap-5 lg:gap-7 md:flex">
           {PRIMARY_LINKS.map((link) => (
             <Link
               key={link.href}
@@ -83,6 +79,18 @@ function Navbar() {
               {link.label}
             </Link>
           ))}
+
+          {/* Premium Aero AI Button */}
+          <Link
+            href="/ai-agent"
+            id="nav-aero-ai-btn"
+            title="Open Aero AI"
+            aria-label="Open Aero AI"
+            className="group relative inline-flex items-center gap-1.5 rounded-full bg-gradient-to-r from-electric-600 via-sky-600 to-electric-700 px-3 py-1.5 text-xs font-bold text-white shadow-sm shadow-electric-600/20 transition-all duration-200 hover:shadow-md hover:shadow-electric-600/30 hover:scale-[1.03] active:scale-[0.97] focus:outline-none focus:ring-2 focus:ring-electric-500/50"
+          >
+            <Sparkles className="h-3.5 w-3.5 text-sky-200 transition-transform duration-200 group-hover:rotate-12" aria-hidden="true" />
+            <span className="tracking-wider font-display font-semibold">AI</span>
+          </Link>
 
           {/* PM Workspace Dropdown - Clearly separated */}
           <Dropdown>
@@ -195,6 +203,26 @@ function Navbar() {
               {link.label}
             </Link>
           ))}
+
+          {/* Mobile Aero AI Button */}
+          <Link
+            href="/ai-agent"
+            id="mobile-nav-aero-ai-btn"
+            title="Open Aero AI"
+            aria-label="Open Aero AI"
+            className="my-1 flex items-center justify-between rounded-xl border border-electric-200/80 bg-gradient-to-r from-electric-50 to-sky-50 px-3.5 py-2.5 text-sm font-semibold text-electric-900 transition-all hover:bg-electric-100/70"
+            onClick={() => setMobileOpen(false)}
+          >
+            <div className="flex items-center gap-2.5">
+              <span className="flex h-6 w-6 items-center justify-center rounded-lg bg-electric-600 text-white shadow-xs">
+                <Sparkles className="h-3.5 w-3.5" aria-hidden="true" />
+              </span>
+              <span>Aero AI Assistant</span>
+            </div>
+            <span className="rounded-full bg-electric-600 px-2 py-0.5 text-[11px] font-bold text-white tracking-wide">
+              AI
+            </span>
+          </Link>
 
           <div className="text-[11px] font-bold text-ink-400 uppercase tracking-wider px-3 mt-4 mb-1">
             PM Workspace

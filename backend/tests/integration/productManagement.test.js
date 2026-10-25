@@ -1,7 +1,6 @@
 const request = require('supertest');
 const app = require('../../src/app');
 const { calculateRiceScore } = require('../../src/services/copilotService');
-const { getHashBucket } = require('../../src/services/experimentService');
 const { pool } = require('../../src/database/pool');
 
 describe('Product Management & AI Decision Intelligence Integration Suite', () => {
@@ -123,55 +122,7 @@ describe('Product Management & AI Decision Intelligence Integration Suite', () =
     });
   });
 
-  describe('3. AI Quality & Evaluation Benchmark Flow', () => {
-    test('GET /api/evaluations/latest returns latest benchmark run or fallback dataset structure', async () => {
-      const res = await request(app)
-        .get('/api/evaluations/latest')
-        .expect(200);
-
-      expect(res.body.status).toBe('success');
-      expect(res.body.data).toHaveProperty('totalCases');
-      expect(res.body.data).toHaveProperty('passRate');
-      expect(res.body.data).toHaveProperty('caseResults');
-    });
-
-    test('GET /api/evaluations/history returns array of previous runs', async () => {
-      const res = await request(app)
-        .get('/api/evaluations/history')
-        .expect(200);
-
-      expect(res.body.status).toBe('success');
-      expect(Array.isArray(res.body.data.runs)).toBe(true);
-    });
-
-    test('GET /api/evaluations/status returns idle or running state', async () => {
-      const res = await request(app)
-        .get('/api/evaluations/status')
-        .expect(200);
-
-      expect(res.body.status).toBe('success');
-      expect(res.body.data).toHaveProperty('isRunning');
-    });
-
-    test('POST /api/evaluations/run executes deterministic evaluation and persists metrics', async () => {
-      const res = await request(app)
-        .post('/api/evaluations/run')
-        .send({ provider: 'offline', mode: 'comprehensive' })
-        .expect(200);
-
-      expect(res.body.status).toBe('success');
-      const evalData = res.body.data;
-      expect(evalData).toHaveProperty('id');
-      expect(evalData.modelProvider).toContain('offline');
-      expect(evalData.totalCases).toBeGreaterThanOrEqual(10);
-      expect(evalData.passedCases + evalData.failedCases).toBe(evalData.totalCases);
-      expect(typeof evalData.passRate).toBe('number');
-      expect(typeof evalData.extractionAccuracy).toBe('number');
-      expect(typeof evalData.constraintAdherence).toBe('number');
-    });
-  });
-
-  describe('4. Customer Feedback Intelligence', () => {
+  describe('3. Customer Feedback Intelligence', () => {
     let createdFeedbackId = null;
 
     test('POST /api/feedback/customer creates new verified user feedback record', async () => {
@@ -287,69 +238,7 @@ describe('Product Management & AI Decision Intelligence Integration Suite', () =
     });
   });
 
-  describe('6. A/B Experimentation Engine', () => {
-    test('getHashBucket deterministically hashes sessionId to number 0-99', () => {
-      const b1 = getHashBucket('flight_recommendation_tradeoffs', 'user_alpha');
-      const b2 = getHashBucket('flight_recommendation_tradeoffs', 'user_alpha');
-      expect(b1).toBe(b2);
-      expect(typeof b1).toBe('number');
-      expect(b1).toBeGreaterThanOrEqual(0);
-      expect(b1).toBeLessThan(100);
-    });
-
-    test('POST /api/experiments/assign persists assignment for session', async () => {
-      const res = await request(app)
-        .post('/api/experiments/assign')
-        .send({
-          experimentId: 'flight_recommendation_tradeoffs',
-          sessionId: 'test_exp_session_99',
-        })
-        .expect(200);
-
-      expect(res.body.status).toBe('success');
-      expect(res.body.data).toHaveProperty('variant');
-      expect(['control', 'variant_tradeoffs']).toContain(res.body.data.variant);
-    });
-
-    test('POST /api/experiments/exposure records exposure and deduplicates duplicate exposures', async () => {
-      const payload = {
-        experimentId: 'flight_recommendation_tradeoffs',
-        sessionId: 'test_exp_session_99',
-        variant: 'variant',
-      };
-
-      const res1 = await request(app)
-        .post('/api/experiments/exposure')
-        .send(payload)
-        .expect(200);
-
-      expect(res1.body.status).toBe('success');
-
-      // Duplicate exposure call within same session
-      const res2 = await request(app)
-        .post('/api/experiments/exposure')
-        .send(payload)
-        .expect(200);
-
-      expect(res2.body.data.deduplicated).toBe(true);
-    });
-
-    test('GET /api/experiments/:id computes statistical comparisons and confidence intervals', async () => {
-      const res = await request(app)
-        .get('/api/experiments/flight_recommendation_tradeoffs')
-        .expect(200);
-
-      expect(res.body.status).toBe('success');
-      expect(res.body.data).toHaveProperty('experiment');
-      expect(res.body.data.experiment).toHaveProperty('id', 'flight_recommendation_tradeoffs');
-      expect(res.body.data).toHaveProperty('stats');
-      expect(res.body.data).toHaveProperty('comparison');
-      expect(res.body.data.comparison).toHaveProperty('controlRate');
-      expect(res.body.data.comparison.sampleSizeSufficiency).toHaveProperty('isSufficient');
-    });
-  });
-
-  describe('7. Product Roadmap & Decision Log Workspaces', () => {
+  describe('6. Product Roadmap & Decision Log Workspaces', () => {
     let createdRoadmapId = null;
     let createdDecisionId = null;
 

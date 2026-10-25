@@ -60,7 +60,6 @@ function ResultsContent() {
   const { toast } = useToast();
   const [saved, setSaved] = useState(false);
   const [saving, setSaving] = useState(false);
-  const [experimentVariant, setExperimentVariant] = useState('control');
   const requestBody = parseSearchParamsToRequest(searchParams);
 
   const { data, isLoading, isError, error } = useQuery({
@@ -69,37 +68,6 @@ function ResultsContent() {
     enabled: !!requestBody,
     retry: false,
   });
-
-  useEffect(() => {
-    let isMounted = true;
-    async function assignExperiment() {
-      try {
-        if (typeof window === 'undefined') return;
-        const sessionId = getOrCreateSessionId();
-        const assignment = await productService.assignExperiment({
-          experimentId: 'flight_recommendation_tradeoffs',
-          sessionId,
-        });
-        if (isMounted && assignment?.variant) {
-          setExperimentVariant(assignment.variant);
-          await productService.logExposure({
-            experimentId: 'flight_recommendation_tradeoffs',
-            sessionId,
-            variant: assignment.variant,
-          });
-        }
-      } catch {
-        // Non-blocking fail-safe
-      }
-    }
-
-    if (data?.recommendations?.length > 0) {
-      assignExperiment();
-    }
-    return () => {
-      isMounted = false;
-    };
-  }, [data?.recommendations?.length]);
 
   const topRecommendation = data?.recommendations?.[0];
   const topDestinationIata = topRecommendation?.destinationAirports?.[0]?.iata;
@@ -397,7 +365,6 @@ function ResultsContent() {
               recommendation={rec}
               rank={idx + 1}
               highlight={idx === 0}
-              experimentVariant={experimentVariant}
             />
           ))}
         </div>

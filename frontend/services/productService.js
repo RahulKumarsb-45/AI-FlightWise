@@ -91,32 +91,6 @@ export const productService = {
     return `${API_BASE_URL}/copilot/prds/${id}/export`;
   },
 
-  // Experiments
-  async listExperiments() {
-    const res = await api.get('/experiments');
-    return res.data;
-  },
-
-  async getExperimentResults(id) {
-    const res = await api.get(`/experiments/${id}`);
-    return res.data;
-  },
-
-  async assignExperiment({ experimentId, sessionId }) {
-    const res = await api.post('/experiments/assign', { experimentId, sessionId });
-    return res.data;
-  },
-
-  async logExposure({ experimentId, sessionId, variant }) {
-    const res = await api.post('/experiments/exposure', { experimentId, sessionId, variant });
-    return res.data;
-  },
-
-  async updateExperimentStatus(id, status) {
-    const res = await api.patch(`/experiments/${id}/status`, { status });
-    return res.data;
-  },
-
   // Roadmap
   async listRoadmapItems({ stage, priority, status } = {}) {
     let url = '/roadmap';

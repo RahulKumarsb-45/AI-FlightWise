@@ -332,7 +332,7 @@ export default function AnalyticsPage() {
                   </div>
                 </div>
 
-                {/* Feature Usage & Experiment Telemetry */}
+                {/* Feature Usage & Product Telemetry */}
                 <div className="rounded-2xl border border-ink-100 bg-white p-6 shadow-soft">
                   <h3 className="font-display text-base font-bold text-ink-900 flex items-center gap-2">
                     <Layers className="h-4 w-4 text-horizon-600" />

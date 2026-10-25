@@ -9,6 +9,7 @@ const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/a
  */
 let accessToken = null;
 let refreshPromise = null; // dedupes concurrent refresh attempts
+let onSessionExpired = null;
 
 export function setAccessToken(token) {
   accessToken = token;
@@ -16,6 +17,10 @@ export function setAccessToken(token) {
 
 export function getAccessToken() {
   return accessToken;
+}
+
+export function setSessionExpiredHandler(handler) {
+  onSessionExpired = handler;
 }
 
 async function refreshAccessToken() {
@@ -28,16 +33,30 @@ async function refreshAccessToken() {
     .then(async (res) => {
       if (!res.ok) {
         setAccessToken(null);
-        return null;
+        const body = await res.json().catch(() => null);
+        if (res.status === 401 && typeof onSessionExpired === 'function') {
+          onSessionExpired();
+        }
+        const err = new ApiError(
+          body?.message || 'Unauthorized',
+          res.status,
+          body?.errorCode || 'UNAUTHENTICATED',
+          body?.requestId
+        );
+        err.isSessionInvalid = true;
+        throw err;
       }
       const body = await res.json();
       const token = body?.data?.accessToken || null;
       setAccessToken(token);
       return token;
     })
-    .catch(() => {
-      setAccessToken(null);
-      return null;
+    .catch((err) => {
+      if (err.isSessionInvalid) {
+        return null;
+      }
+      // Re-throw genuine network or unexpected server errors
+      throw err;
     })
     .finally(() => {
       refreshPromise = null;

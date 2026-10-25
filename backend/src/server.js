@@ -10,6 +10,16 @@ async function start() {
   server = app.listen(config.port, () => {
     logger.info(`Server listening`, { port: config.port, env: config.nodeEnv });
   });
+
+  server.on('error', (err) => {
+    if (err.code === 'EADDRINUSE') {
+      logger.error(`Port ${config.port} is already in use by another process. Please free port ${config.port} before starting the server.`, { port: config.port, error: err.message });
+      process.exit(1);
+    } else {
+      logger.error('Server startup error', { error: err.message });
+      process.exit(1);
+    }
+  });
 }
 
 /**
