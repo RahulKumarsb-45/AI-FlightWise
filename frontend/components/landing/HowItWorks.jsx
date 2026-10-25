@@ -4,26 +4,26 @@ const STEPS = [
   {
     number: '01',
     icon: Search,
-    title: 'Enter your journey',
+    title: 'Tell us your trip',
     description: 'Specify your departure airport, one or multiple destination countries, dates, and budget.',
   },
   {
     number: '02',
     icon: Sliders,
-    title: 'Multi-factor optimization',
+    title: 'Optimize routes and dates',
     description: 'We evaluate nearby airport hubs, flex ±3 days, and optimal multi-city stop sequences.',
   },
   {
     number: '03',
     icon: Scale,
-    title: 'Grounded trade-off analysis',
+    title: 'Compare recommendations',
     description: 'Compare Cheapest, Fastest, and Best Balanced recommendations with transparent score breakdowns.',
   },
   {
     number: '04',
     icon: Bot,
-    title: 'Ask Aero AI',
-    description: 'Interact with Aero AI to explore layover trade-offs, nearby airport transfers, and budget breakdowns.',
+    title: 'Ask Shreya AI',
+    description: 'Interact with Shreya AI to explore layover trade-offs, nearby airport transfers, and budget breakdowns.',
   },
 ];
 

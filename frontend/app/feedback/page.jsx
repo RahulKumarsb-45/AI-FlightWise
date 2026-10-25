@@ -228,7 +228,7 @@ export default function FeedbackIntelligencePage() {
                 <option value="">All Categories</option>
                 <option value="flight_search">Flight Search</option>
                 <option value="pricing">Pricing</option>
-                <option value="ai_agent">Aero AI Concierge</option>
+                <option value="ai_agent">Shreya AI Concierge</option>
                 <option value="ui_ux">UI/UX & Mobile</option>
               </select>
             </div>
@@ -304,7 +304,7 @@ export default function FeedbackIntelligencePage() {
                   <div className="mt-3 flex items-center justify-between text-xs text-ink-500">
                     <span className="flex items-center gap-1.5 text-ink-600">
                       <Plane className="h-3.5 w-3.5 text-electric-600" />
-                      <span>Affects: <strong>{item.category === 'flight_search' ? 'Route search & comparison results' : item.category === 'pricing' ? 'Fare breakdown & savings calculation' : 'Aero AI concierge trade-off explainability'}</strong></span>
+                      <span>Affects: <strong>{item.category === 'flight_search' ? 'Route search & comparison results' : item.category === 'pricing' ? 'Fare breakdown & savings calculation' : 'Shreya AI concierge trade-off explainability'}</strong></span>
                     </span>
                     <span className="font-medium text-electric-600 flex items-center gap-1">
                       {isSelected ? 'Hide details' : 'View evidence details'}
@@ -403,7 +403,7 @@ export default function FeedbackIntelligencePage() {
                       >
                         <option value="flight_search">Flight Search</option>
                         <option value="pricing">Pricing & Checkout</option>
-                        <option value="ai_agent">Aero AI Concierge</option>
+                        <option value="ai_agent">Shreya AI Concierge</option>
                         <option value="ui_ux">UI/UX & Mobile</option>
                       </select>
                     </div>

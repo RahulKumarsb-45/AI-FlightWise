@@ -15,7 +15,7 @@ const PLANS = [
     price: 499,
     tagline: 'For travelers seeking maximum savings',
     highlighted: true,
-    features: ['Unlimited searches & permutations', 'Unlimited saved & shared trips', 'Multi-city routing (up to 4 countries)', 'Priority nearby airport expansion (300km)', 'Aero AI assistant access'],
+    features: ['Unlimited searches & permutations', 'Unlimited saved & shared trips', 'Multi-city routing (up to 4 countries)', 'Priority nearby airport expansion (300km)', 'Shreya AI assistant access'],
   },
   {
     name: 'Business',
@@ -37,7 +37,7 @@ function PricingPreview() {
           Simple, ₹-first pricing
         </h2>
         <p className="mt-3 text-ink-500 leading-relaxed max-w-xl mx-auto">
-          Start free to explore how optimization works. Upgrade only when you want unlimited multi-city circuits and Aero AI assistance.
+          Start free to explore how optimization works. Upgrade only when you want unlimited multi-city circuits and Shreya AI assistance.
         </p>
       </div>
 

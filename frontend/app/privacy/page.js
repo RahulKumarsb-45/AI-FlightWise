@@ -61,9 +61,9 @@ export default function PrivacyPage() {
           </section>
 
           <section>
-            <h2 className="font-display text-lg font-bold text-ink-900">Aero AI Assistant</h2>
+            <h2 className="font-display text-lg font-bold text-ink-900">Shreya AI Assistant</h2>
             <p className="mt-2">
-              The Aero AI assistant processes natural-language itinerary requests to extract destination preferences,
+              The Shreya AI assistant processes natural-language itinerary requests to extract destination preferences,
               timing, and budget constraints for optimization. User chat messages are processed to generate conversational
               responses and structured flight search parameters. Conversation messages are never sold or used for ad targeting.
             </p>

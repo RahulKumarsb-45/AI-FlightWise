@@ -17,7 +17,7 @@ const STEPS = [
   },
   {
     number: '02',
-    title: 'We optimize',
+    title: 'Optimize routes and dates',
     description: 'Nearby airports, flexible dates and multi-city routes.',
     detail:
       'Behind the scenes we expand your search across nearby airports, check a window of flexible dates, and — for multi-country trips — try different route orderings, all within a time budget that keeps searches fast.',
@@ -31,10 +31,10 @@ const STEPS = [
   },
   {
     number: '04',
-    title: 'Ask Aero AI',
-    description: 'Ask Aero AI why an option is better and get clear decision guidance.',
+    title: 'Ask Shreya AI',
+    description: 'Ask Shreya AI why an option is better and get clear decision guidance.',
     detail:
-      'Ask Aero AI about your flight options in plain language — why one trip beats another, what a nearby-airport swap actually saves, or how to fit your budget constraints.',
+      'Ask Shreya AI about your flight options in plain language — why one trip beats another, what a nearby-airport swap actually saves, or how to fit your budget constraints.',
   },
 ];
 
@@ -121,7 +121,7 @@ export default function HowItWorksPage() {
           <div className="mx-auto max-w-2xl">
             <h2 className="font-display text-display-sm text-ink-900">Ready to optimize your next flight?</h2>
             <p className="mt-3 text-ink-500">
-              Run a live search across nearby airports and date windows, or consult Aero AI for personalized itinerary guidance.
+              Run a live search across nearby airports and date windows, or consult Shreya AI for personalized itinerary guidance.
             </p>
             <div className="mt-6 flex flex-col items-center justify-center gap-3 sm:flex-row">
               <Link href="/search" className={buttonVariants({ variant: 'primary', size: 'lg', className: 'w-full sm:w-auto shadow-glow-electric' })}>
@@ -129,7 +129,7 @@ export default function HowItWorksPage() {
                 <ArrowRight className="h-4 w-4 ml-1.5" aria-hidden="true" />
               </Link>
               <Link href="/ai-agent" className={buttonVariants({ variant: 'outline', size: 'lg', className: 'w-full sm:w-auto' })}>
-                Ask Aero AI
+                Ask Shreya AI
               </Link>
             </div>
           </div>

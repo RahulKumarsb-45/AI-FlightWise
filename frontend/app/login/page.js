@@ -23,7 +23,7 @@ export default function LoginPage() {
           </Link>
 
           <h1 className="mt-8 font-display text-2xl font-bold tracking-tight text-ink-900 sm:text-3xl">Welcome back</h1>
-          <p className="mt-2 text-sm text-ink-500">Log in to access your saved trips, price alerts, and Aero AI conversations.</p>
+          <p className="mt-2 text-sm text-ink-500">Log in to access your saved trips, price alerts, and Shreya AI conversations.</p>
 
           <div className="mt-8">
             <Suspense fallback={<PageSpinner />}>
@@ -62,7 +62,7 @@ export default function LoginPage() {
 
         <div className="relative z-10 border-t border-ink-200/60 pt-6 flex items-center justify-between text-xs text-ink-500">
           <span>Realistic flight trade-offs</span>
-          <span>Powered by Aero AI</span>
+          <span>Powered by Shreya AI</span>
         </div>
       </div>
     </main>

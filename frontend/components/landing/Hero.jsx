@@ -25,7 +25,7 @@ const CAPABILITIES = [
 function Hero() {
   return (
     <section className="relative overflow-hidden bg-gradient-to-b from-[#EEF4FF]/70 via-[#F8FAFC] to-[#FFFFFF] text-ink-900 min-h-[640px] lg:min-h-[720px] flex items-center border-b border-ink-100">
-      {/* Background aviation image with gentle light readability overlay */}
+      {/* Premium aviation photography background with localized readability gradient */}
       <div className="absolute inset-0 z-0 pointer-events-none">
         <Image
           src="/images/hero-aviation.jpg"
@@ -33,12 +33,12 @@ function Hero() {
           fill
           priority
           sizes="100vw"
-          className="object-cover object-[70%_center] md:object-[60%_center] lg:object-center opacity-25 mix-blend-multiply"
+          className="object-cover object-[85%_center] sm:object-[80%_center] md:object-[75%_center] lg:object-[85%_center] opacity-80 md:opacity-85"
         />
-        {/* Crisp light gradient overlay ensuring 100% WCAG AAA text contrast */}
+        {/* Localized gradient overlay: solid light neutral behind text on left, translucent to clear over the aircraft on right */}
         <div
           aria-hidden="true"
-          className="absolute inset-0 bg-gradient-to-b from-white/95 via-white/85 to-white/95 lg:bg-gradient-to-r lg:from-white/98 lg:via-white/88 lg:to-white/40"
+          className="absolute inset-0 bg-gradient-to-b from-white/95 via-white/85 to-white/95 lg:bg-gradient-to-r lg:from-white lg:via-white/92 lg:via-50% lg:to-white/20"
         />
       </div>
 

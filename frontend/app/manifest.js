@@ -43,10 +43,10 @@ export default function manifest() {
         description: 'Start a new AI-optimized flight search',
       },
       {
-        name: 'Aero AI Assistant',
-        short_name: 'Aero AI',
+        name: 'Shreya AI Assistant',
+        short_name: 'Shreya AI',
         url: '/ai-agent',
-        description: 'Chat with Aero AI about flight trade-offs',
+        description: 'Chat with Shreya AI about flight trade-offs',
       },
       {
         name: 'Dashboard',
