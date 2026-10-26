@@ -1,9 +1,11 @@
 const groqProvider = require('./groqProvider');
+const geminiProvider = require('./geminiProvider');
 const config = require('../../config/env');
 const logger = require('../../logger/logger');
 
 const PROVIDERS = {
   groq: groqProvider,
+  gemini: geminiProvider,
 };
 
 function getProvider(name = config.ai.provider) {

@@ -11,7 +11,8 @@ const STATIC_TTL_MS = config.cache.staticTtlHours * 60 * 60 * 1000;
 // Build lookup indexes once at module load (dataset is static/in-memory).
 const byIata = new Map(AIRPORTS.map((a) => [a.iata, a]));
 const byCountryCode = AIRPORTS.reduce((acc, a) => {
-  (acc[a.countryCode] ||= []).push(a);
+  if (a.countryCode) (acc[a.countryCode.toUpperCase()] ||= []).push(a);
+  if (a.country) (acc[a.country.toUpperCase()] ||= []).push(a);
   return acc;
 }, {});
 const byRegion = AIRPORTS.reduce((acc, a) => {
@@ -285,7 +286,8 @@ function getNearbyAirports(iataCode, limit = config.optimizer.maxNearbyAirports,
  * All airports in a given country, sorted by hub rank (most important first).
  */
 function expandByCountry(countryCode, limit = 10) {
-  const list = byCountryCode[countryCode.toUpperCase()] || [];
+  if (!countryCode) return [];
+  const list = byCountryCode[String(countryCode).trim().toUpperCase()] || [];
   return [...list].sort((a, b) => b.rank - a.rank).slice(0, limit);
 }
 
@@ -323,5 +325,6 @@ module.exports = {
   expandByRegion,
   listRegions,
   listCountries,
+  clearExternalCache: () => externalAirportCache.clear(),
   totalAirportCount: AIRPORTS.length,
 };

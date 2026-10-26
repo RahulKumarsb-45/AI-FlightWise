@@ -99,7 +99,7 @@ async function triggerRun(req, res, next) {
 async function exportMarkdown(req, res, next) {
   try {
     const { id } = req.params;
-    const report = id === 'latest' ? await getLatestEvaluation() : await getEvaluationById(id);
+    const report = id === 'latest' ? await getLatestEvaluationFromDb() : await getEvaluationById(id);
 
     if (!report) {
       return next(new AppError('Evaluation report not found to export.', 404, 'EVAL_REPORT_NOT_FOUND'));

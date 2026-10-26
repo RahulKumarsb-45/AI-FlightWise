@@ -37,11 +37,26 @@ describe('pruneCandidates', () => {
     expect(filtered).toHaveLength(1);
   });
 
-  test('removes candidates with more than 3 stops', () => {
+  test('removes candidates with more than 3 stops for single-leg journeys', () => {
     const candidates = [candidate({ totalStops: 2 }), candidate({ totalStops: 4 })];
     const { filtered, reasons } = pruneCandidates(candidates, {});
     expect(filtered).toHaveLength(1);
     expect(reasons.tooManyStops).toBe(1);
+  });
+
+  test('does not prune multi-country itineraries when stops are proportional to leg count', () => {
+    const multiLegCandidate = candidate({
+      legs: [
+        { fromIata: 'DEL', toIata: 'SIN' },
+        { fromIata: 'SIN', toIata: 'AKL' },
+        { fromIata: 'AKL', toIata: 'SYD' },
+        { fromIata: 'SYD', toIata: 'DEL' },
+      ],
+      totalStops: 4, // 1 stop per leg
+    });
+    const { filtered, reasons } = pruneCandidates([multiLegCandidate], {});
+    expect(filtered).toHaveLength(1);
+    expect(reasons.tooManyStops).toBe(0);
   });
 
   test('removes exact duplicates (same route + date + price)', () => {

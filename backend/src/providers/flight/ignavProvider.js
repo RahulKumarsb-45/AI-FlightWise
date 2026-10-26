@@ -96,7 +96,7 @@ async function ignavPost(path, body, attempt = 1) {
     const response = await executeHttpRequest(path, body);
 
 
-    const status = response.status;
+    const status = response.status ?? (response.data !== undefined ? 200 : undefined);
     const data = response.data;
     const errorBody = data?.error;
     const code = errorBody?.code;

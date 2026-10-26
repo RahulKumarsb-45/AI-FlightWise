@@ -40,7 +40,11 @@ async function getPhoto(req, res, next) {
     }
     const maxWidthPx = req.query.maxWidth ? parseInt(req.query.maxWidth, 10) : 400;
 
-    const { data, contentType } = await placesService.getPhotoBytes({ photoName: name, maxWidthPx });
+    const photoResult = await placesService.getPhotoBytes({ photoName: name, maxWidthPx });
+    if (!photoResult) {
+      throw new AppError('Could not fetch place photo.', 502, 'PLACES_PROVIDER_ERROR');
+    }
+    const { data, contentType } = photoResult;
 
     res.setHeader('Content-Type', contentType);
     res.setHeader('Cache-Control', 'public, max-age=86400');

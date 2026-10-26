@@ -206,6 +206,13 @@ describe('airportService.expandByCountry', () => {
     }
   });
 
+  test('returns airports for a country name as well as ISO code', () => {
+    const fromCode = airportService.expandByCountry('IN');
+    const fromName = airportService.expandByCountry('India');
+    expect(fromName.length).toBeGreaterThan(0);
+    expect(fromName).toEqual(fromCode);
+  });
+
   test('returns an empty array for a country not in the dataset', () => {
     expect(airportService.expandByCountry('ZZ')).toEqual([]);
   });

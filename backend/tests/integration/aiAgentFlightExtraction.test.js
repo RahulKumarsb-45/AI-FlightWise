@@ -148,7 +148,23 @@ const GEMINI_RESPONSE_SCHEMA = {
   required: ['reply', 'extractedParams'],
 };
 
-
+/** Asserts the mocked Gemini call used the current production request shape. */
+function assertGeminiRequestShape({ callIndex = 0, expectedLastContent, expectedContentsLength } = {}) {
+  const [url, body] = axios.post.mock.calls[callIndex];
+  expect(url).toBe(
+    `https://generativelanguage.googleapis.com/v1beta/models/${config.ai.gemini.model}:generateContent?key=${config.ai.gemini.apiKey}`
+  );
+  expect(body.systemInstruction).toEqual({ parts: [{ text: GEMINI_SYSTEM_PROMPT }] });
+  expect(body.generationConfig.responseMimeType).toBe('application/json');
+  expect(body.generationConfig.responseSchema).toEqual(GEMINI_RESPONSE_SCHEMA);
+  if (expectedLastContent) {
+    expect(body.contents[body.contents.length - 1]).toEqual(expectedLastContent);
+  }
+  if (expectedContentsLength !== undefined) {
+    expect(body.contents).toHaveLength(expectedContentsLength);
+  }
+  return body;
+}
 
 const USER_A = { id: '11111111-1111-1111-1111-111111111111', email: 'alice@example.com' };
 

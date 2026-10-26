@@ -1,6 +1,10 @@
 const { pool, query } = require('../../src/database/pool');
 
+const airportService = require('../../src/providers/airport/airportService');
+
 const TABLES = [
+  'analytics_events',
+  'customer_feedback',
   'ai_messages',
   'ai_conversations',
   'price_alerts',
@@ -17,6 +21,9 @@ const TABLES = [
 
 async function resetDb() {
   await query(`TRUNCATE TABLE ${TABLES.join(', ')} RESTART IDENTITY CASCADE`);
+  if (airportService && typeof airportService.clearExternalCache === 'function') {
+    airportService.clearExternalCache();
+  }
 }
 
 async function closeDb() {

@@ -30,7 +30,8 @@ function pruneCandidates(candidates, { budgetInr } = {}) {
       }
       return false;
     }
-    if (c.totalStops > MAX_REASONABLE_STOPS) {
+    const maxAllowedStops = Math.max(MAX_REASONABLE_STOPS, (c.legs?.length || 1) * 2);
+    if (c.totalStops > maxAllowedStops) {
       reasons.tooManyStops++;
       return false;
     }
