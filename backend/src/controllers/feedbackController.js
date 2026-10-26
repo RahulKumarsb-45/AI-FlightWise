@@ -1,5 +1,5 @@
 const { query } = require('../database/pool');
-const { MemoryCache } = require('../cache/MemoryCache');
+const { MemoryCache } = require('../cache/memoryCache');
 const logger = require('../logger/logger');
 const AppError = require('../utils/AppError');
 const crypto = require('crypto');
